@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FPLite", "FPLite\FPLite.csproj", "{519E5FDC-56B7-40D1-98C4-4B2388729D10}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FPLite.Idiomatic", "FPLite.Idiomatic\FPLite.Idiomatic.csproj", "{D41B5406-A503-4A6D-9555-86568C37051F}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{519E5FDC-56B7-40D1-98C4-4B2388729D10}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{519E5FDC-56B7-40D1-98C4-4B2388729D10}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{519E5FDC-56B7-40D1-98C4-4B2388729D10}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{519E5FDC-56B7-40D1-98C4-4B2388729D10}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D41B5406-A503-4A6D-9555-86568C37051F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D41B5406-A503-4A6D-9555-86568C37051F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D41B5406-A503-4A6D-9555-86568C37051F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D41B5406-A503-4A6D-9555-86568C37051F}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
