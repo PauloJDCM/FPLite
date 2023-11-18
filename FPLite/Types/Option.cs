@@ -1,6 +1,4 @@
-﻿#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
-
-namespace FPLite.Types
+﻿namespace FPLite.Types
 {
     /// <summary>
     /// Represents an optional value that can be either Some(T) or None.
@@ -8,14 +6,13 @@ namespace FPLite.Types
     /// <typeparam name="T">The type of the value.</typeparam>
     public class Option<T>
     {
-        private readonly T _value;
+        private readonly T? _value;
 
         /// <summary>
         /// Initializes a new instance of the Option class with no value (None).
         /// </summary>
         private Option()
         {
-            IsSome = false;
         }
 
         /// <summary>
@@ -25,7 +22,6 @@ namespace FPLite.Types
         private Option(T value)
         {
             _value = value;
-            IsSome = true;
         }
 
         /// <summary>
@@ -38,17 +34,7 @@ namespace FPLite.Types
         /// </summary>
         /// <param name="value">The value to wrap.</param>
         /// <returns>An Option containing the specified value.</returns>
-        public static Option<T> Some(T value) => new(value);
-
-        /// <summary>
-        /// Gets a value indicating whether this instance has a value.
-        /// </summary>
-        public bool IsSome { get; }
-
-        /// <summary>
-        /// Gets a value indicating whether this instance has no value.
-        /// </summary>
-        public bool IsNone => !IsSome;
+        public static Option<T> Some(T? value) => value is not null ? new(value) : None;
 
         /// <summary>
         /// Matches the option and returns a result based on whether it's Some or None.
@@ -58,7 +44,7 @@ namespace FPLite.Types
         /// <param name="noneFunc">The function to execute if it's None.</param>
         /// <returns>The result of executing the appropriate function.</returns>
         public TResult Match<TResult>(Func<T, TResult> someFunc, Func<TResult> noneFunc) =>
-            IsSome ? someFunc(_value) : noneFunc();
+            _value is not null ? someFunc(_value) : noneFunc();
 
         /// <summary>
         /// Matches the option and executes an action based on whether it's Some or None.
@@ -67,7 +53,7 @@ namespace FPLite.Types
         /// <param name="noneAction">The action to execute if it's None.</param>
         public void Match(Action<T> someAction, Action noneAction)
         {
-            if (IsSome)
+            if (_value is not null)
                 someAction(_value);
             else
                 noneAction();
@@ -80,6 +66,6 @@ namespace FPLite.Types
         /// <param name="func">The function to apply to the value.</param>
         /// <returns>The new option resulting from the binding.</returns>
         public Option<TResult> Bind<TResult>(Func<T, Option<TResult>> func) =>
-            IsSome ? func(_value) : Option<TResult>.None;
+            _value is not null ? func(_value) : Option<TResult>.None;
     }
 }
