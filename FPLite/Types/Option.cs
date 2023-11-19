@@ -67,5 +67,13 @@
         /// <returns>The new option resulting from the binding.</returns>
         public Option<TResult> Bind<TResult>(Func<T, Option<TResult>> func) =>
             _value is not null ? func(_value) : Option<TResult>.None;
+
+        /// <summary>
+        /// Retrieves the nullable value wrapped in the Option.
+        /// </summary>
+        /// <returns>
+        /// The nullable value wrapped in the Option.
+        /// </returns>
+        public T? ToNullable() => _value;
     }
 }

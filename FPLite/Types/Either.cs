@@ -100,5 +100,21 @@
         /// <returns>The new either resulting from the binding.</returns>
         public Either<TLeft, TNewRight> BindRight<TNewRight>(Func<TRight, Either<TLeft, TNewRight>> func) =>
             _right is not null ? func(_right) : Either<TLeft, TNewRight>.Left(_left);
+
+        /// <summary>
+        /// Retrieves the nullable left value wrapped in the Either.
+        /// </summary>
+        /// <returns>
+        /// The nullable left value wrapped in the Either.
+        /// </returns>
+        public TLeft? ToNullableLeft() => _left;
+
+        /// <summary>
+        /// Retrieves the nullable right value wrapped in the Either.
+        /// </summary>
+        /// <returns>
+        /// The nullable right value wrapped in the Either.
+        /// </returns>
+        public TRight? ToNullableRight() => _right;
     }
 }
