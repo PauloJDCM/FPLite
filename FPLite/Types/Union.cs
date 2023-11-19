@@ -1,5 +1,7 @@
 ﻿#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
+using System.Diagnostics.CodeAnalysis;
+
 namespace FPLite.Types
 {
     /// <summary>
@@ -15,13 +17,13 @@ namespace FPLite.Types
         {
         }
 
-        public Union(T1 t1)
+        public Union([DisallowNull] T1 t1)
         {
             Index = 1;
             _t1 = t1;
         }
 
-        public Union(T2 t2)
+        public Union([DisallowNull] T2 t2)
         {
             Index = 2;
             _t2 = t2;
@@ -37,7 +39,7 @@ namespace FPLite.Types
         {
             1 => case1(_t1),
             2 => case2(_t2),
-            _ => throw new ArgumentOutOfRangeException()
+            _ => throw new ArgumentNullException($"Possible null instantiation in class {GetType().Name}")
         };
 
         /// <summary>
@@ -55,7 +57,7 @@ namespace FPLite.Types
                     case2(_t2);
                     break;
                 default:
-                    throw new ArgumentOutOfRangeException();
+                    throw new ArgumentNullException($"Possible null instantiation in class {GetType().Name}");
             }
         }
     }
@@ -71,7 +73,7 @@ namespace FPLite.Types
         {
         }
 
-        public Union(T3 t3)
+        public Union([DisallowNull] T3 t3)
         {
             Index = 3;
             _t3 = t3;
@@ -117,7 +119,7 @@ namespace FPLite.Types
         {
         }
 
-        public Union(T4 t4)
+        public Union([DisallowNull] T4 t4)
         {
             Index = 4;
             _t4 = t4;
@@ -163,7 +165,7 @@ namespace FPLite.Types
         {
         }
 
-        public Union(T5 t5)
+        public Union([DisallowNull] T5 t5)
         {
             Index = 5;
             _t5 = t5;
@@ -209,7 +211,7 @@ namespace FPLite.Types
         {
         }
 
-        public Union(T6 t6)
+        public Union([DisallowNull] T6 t6)
         {
             Index = 6;
             _t6 = t6;
@@ -257,7 +259,7 @@ namespace FPLite.Types
         {
         }
 
-        public Union(T7 t7)
+        public Union([DisallowNull] T7 t7)
         {
             Index = 7;
             _t7 = t7;
@@ -306,7 +308,7 @@ namespace FPLite.Types
         {
         }
 
-        public Union(T8 t8)
+        public Union([DisallowNull] T8 t8)
         {
             Index = 8;
             _t8 = t8;
