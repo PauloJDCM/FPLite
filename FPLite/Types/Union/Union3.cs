@@ -83,4 +83,19 @@ public class Union3<T1, T2, T3>
         if (_t3 is not null) return Union3<TResult1, TResult2, TResult3>.Type3(case3(_t3));
         return Union3<TResult1, TResult2, TResult3>.Nothing;
     }
+
+    /// <summary>
+    /// Gets the value contained in the union.
+    /// </summary>
+    /// <returns>
+    /// The value contained in the union, which can be of any type specified by the generic parameters.
+    /// Returns null if all values are null.
+    /// </returns>
+    public object? GetValue()
+    {
+        if (_t1 is not null) return _t1;
+        if (_t2 is not null) return _t2;
+        if (_t3 is not null) return _t3;
+        return null;
+    }
 }

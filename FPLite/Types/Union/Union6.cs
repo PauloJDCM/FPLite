@@ -128,4 +128,22 @@ public class Union6<T1, T2, T3, T4, T5, T6>
         if (_t6 is not null) return Union6<TResult1, TResult2, TResult3, TResult4, TResult5, TResult6>.Type6(case6(_t6));
         return Union6<TResult1, TResult2, TResult3, TResult4, TResult5, TResult6>.Nothing;
     }
+    
+    /// <summary>
+    /// Gets the value contained in the union.
+    /// </summary>
+    /// <returns>
+    /// The value contained in the union, which can be of any type specified by the generic parameters.
+    /// Returns null if all values are null.
+    /// </returns>
+    public object? GetValue()
+    {
+        if (_t1 is not null) return _t1;
+        if (_t2 is not null) return _t2;
+        if (_t3 is not null) return _t3;
+        if (_t4 is not null) return _t4;
+        if (_t5 is not null) return _t5;
+        if (_t6 is not null) return _t6;
+        return null;
+    }
 }

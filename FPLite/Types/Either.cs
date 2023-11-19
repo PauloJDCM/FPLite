@@ -9,27 +9,16 @@ public class Either<TLeft, TRight>
 {
     private readonly TLeft? _left;
     private readonly TRight? _right;
-
-    /// <summary>
-    /// Initializes a new instance of the Either class as Neither.
-    /// </summary>
+    
     private Either()
     {
     }
-
-    /// <summary>
-    /// Initializes a new instance of the Either class as Left.
-    /// </summary>
-    /// <param name="left">The left value.</param>
+    
     private Either(TLeft left)
     {
         _left = left;
     }
-
-    /// <summary>
-    /// Initializes a new instance of the Either class as Right.
-    /// </summary>
-    /// <param name="right">The right value.</param>
+    
     private Either(TRight right)
     {
         _right = right;
@@ -118,18 +107,15 @@ public class Either<TLeft, TRight>
         _right is not null ? func(_right) : Either<TLeft, TNewRight>.Left(_left);
 
     /// <summary>
-    /// Retrieves the nullable left value wrapped in the Either.
+    /// Gets the value contained in the either monad.
     /// </summary>
     /// <returns>
-    /// The nullable left value wrapped in the Either.
+    /// The value contained in the either monad. Returns null if both Left and Right values are null.
     /// </returns>
-    public TLeft? ToNullableLeft() => _left;
-
-    /// <summary>
-    /// Retrieves the nullable right value wrapped in the Either.
-    /// </summary>
-    /// <returns>
-    /// The nullable right value wrapped in the Either.
-    /// </returns>
-    public TRight? ToNullableRight() => _right;
+    public object? GetValue()
+    {
+        if (_left is not null) return _left;
+        if (_right is not null) return _right;
+        return null;
+    }
 }

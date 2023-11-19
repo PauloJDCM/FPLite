@@ -8,17 +8,10 @@ public class Option<T>
 {
     private readonly T? _value;
 
-    /// <summary>
-    /// Initializes a new instance of the Option class with no value (None).
-    /// </summary>
     private Option()
     {
     }
-
-    /// <summary>
-    /// Initializes a new instance of the Option class with a value (Some(T)).
-    /// </summary>
-    /// <param name="value">The value to wrap.</param>
+    
     private Option(T value)
     {
         _value = value;
@@ -69,10 +62,10 @@ public class Option<T>
         _value is not null ? func(_value) : Option<TResult>.None;
 
     /// <summary>
-    /// Retrieves the nullable value wrapped in the Option.
+    /// Gets the value contained in the option monad.
     /// </summary>
     /// <returns>
-    /// The nullable value wrapped in the Option.
+    /// The value contained in the option monad.
     /// </returns>
-    public T? ToNullable() => _value;
+    public T? GetValue() => _value;
 }
