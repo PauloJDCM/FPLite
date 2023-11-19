@@ -84,6 +84,22 @@ public class Either<TLeft, TRight>
     }
 
     /// <summary>
+    /// Matches the either and returns a result based on whether it's Left or Right.
+    /// </summary>
+    /// <typeparam name="TResultL">The left type of the result.</typeparam>
+    /// <typeparam name="TResultR">The right type of the result.</typeparam>
+    /// <param name="leftFunc">The function to execute if it's Left.</param>
+    /// <param name="rightFunc">The function to execute if it's Right.</param>
+    /// <returns>The result of executing the appropriate function.</returns>
+    public Either<TResultL, TResultR> Match<TResultL, TResultR>(Func<TLeft, TResultL> leftFunc,
+        Func<TRight, TResultR> rightFunc)
+    {
+        if (_left is not null) return Either<TResultL, TResultR>.Left(leftFunc(_left));
+        if (_right is not null) return Either<TResultL, TResultR>.Right(rightFunc(_right));
+        return Either<TResultL, TResultR>.Neither;
+    }
+
+    /// <summary>
     /// Binds the either to a new either by applying a function to its Left value.
     /// </summary>
     /// <typeparam name="TNewLeft">The type of the left value in the new either.</typeparam>

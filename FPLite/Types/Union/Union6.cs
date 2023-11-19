@@ -110,4 +110,22 @@ public class Union6<T1, T2, T3, T4, T5, T6>
         else if (_t6 is not null) case6(_t6);
         else caseNothing();
     }
+    
+    /// <summary>
+    /// Matches the active case and invokes the appropriate delegate.
+    /// </summary>
+    /// <returns>The result of the invoked delegate or Nothing.</returns>
+    public Union6<TResult1, TResult2, TResult3, TResult4, TResult5, TResult6>
+        Match<TResult1, TResult2, TResult3, TResult4, TResult5, TResult6>(
+            Func<T1, TResult1> case1, Func<T2, TResult2> case2, Func<T3, TResult3> case3, Func<T4, TResult4> case4,
+            Func<T5, TResult5> case5, Func<T6, TResult6> case6)
+    {
+        if (_t1 is not null) return Union6<TResult1, TResult2, TResult3, TResult4, TResult5, TResult6>.Type1(case1(_t1));
+        if (_t2 is not null) return Union6<TResult1, TResult2, TResult3, TResult4, TResult5, TResult6>.Type2(case2(_t2));
+        if (_t3 is not null) return Union6<TResult1, TResult2, TResult3, TResult4, TResult5, TResult6>.Type3(case3(_t3));
+        if (_t4 is not null) return Union6<TResult1, TResult2, TResult3, TResult4, TResult5, TResult6>.Type4(case4(_t4));
+        if (_t5 is not null) return Union6<TResult1, TResult2, TResult3, TResult4, TResult5, TResult6>.Type5(case5(_t5));
+        if (_t6 is not null) return Union6<TResult1, TResult2, TResult3, TResult4, TResult5, TResult6>.Type6(case6(_t6));
+        return Union6<TResult1, TResult2, TResult3, TResult4, TResult5, TResult6>.Nothing;
+    }
 }

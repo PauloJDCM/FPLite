@@ -51,7 +51,8 @@ public class Union3<T1, T2, T3>
     /// <summary>
     /// Matches the active case and invokes the appropriate delegate.
     /// </summary>
-    public TResult Match<TResult>(Func<T1, TResult> case1, Func<T2, TResult> case2, Func<T3, TResult> case3, Func<TResult> caseNothing)
+    public TResult Match<TResult>(Func<T1, TResult> case1, Func<T2, TResult> case2, Func<T3, TResult> case3,
+        Func<TResult> caseNothing)
     {
         if (_t1 is not null) return case1(_t1);
         if (_t2 is not null) return case2(_t2);
@@ -68,5 +69,18 @@ public class Union3<T1, T2, T3>
         else if (_t2 is not null) case2(_t2);
         else if (_t3 is not null) case3(_t3);
         else caseNothing();
+    }
+
+    /// <summary>
+    /// Matches the active case and invokes the appropriate delegate.
+    /// </summary>
+    /// <returns>The result of the invoked delegate or Nothing.</returns>
+    public Union3<TResult1, TResult2, TResult3> Match<TResult1, TResult2, TResult3>(
+        Func<T1, TResult1> case1, Func<T2, TResult2> case2, Func<T3, TResult3> case3)
+    {
+        if (_t1 is not null) return Union3<TResult1, TResult2, TResult3>.Type1(case1(_t1));
+        if (_t2 is not null) return Union3<TResult1, TResult2, TResult3>.Type2(case2(_t2));
+        if (_t3 is not null) return Union3<TResult1, TResult2, TResult3>.Type3(case3(_t3));
+        return Union3<TResult1, TResult2, TResult3>.Nothing;
     }
 }

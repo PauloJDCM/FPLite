@@ -66,4 +66,15 @@ public class Union2<T1, T2>
         else if (_t2 is not null) case2(_t2);
         else caseNothing();
     }
+
+    /// <summary>
+    /// Matches the active case and invokes the appropriate delegate.
+    /// </summary>
+    /// <returns>The result of the invoked delegate or Nothing.</returns>
+    public Union2<TResult1, TResult2> Match<TResult1, TResult2>(Func<T1, TResult1> case1, Func<T2, TResult2> case2)
+    {
+        if (_t1 is not null) return Union2<TResult1, TResult2>.Type1(case1(_t1));
+        if (_t2 is not null) return Union2<TResult1, TResult2>.Type2(case2(_t2));
+        return Union2<TResult1, TResult2>.Nothing;
+    }
 }
