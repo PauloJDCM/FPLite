@@ -1,7 +1,7 @@
 ﻿namespace FPLite.Types;
 
 /// <summary>
-/// Represents a value that can be either Left(TLeft) or Right(TRight).
+/// Represents a value that can be either Left(TLeft), Right(TRight) or Both(TLeft, TRight).
 /// </summary>
 /// <typeparam name="TLeft">The type of the left value.</typeparam>
 /// <typeparam name="TRight">The type of the right value.</typeparam>
