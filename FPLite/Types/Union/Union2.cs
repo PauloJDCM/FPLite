@@ -3,21 +3,21 @@
 /// <summary>
 /// Represents a discriminated union with two possible cases.
 /// </summary>
-public class Union2<T1, T2>
+public class Union<T1, T2>
 {
     private readonly T1? _t1;
     private readonly T2? _t2;
 
-    private Union2()
+    private Union()
     {
     }
 
-    private Union2(T1 t1)
+    private Union(T1 t1)
     {
         _t1 = t1;
     }
 
-    private Union2(T2 t2)
+    private Union(T2 t2)
     {
         _t2 = t2;
     }
@@ -25,7 +25,7 @@ public class Union2<T1, T2>
     /// <summary>
     /// Represents a Union of 2 types with no value. Used to indicate the absence of a value in Union types.
     /// </summary>
-    public static Union2<T1, T2> Nothing => new();
+    public static Union<T1, T2> Nothing => new();
 
     /// <summary>
     /// Creates a Union with a value of Type 1, or returns Nothing if the provided value is null.
@@ -34,7 +34,7 @@ public class Union2<T1, T2>
     /// <returns>
     /// A Union containing the provided value if it is not null, or Nothing if the value is null.
     /// </returns>
-    public static Union2<T1, T2> Type1(T1? t1) => t1 is not null ? new(t1) : Nothing;
+    public static Union<T1, T2> Type1(T1? t1) => t1 is not null ? new(t1) : Nothing;
 
     /// <summary>
     /// Creates a Union with a value of Type 2, or returns Nothing if the provided value is null.
@@ -43,7 +43,7 @@ public class Union2<T1, T2>
     /// <returns>
     /// A Union containing the provided value if it is not null, or Nothing if the value is null.
     /// </returns>
-    public static Union2<T1, T2> Type2(T2? t2) => t2 is not null ? new(t2) : Nothing;
+    public static Union<T1, T2> Type2(T2? t2) => t2 is not null ? new(t2) : Nothing;
 
     /// <summary>
     /// Matches the active case and invokes the appropriate delegate.
@@ -71,11 +71,11 @@ public class Union2<T1, T2>
     /// Matches the active case and invokes the appropriate delegate.
     /// </summary>
     /// <returns>The result of the invoked delegate or Nothing.</returns>
-    public Union2<TResult1, TResult2> Match<TResult1, TResult2>(Func<T1, TResult1> case1, Func<T2, TResult2> case2)
+    public Union<TResult1, TResult2> Match<TResult1, TResult2>(Func<T1, TResult1> case1, Func<T2, TResult2> case2)
     {
-        if (_t1 is not null) return Union2<TResult1, TResult2>.Type1(case1(_t1));
-        if (_t2 is not null) return Union2<TResult1, TResult2>.Type2(case2(_t2));
-        return Union2<TResult1, TResult2>.Nothing;
+        if (_t1 is not null) return Union<TResult1, TResult2>.Type1(case1(_t1));
+        if (_t2 is not null) return Union<TResult1, TResult2>.Type2(case2(_t2));
+        return Union<TResult1, TResult2>.Nothing;
     }
     
     /// <summary>
