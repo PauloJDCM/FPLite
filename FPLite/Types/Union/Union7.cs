@@ -3,7 +3,7 @@
 /// <summary>
 /// Represents a discriminated union with seven possible cases.
 /// </summary>
-public class Union7<T1, T2, T3, T4, T5, T6, T7>
+public class Union<T1, T2, T3, T4, T5, T6, T7>
 {
     private readonly T1? _t1;
     private readonly T2? _t2;
@@ -13,41 +13,41 @@ public class Union7<T1, T2, T3, T4, T5, T6, T7>
     private readonly T6? _t6;
     private readonly T7? _t7;
 
-    private Union7()
+    private Union()
     {
     }
 
-    private Union7(T1 t1)
+    private Union(T1 t1)
     {
         _t1 = t1;
     }
 
-    private Union7(T2 t2)
+    private Union(T2 t2)
     {
         _t2 = t2;
     }
 
-    private Union7(T3 t3)
+    private Union(T3 t3)
     {
         _t3 = t3;
     }
 
-    private Union7(T4 t4)
+    private Union(T4 t4)
     {
         _t4 = t4;
     }
 
-    private Union7(T5 t5)
+    private Union(T5 t5)
     {
         _t5 = t5;
     }
 
-    private Union7(T6 t6)
+    private Union(T6 t6)
     {
         _t6 = t6;
     }
 
-    private Union7(T7 t7)
+    private Union(T7 t7)
     {
         _t7 = t7;
     }
@@ -55,42 +55,42 @@ public class Union7<T1, T2, T3, T4, T5, T6, T7>
     /// <summary>
     /// Represents a Union of 7 types with no value. Used to indicate the absence of a value in Union types.
     /// </summary>
-    public static Union7<T1, T2, T3, T4, T5, T6, T7> Nothing => new();
+    public static Union<T1, T2, T3, T4, T5, T6, T7> Nothing => new();
 
     /// <summary>
     /// Creates a Union with a value of Type 1, or returns Nothing if the provided value is null.
     /// </summary>
-    public static Union7<T1, T2, T3, T4, T5, T6, T7> Type1(T1? t1) => t1 is not null ? new(t1) : Nothing;
+    public static Union<T1, T2, T3, T4, T5, T6, T7> Type1(T1? t1) => t1 is not null ? new(t1) : Nothing;
 
     /// <summary>
     /// Creates a Union with a value of Type 2, or returns Nothing if the provided value is null.
     /// </summary>
-    public static Union7<T1, T2, T3, T4, T5, T6, T7> Type2(T2? t2) => t2 is not null ? new(t2) : Nothing;
+    public static Union<T1, T2, T3, T4, T5, T6, T7> Type2(T2? t2) => t2 is not null ? new(t2) : Nothing;
 
     /// <summary>
     /// Creates a Union with a value of Type 3, or returns Nothing if the provided value is null.
     /// </summary>
-    public static Union7<T1, T2, T3, T4, T5, T6, T7> Type3(T3? t3) => t3 is not null ? new(t3) : Nothing;
+    public static Union<T1, T2, T3, T4, T5, T6, T7> Type3(T3? t3) => t3 is not null ? new(t3) : Nothing;
 
     /// <summary>
     /// Creates a Union with a value of Type 4, or returns Nothing if the provided value is null.
     /// </summary>
-    public static Union7<T1, T2, T3, T4, T5, T6, T7> Type4(T4? t4) => t4 is not null ? new(t4) : Nothing;
+    public static Union<T1, T2, T3, T4, T5, T6, T7> Type4(T4? t4) => t4 is not null ? new(t4) : Nothing;
 
     /// <summary>
     /// Creates a Union with a value of Type 5, or returns Nothing if the provided value is null.
     /// </summary>
-    public static Union7<T1, T2, T3, T4, T5, T6, T7> Type5(T5? t5) => t5 is not null ? new(t5) : Nothing;
+    public static Union<T1, T2, T3, T4, T5, T6, T7> Type5(T5? t5) => t5 is not null ? new(t5) : Nothing;
 
     /// <summary>
     /// Creates a Union with a value of Type 6, or returns Nothing if the provided value is null.
     /// </summary>
-    public static Union7<T1, T2, T3, T4, T5, T6, T7> Type6(T6? t6) => t6 is not null ? new(t6) : Nothing;
+    public static Union<T1, T2, T3, T4, T5, T6, T7> Type6(T6? t6) => t6 is not null ? new(t6) : Nothing;
 
     /// <summary>
     /// Creates a Union with a value of Type 7, or returns Nothing if the provided value is null.
     /// </summary>
-    public static Union7<T1, T2, T3, T4, T5, T6, T7> Type7(T7? t7) => t7 is not null ? new(t7) : Nothing;
+    public static Union<T1, T2, T3, T4, T5, T6, T7> Type7(T7? t7) => t7 is not null ? new(t7) : Nothing;
 
     /// <summary>
     /// Matches the active case and invokes the appropriate delegate.
@@ -129,19 +129,19 @@ public class Union7<T1, T2, T3, T4, T5, T6, T7>
     /// Matches the active case and invokes the appropriate delegate.
     /// </summary>
     /// <returns>The result of the invoked delegate or Nothing.</returns>
-    public Union7<TResult1, TResult2, TResult3, TResult4, TResult5, TResult6, TResult7>
+    public Union<TResult1, TResult2, TResult3, TResult4, TResult5, TResult6, TResult7>
         Match<TResult1, TResult2, TResult3, TResult4, TResult5, TResult6, TResult7>(
             Func<T1, TResult1> case1, Func<T2, TResult2> case2, Func<T3, TResult3> case3, Func<T4, TResult4> case4,
             Func<T5, TResult5> case5, Func<T6, TResult6> case6, Func<T7, TResult7> case7)
     {
-        if (_t1 is not null) return Union7<TResult1, TResult2, TResult3, TResult4, TResult5, TResult6, TResult7>.Type1(case1(_t1));
-        if (_t2 is not null) return Union7<TResult1, TResult2, TResult3, TResult4, TResult5, TResult6, TResult7>.Type2(case2(_t2));
-        if (_t3 is not null) return Union7<TResult1, TResult2, TResult3, TResult4, TResult5, TResult6, TResult7>.Type3(case3(_t3));
-        if (_t4 is not null) return Union7<TResult1, TResult2, TResult3, TResult4, TResult5, TResult6, TResult7>.Type4(case4(_t4));
-        if (_t5 is not null) return Union7<TResult1, TResult2, TResult3, TResult4, TResult5, TResult6, TResult7>.Type5(case5(_t5));
-        if (_t6 is not null) return Union7<TResult1, TResult2, TResult3, TResult4, TResult5, TResult6, TResult7>.Type6(case6(_t6));
-        if (_t7 is not null) return Union7<TResult1, TResult2, TResult3, TResult4, TResult5, TResult6, TResult7>.Type7(case7(_t7));
-        return Union7<TResult1, TResult2, TResult3, TResult4, TResult5, TResult6, TResult7>.Nothing;
+        if (_t1 is not null) return Union<TResult1, TResult2, TResult3, TResult4, TResult5, TResult6, TResult7>.Type1(case1(_t1));
+        if (_t2 is not null) return Union<TResult1, TResult2, TResult3, TResult4, TResult5, TResult6, TResult7>.Type2(case2(_t2));
+        if (_t3 is not null) return Union<TResult1, TResult2, TResult3, TResult4, TResult5, TResult6, TResult7>.Type3(case3(_t3));
+        if (_t4 is not null) return Union<TResult1, TResult2, TResult3, TResult4, TResult5, TResult6, TResult7>.Type4(case4(_t4));
+        if (_t5 is not null) return Union<TResult1, TResult2, TResult3, TResult4, TResult5, TResult6, TResult7>.Type5(case5(_t5));
+        if (_t6 is not null) return Union<TResult1, TResult2, TResult3, TResult4, TResult5, TResult6, TResult7>.Type6(case6(_t6));
+        if (_t7 is not null) return Union<TResult1, TResult2, TResult3, TResult4, TResult5, TResult6, TResult7>.Type7(case7(_t7));
+        return Union<TResult1, TResult2, TResult3, TResult4, TResult5, TResult6, TResult7>.Nothing;
     }
     
     /// <summary>
