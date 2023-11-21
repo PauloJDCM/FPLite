@@ -30,7 +30,7 @@ public class Option<T>
     public static Option<T> Some(T? value) => value is not null ? new(value) : None;
 
     /// <summary>
-    /// Matches the option and returns a result based on whether it's Some or None.
+    /// Matches the Option and returns a result based on whether it's Some or None.
     /// </summary>
     /// <typeparam name="TResult">The type of the result.</typeparam>
     /// <param name="someFunc">The function to execute if it's Some.</param>
@@ -40,7 +40,7 @@ public class Option<T>
         _value is not null ? someFunc(_value) : noneFunc();
 
     /// <summary>
-    /// Matches the option and executes an action based on whether it's Some or None.
+    /// Matches the Option and executes an action based on whether it's Some or None.
     /// </summary>
     /// <param name="someAction">The action to execute if it's Some.</param>
     /// <param name="noneAction">The action to execute if it's None.</param>
@@ -53,19 +53,19 @@ public class Option<T>
     }
 
     /// <summary>
-    /// Binds the option to a new option by applying a function to its value.
+    /// Binds the Option to a new Option by applying a function to its value.
     /// </summary>
-    /// <typeparam name="TResult">The type of the result option.</typeparam>
+    /// <typeparam name="TResult">The type of the result Option.</typeparam>
     /// <param name="func">The function to apply to the value.</param>
-    /// <returns>The new option resulting from the binding.</returns>
+    /// <returns>The new Option resulting from the binding.</returns>
     public Option<TResult> Bind<TResult>(Func<T, Option<TResult>> func) =>
         _value is not null ? func(_value) : Option<TResult>.None;
 
     /// <summary>
-    /// Gets the value contained in the option monad.
+    /// Gets the value contained in the Option monad.
     /// </summary>
     /// <returns>
-    /// The value contained in the option monad.
+    /// The value contained in the Option monad.
     /// </returns>
     public T? GetValue() => _value;
 }
