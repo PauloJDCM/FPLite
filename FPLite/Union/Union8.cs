@@ -1,4 +1,4 @@
-﻿namespace FPLite.Types.Union;
+﻿namespace FPLite.Union;
 
 /// <summary>
 /// Represents a discriminated union with eight possible cases.

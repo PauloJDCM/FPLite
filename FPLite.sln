@@ -4,6 +4,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FPLite", "FPLite\FPLite.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FPLite.Idiomatic", "FPLite.Idiomatic\FPLite.Idiomatic.csproj", "{D41B5406-A503-4A6D-9555-86568C37051F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FPLite.Extensions", "FPLite.Extensions\FPLite.Extensions.csproj", "{93F0C211-C5C3-490E-A713-C99E03748784}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +20,9 @@ Global
 		{D41B5406-A503-4A6D-9555-86568C37051F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D41B5406-A503-4A6D-9555-86568C37051F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D41B5406-A503-4A6D-9555-86568C37051F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{93F0C211-C5C3-490E-A713-C99E03748784}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{93F0C211-C5C3-490E-A713-C99E03748784}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{93F0C211-C5C3-490E-A713-C99E03748784}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{93F0C211-C5C3-490E-A713-C99E03748784}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

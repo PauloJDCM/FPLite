@@ -1,6 +1,4 @@
-﻿using FPLite.Types;
-
-namespace FPLite.Extensions;
+﻿namespace FPLite.Extensions;
 
 public static class EitherExtensions
 {
