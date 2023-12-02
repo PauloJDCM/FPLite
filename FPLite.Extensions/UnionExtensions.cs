@@ -1,4 +1,4 @@
-﻿using FPLite.Types.Union;
+﻿using FPLite.Union;
 
 namespace FPLite.Extensions;
 

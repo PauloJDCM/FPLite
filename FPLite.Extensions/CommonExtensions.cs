@@ -1,4 +1,4 @@
-﻿namespace FPLite.Idiomatic;
+﻿namespace FPLite.Extensions;
 
 public static class CommonExtensions
 {

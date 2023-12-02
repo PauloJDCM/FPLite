@@ -1,4 +1,4 @@
-﻿namespace FPLite.Types;
+﻿namespace FPLite;
 
 /// <summary>
 /// Represents a value that can be either Left(TLeft), Right(TRight) or Both(TLeft, TRight).

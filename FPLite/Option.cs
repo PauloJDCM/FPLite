@@ -1,4 +1,4 @@
-﻿namespace FPLite.Types;
+﻿namespace FPLite;
 
 /// <summary>
 /// Represents an optional value that can be either Some(T) or None.

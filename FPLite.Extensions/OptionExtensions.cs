@@ -1,5 +1,3 @@
-using FPLite.Types;
-
 namespace FPLite.Extensions;
 
 public static class OptionExtensions
