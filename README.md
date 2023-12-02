@@ -19,3 +19,9 @@ Extension methods for FPLite types and other common FP operations.
 
 ## FPLite.Idiomatic
 Extension methods with naming conventions closer to FP oriented languages that wrap LINQ operations.
+
+# Author
+- [@PauloJDCM](https://github.com/PauloJDCM)
+
+# License
+[MIT License](LICENSE.txt)
