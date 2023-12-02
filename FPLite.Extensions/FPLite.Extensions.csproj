@@ -4,6 +4,10 @@
         <TargetFramework>net6.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
+        <PackageId>PauloJDCM.FPLite.Idiomatic</PackageId>
+        <Version>1.0.0</Version>
+        <Author>Paulo Miranda</Author>
+        <Product>FPLite.Idiomatic</Product>
     </PropertyGroup>
 
     <ItemGroup>
