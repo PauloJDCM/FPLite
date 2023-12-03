@@ -9,6 +9,7 @@
         <Version>1.0.0</Version>
         <Author>Paulo Miranda</Author>
         <Product>FPLite</Product>
+        <ApplicationIcon>FPLite.png</ApplicationIcon>
     </PropertyGroup>
 
 </Project>

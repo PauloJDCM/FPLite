@@ -1,5 +1,9 @@
 ﻿# FPLite
 
+![FPLite](FPLite/FPLite.png)
+![FPLite.Extensions](FPLite.Extensions/FPLite_Extensions.png)
+![FPLite.Idiomatic](FPLite.Idiomatic/FPLite_Idiomatic.png)
+
 ## [FPLite](FPLite/README.md)
 Provides basic functional programming types.
 

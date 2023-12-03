@@ -1,4 +1,5 @@
-﻿# FPLite.Idiomatic
+﻿![FPLite.Idiomatic](FPLite_Idiomatic.png)
+
 Extension methods with naming conventions closer to FP oriented languages.
 
 ## [EnumerableExtensions](EnumerableExtensions.cs)

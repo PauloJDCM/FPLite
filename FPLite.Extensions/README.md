@@ -1,4 +1,5 @@
-﻿# FPLite.Extensions
+﻿![FPLite.Extensions](FPLite_Extensions.png)
+
 Extension methods for FPLite types and other common FP operations.
 
 ## [CommonExtensions](CommonExtensions.cs)

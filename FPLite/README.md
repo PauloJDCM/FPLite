@@ -1,4 +1,5 @@
-﻿# FPLite
+﻿![FPLite](FPLite.png)
+
 Provides basic functional programming types.
 
 ## [Option<T>](Option.cs)
