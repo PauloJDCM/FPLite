@@ -6,12 +6,19 @@
         <Nullable>enable</Nullable>
         <PackageId>PauloJDCM.FPLite.Extensions</PackageId>
         <Version>1.0.0</Version>
-        <Author>Paulo Miranda</Author>
+        <Authors>Paulo Miranda</Authors>
         <Product>FPLite.Extensions</Product>
+        <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+        <RepositoryUrl>https://github.com/PauloJDCM/FPLite</RepositoryUrl>
+        <PackageIcon>FPLite_Extensions.png</PackageIcon>
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\FPLite\FPLite.csproj" />
+        <ProjectReference Include="..\FPLite\FPLite.csproj"/>
+        <None Include="LICENSE.txt" Pack="true" PackagePath="LICENSE.txt"/>
+        <None Include="README.md" Pack="true" PackagePath="README.md"/>
+        <None Include="FPLite_Extensions.png" Pack="true" PackagePath="FPLite_Extensions.png"/>
     </ItemGroup>
 
 </Project>

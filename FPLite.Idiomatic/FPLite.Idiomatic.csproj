@@ -6,8 +6,18 @@
         <Nullable>enable</Nullable>
         <PackageId>PauloJDCM.FPLite.Idiomatic</PackageId>
         <Version>1.0.0</Version>
-        <Author>Paulo Miranda</Author>
+        <Authors>Paulo Miranda</Authors>
         <Product>FPLite.Idiomatic</Product>
+        <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+        <RepositoryUrl>https://github.com/PauloJDCM/FPLite</RepositoryUrl>
+        <PackageIcon>FPLite_Idiomatic.png</PackageIcon>
     </PropertyGroup>
+
+    <ItemGroup>
+        <None Include="LICENSE.txt" Pack="true" PackagePath="LICENSE.txt"/>
+        <None Include="README.md" Pack="true" PackagePath="README.md"/>
+        <None Include="FPLite_Idiomatic.png" Pack="true" PackagePath="FPLite_Idiomatic.png"/>
+    </ItemGroup>
 
 </Project>
