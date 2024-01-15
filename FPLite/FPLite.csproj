@@ -1,21 +1,20 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net6.0</TargetFramework>
-        <ImplicitUsings>enable</ImplicitUsings>
+        <TargetFrameworks>netstandard2.1;net6.0</TargetFrameworks>
         <Nullable>enable</Nullable>
         <RootNamespace>FPLite</RootNamespace>
         <PackageId>PauloJDCM.FPLite</PackageId>
-        <Version>1.0.1</Version>
+        <Version>1.1.0</Version>
         <Authors>Paulo Miranda</Authors>
         <Product>FPLite</Product>
         <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <RepositoryUrl>https://github.com/PauloJDCM/FPLite</RepositoryUrl>
         <PackageIcon>FPLite.png</PackageIcon>
-        <PackageReleaseNotes>Added Icon</PackageReleaseNotes>
+        <PackageReleaseNotes>Improved functionality with non-nullable ValueTypes, improved bind methods, added compatability with Net Standard 2.1.</PackageReleaseNotes>
     </PropertyGroup>
-    
+
     <ItemGroup>
         <None Include="LICENSE.txt" Pack="true" PackagePath="LICENSE.txt"/>
         <None Include="README.md" Pack="true" PackagePath="README.md"/>
