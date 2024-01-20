@@ -56,7 +56,8 @@ namespace FPLite
         /// </summary>
         /// <param name="left">The left value.</param>
         /// <returns>An Either instance representing a Left value or Neither.</returns>
-        public static Either<TLeft, TRight> Left(TLeft left) => left is null ? Neither : new Either<TLeft, TRight>();
+        public static Either<TLeft, TRight> Left(TLeft left) =>
+            left is null ? Neither : new Either<TLeft, TRight>(left);
 
         /// <summary>
         /// Gets an instance representing a Right value if not null or Neither if null.
@@ -64,7 +65,7 @@ namespace FPLite
         /// <param name="right">The right value.</param>
         /// <returns>An Either instance representing a Right value or Neither.</returns>
         public static Either<TLeft, TRight> Right(TRight right) =>
-            right is null ? Neither : new Either<TLeft, TRight>();
+            right is null ? Neither : new Either<TLeft, TRight>(right);
 
         /// <summary>
         /// Creates an Either monad representing a choice between two values, allowing both values to be present.
@@ -186,5 +187,15 @@ namespace FPLite
             EitherType.Both => $"Both({_left!.ToString()}, {_right!.ToString()})",
             _ => "Neither"
         };
+
+        public override bool Equals(object? obj) => obj is Either<TLeft, TRight> other && Equals(other);
+
+        protected bool Equals(Either<TLeft, TRight> other) => GetHashCode() == other.GetHashCode();
+
+        public override int GetHashCode() => HashCode.Combine(_type, _left, _right);
+
+        public static bool operator ==(Either<TLeft, TRight> left, Either<TLeft, TRight> right) => left.Equals(right);
+
+        public static bool operator !=(Either<TLeft, TRight> left, Either<TLeft, TRight> right) => !left.Equals(right);
     }
 }
