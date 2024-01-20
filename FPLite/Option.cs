@@ -63,9 +63,19 @@ namespace FPLite
         /// <typeparam name="TResult">The type of the result Option.</typeparam>
         /// <param name="func">The function to apply to the value.</param>
         /// <returns>The new Option resulting from the binding.</returns>
-        public Option<TResult> Bind<TResult>(Func<T, Option<TResult>> func) =>
-            _isSome ? func(_value!) : Option<TResult>.None;
-        
+        public Option<TResult> Bind<TResult>(Func<T, TResult> func) =>
+            _isSome ? Option<TResult>.Some(func(_value!)) : Option<TResult>.None;
+
         public override string ToString() => (_isSome ? _value!.ToString() : "None")!;
+
+        public override bool Equals(object? obj) => obj is Option<T> option && Equals(option);
+
+        protected bool Equals(Option<T> other) => GetHashCode() == other.GetHashCode();
+
+        public override int GetHashCode() => HashCode.Combine(_isSome, _value);
+        
+        public static bool operator ==(Option<T> left, Option<T> right) => left.Equals(right);
+        
+        public static bool operator !=(Option<T> left, Option<T> right) => !left.Equals(right);
     }
 }
