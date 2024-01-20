@@ -1,154 +1,155 @@
 using FluentAssertions;
-using FPLite;
+using Xunit;
 
-namespace TestProject1.Core;
-
-public class OptionTests
+namespace FPLite.Tests.Core
 {
-    [Fact]
-    public void GivenValueType_WhenValueIsNone_ShouldBeNone()
+    public class OptionTests
     {
-        var option = Option<int>.None;
-        var value = option.Match(_ => true, () => false);
+        [Fact]
+        public void GivenValueType_WhenValueIsNone_ShouldBeNone()
+        {
+            var option = Option<int>.None;
+            var value = option.Match(_ => true, () => false);
 
-        option.ToString().Should().Be("None");
-        value.Should().BeFalse();
-    }
+            option.ToString().Should().Be("None");
+            value.Should().BeFalse();
+        }
 
-    [Fact]
-    public void GivenNullableValueType_WhenValueIsNull_ShouldBeNone()
-    {
-        var option = Option<int?>.Some(null);
-        var value = option.Match(_ => true, () => false);
+        [Fact]
+        public void GivenNullableValueType_WhenValueIsNull_ShouldBeNone()
+        {
+            var option = Option<int?>.Some(null);
+            var value = option.Match(_ => true, () => false);
 
-        option.ToString().Should().Be("None");
-        value.Should().BeFalse();
-    }
+            option.ToString().Should().Be("None");
+            value.Should().BeFalse();
+        }
 
-    [Theory]
-    [InlineData(1)]
-    [InlineData(0)]
-    [InlineData(-1)]
-    public void GivenValueType_WhenValueIsSome_ShouldReturnValue(int originalValue)
-    {
-        var option = Option<int>.Some(originalValue);
-        var value = option.Match(i => i, () => originalValue - 1);
+        [Theory]
+        [InlineData(1)]
+        [InlineData(0)]
+        [InlineData(-1)]
+        public void GivenValueType_WhenValueIsSome_ShouldReturnValue(int originalValue)
+        {
+            var option = Option<int>.Some(originalValue);
+            var value = option.Match(i => i, () => originalValue - 1);
 
-        value.Should().Be(originalValue);
-    }
+            value.Should().Be(originalValue);
+        }
 
-    [Fact]
-    public void GivenReferenceType_WhenValueIsNone_ShouldBeNone()
-    {
-        var option = Option<string>.None;
-        var value = option.Match(_ => true, () => false);
+        [Fact]
+        public void GivenReferenceType_WhenValueIsNone_ShouldBeNone()
+        {
+            var option = Option<string>.None;
+            var value = option.Match(_ => true, () => false);
 
-        option.ToString().Should().Be("None");
-        value.Should().BeFalse();
-    }
+            option.ToString().Should().Be("None");
+            value.Should().BeFalse();
+        }
 
-    [Theory]
-    [InlineData("test")]
-    [InlineData("123")]
-    public void GivenReferenceType_WhenValueIsSome_ShouldReturnValue(string originalValue)
-    {
-        var option = Option<string>.Some(originalValue);
-        var value = option.Match(s => s, () => string.Empty);
+        [Theory]
+        [InlineData("test")]
+        [InlineData("123")]
+        public void GivenReferenceType_WhenValueIsSome_ShouldReturnValue(string originalValue)
+        {
+            var option = Option<string>.Some(originalValue);
+            var value = option.Match(s => s, () => string.Empty);
 
-        value.Should().Be(originalValue);
-    }
+            value.Should().Be(originalValue);
+        }
 
-    [Fact]
-    public void GivenNullableReferenceType_WhenValueIsNone_ShouldBeNone()
-    {
-        var option = Option<string?>.None;
-        var value = option.Match(_ => true, () => false);
+        [Fact]
+        public void GivenNullableReferenceType_WhenValueIsNone_ShouldBeNone()
+        {
+            var option = Option<string?>.None;
+            var value = option.Match(_ => true, () => false);
 
-        option.ToString().Should().Be("None");
-        value.Should().BeFalse();
-    }
+            option.ToString().Should().Be("None");
+            value.Should().BeFalse();
+        }
 
-    [Theory]
-    [InlineData("test")]
-    [InlineData("123")]
-    public void GivenNullableReferenceType_WhenValueIsSome_ShouldReturnValue(string originalValue)
-    {
-        var option = Option<string?>.Some(originalValue);
-        var value = option.Match(s => s, () => string.Empty);
+        [Theory]
+        [InlineData("test")]
+        [InlineData("123")]
+        public void GivenNullableReferenceType_WhenValueIsSome_ShouldReturnValue(string originalValue)
+        {
+            var option = Option<string?>.Some(originalValue);
+            var value = option.Match(s => s, () => string.Empty);
 
-        value.Should().Be(originalValue);
-    }
+            value.Should().Be(originalValue);
+        }
 
-    [Fact]
-    public void GivenReferenceType_WhenValueIsNone_ShouldExecuteNone()
-    {
-        var option = Option<string>.None;
-        var result = false;
-        option.Match(_ => result = true, () => { });
+        [Fact]
+        public void GivenReferenceType_WhenValueIsNone_ShouldExecuteNone()
+        {
+            var option = Option<string>.None;
+            var result = false;
+            option.Match(_ => result = true, () => { });
 
-        result.Should().BeFalse();
-    }
+            result.Should().BeFalse();
+        }
 
-    [Theory]
-    [InlineData("test")]
-    [InlineData("123")]
-    public void GivenReferenceType_WhenValueIsSome_ShouldExecuteSome(string originalValue)
-    {
-        var option = Option<string>.Some(originalValue);
-        var result = string.Empty;
-        option.Match(s => result = s, () => { });
+        [Theory]
+        [InlineData("test")]
+        [InlineData("123")]
+        public void GivenReferenceType_WhenValueIsSome_ShouldExecuteSome(string originalValue)
+        {
+            var option = Option<string>.Some(originalValue);
+            var result = string.Empty;
+            option.Match(s => result = s, () => { });
 
-        result.Should().Be(originalValue);
-    }
+            result.Should().Be(originalValue);
+        }
 
-    [Fact]
-    public void GivenReferenceType_WhenValueIsNone_ShouldNotBind()
-    {
-        var option = Option<string>.None;
-        var bind = option.Bind(s => s + "test");
+        [Fact]
+        public void GivenReferenceType_WhenValueIsNone_ShouldNotBind()
+        {
+            var option = Option<string>.None;
+            var bind = option.Bind(s => s + "test");
         
-        bind.ToString().Should().Be("None");
-    }
+            bind.ToString().Should().Be("None");
+        }
 
-    [Theory]
-    [InlineData("test")]
-    [InlineData("123")]
-    public void GivenReferenceType_WhenValueIsSome_ShouldBind(string originalValue)
-    {
-        var option = Option<string>.Some(originalValue);
-        var bind = option.Bind(s => s + "test");
+        [Theory]
+        [InlineData("test")]
+        [InlineData("123")]
+        public void GivenReferenceType_WhenValueIsSome_ShouldBind(string originalValue)
+        {
+            var option = Option<string>.Some(originalValue);
+            var bind = option.Bind(s => s + "test");
         
-        bind.ToString().Should().Be(originalValue + "test");
-    }
+            bind.ToString().Should().Be(originalValue + "test");
+        }
 
-    [Fact]
-    public void Given2DifferentTypes_WhenValuesMatch_ShouldNotBeEqual()
-    {
-        var option = Option<string>.Some("test");
-        var other = Option<int>.Some(1);
+        [Fact]
+        public void Given2DifferentTypes_WhenValuesMatch_ShouldNotBeEqual()
+        {
+            var option = Option<string>.Some("test");
+            var other = Option<int>.Some(1);
         
-        option.Should().NotBe(other);
-    }
+            option.Should().NotBe(other);
+        }
 
-    [Fact]
-    public void Given2EqualTypes_WhenValuesDontMatch_ShouldNotBeEqual()
-    {
-        var option = Option<string>.Some("test");
-        var other = Option<string>.Some("test2");
+        [Fact]
+        public void Given2EqualTypes_WhenValuesDontMatch_ShouldNotBeEqual()
+        {
+            var option = Option<string>.Some("test");
+            var other = Option<string>.Some("test2");
         
-        option.Should().NotBe(other);
-        (option == other).Should().BeFalse();
-        (option != other).Should().BeTrue();
-    }
+            option.Should().NotBe(other);
+            (option == other).Should().BeFalse();
+            (option != other).Should().BeTrue();
+        }
 
-    [Fact]
-    public void Given2EqualTypes_WhenValuesMatch_ShouldBeEqual()
-    {
-        var option = Option<string>.Some("test");
-        var other = Option<string>.Some("test");
+        [Fact]
+        public void Given2EqualTypes_WhenValuesMatch_ShouldBeEqual()
+        {
+            var option = Option<string>.Some("test");
+            var other = Option<string>.Some("test");
         
-        option.Should().Be(other);
-        (option == other).Should().BeTrue();
-        (option != other).Should().BeFalse();
+            option.Should().Be(other);
+            (option == other).Should().BeTrue();
+            (option != other).Should().BeFalse();
+        }
     }
 }
