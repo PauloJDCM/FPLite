@@ -7,7 +7,7 @@ namespace FPLite
     /// Represents an optional value that can be either Some(T) or None.
     /// </summary>
     /// <typeparam name="T">The type of the value.</typeparam>
-    public class Option<T>
+    public class Option<T> : IEquatable<Option<T>>
     {
         private readonly bool _isSome;
         private readonly T _value;
@@ -70,7 +70,7 @@ namespace FPLite
 
         public override bool Equals(object? obj) => obj is Option<T> option && Equals(option);
 
-        protected bool Equals(Option<T> other) => GetHashCode() == other.GetHashCode();
+        public bool Equals(Option<T>? other) => GetHashCode() == other?.GetHashCode();
 
         public override int GetHashCode() => HashCode.Combine(_isSome, _value);
         

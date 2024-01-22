@@ -8,7 +8,7 @@ namespace FPLite
     /// </summary>
     /// <typeparam name="TLeft">The type of the left value.</typeparam>
     /// <typeparam name="TRight">The type of the right value.</typeparam>
-    public class Either<TLeft, TRight>
+    public class Either<TLeft, TRight> : IEquatable<Either<TLeft, TRight>>
     {
         private enum EitherType : byte
         {
@@ -190,7 +190,7 @@ namespace FPLite
 
         public override bool Equals(object? obj) => obj is Either<TLeft, TRight> other && Equals(other);
 
-        protected bool Equals(Either<TLeft, TRight> other) => GetHashCode() == other.GetHashCode();
+        public bool Equals(Either<TLeft, TRight>? other) => GetHashCode() == other?.GetHashCode();
 
         public override int GetHashCode() => HashCode.Combine(_type, _left, _right);
 
