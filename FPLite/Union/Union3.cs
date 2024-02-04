@@ -117,36 +117,52 @@ namespace FPLite.Union
                 3 => Union<TResult1, TResult2, TResult3>.Type3(case3(_t3)),
                 _ => Union<TResult1, TResult2, TResult3>.Nothing
             };
-        
+
+        // Generate xml documentation
         /// <summary>
         /// Binds a function to T1 of the Union type.
         /// </summary>
         /// <typeparam name="T">The type of the result of the binding function.</typeparam>
         /// <param name="func">The function to bind to the T1 value.</param>
-        /// <returns>An Option containing the result of the binding function if the Union contains a T1 value; otherwise, None.</returns>
-        public Option<T> Bind1<T>(Func<T1, T> func) => _type == 1 ? Option<T>.Some(func(_t1)) : Option<T>.None;
+        public Union<T, T2, T3> Bind1<T>(Func<T1, T> func) => _type switch
+        {
+            1 => Union<T, T2, T3>.Type1(func(_t1)),
+            2 => Union<T, T2, T3>.Type2(_t2),
+            3 => Union<T, T2, T3>.Type3(_t3),
+            _ => Union<T, T2, T3>.Nothing
+        };
 
         /// <summary>
         /// Binds a function to T2 of the Union type.
         /// </summary>
         /// <typeparam name="T">The type of the result of the binding function.</typeparam>
         /// <param name="func">The function to bind to the T2 value.</param>
-        /// <returns>An Option containing the result of the binding function if the Union contains a T2 value; otherwise, None.</returns>
-        public Option<T> Bind2<T>(Func<T2, T> func) => _type == 2 ? Option<T>.Some(func(_t2)) : Option<T>.None;
-        
+        public Union<T, T1, T3> Bind2<T>(Func<T2, T> func) => _type switch
+        {
+            1 => Union<T, T1, T3>.Type1(func(_t2)),
+            2 => Union<T, T1, T3>.Type2(_t1),
+            3 => Union<T, T1, T3>.Type3(_t3),
+            _ => Union<T, T1, T3>.Nothing
+        };
+
         /// <summary>
         /// Binds a function to T3 of the Union type.
         /// </summary>
         /// <typeparam name="T">The type of the result of the binding function.</typeparam>
         /// <param name="func">The function to bind to the T3 value.</param>
-        /// <returns>An Option containing the result of the binding function if the Union contains a T3 value; otherwise, None.</returns>
-        public Option<T> Bind3<T>(Func<T3, T> func) => _type == 3 ? Option<T>.Some(func(_t3)) : Option<T>.None;
+        public Union<T, T1, T2> Bind3<T>(Func<T3, T> func) => _type switch
+        {
+            1 => Union<T, T1, T2>.Type1(func(_t3)),
+            2 => Union<T, T1, T2>.Type2(_t1),
+            3 => Union<T, T1, T2>.Type3(_t2),
+            _ => Union<T, T1, T2>.Nothing
+        };
 
         public override string ToString() => (_type switch
         {
-            1 => _t1!.ToString(),
-            2 => _t2!.ToString(),
-            3 => _t3!.ToString(),
+            1 => $"T1({_t1!.ToString()})",
+            2 => $"T2({_t2!.ToString()})",
+            3 => $"T3({_t3!.ToString()})",
             _ => "Nothing"
         })!;
     }
