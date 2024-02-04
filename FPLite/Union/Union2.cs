@@ -115,8 +115,8 @@ namespace FPLite.Union
         /// <param name="func">The function to bind to the T2 value.</param>
         public Union<T, T1> Bind2<T>(Func<T2, T> func) => _type switch
         {
-            1 => Union<T, T1>.Type1(func(_t2)),
-            2 => Union<T, T1>.Type2(_t1),
+            2 => Union<T, T1>.Type1(func(_t2)),
+            1 => Union<T, T1>.Type2(_t1),
             _ => Union<T, T1>.Nothing
         };
         

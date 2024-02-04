@@ -160,8 +160,8 @@ namespace FPLite.Union
         /// <param name="func">The function to bind to the T2 value.</param>
         public Union<T, T1, T3, T4> Bind2<T>(Func<T2, T> func) => _type switch
         {
-            1 => Union<T, T1, T3, T4>.Type1(func(_t2)),
-            2 => Union<T, T1, T3, T4>.Type2(_t1),
+            2 => Union<T, T1, T3, T4>.Type1(func(_t2)),
+            1 => Union<T, T1, T3, T4>.Type2(_t1),
             3 => Union<T, T1, T3, T4>.Type3(_t3),
             4 => Union<T, T1, T3, T4>.Type4(_t4),
             _ => Union<T, T1, T3, T4>.Nothing
@@ -174,9 +174,9 @@ namespace FPLite.Union
         /// <param name="func">The function to bind to the T3 value.</param>
         public Union<T, T1, T2, T4> Bind3<T>(Func<T3, T> func) => _type switch
         {
-            1 => Union<T, T1, T2, T4>.Type1(func(_t3)),
-            2 => Union<T, T1, T2, T4>.Type2(_t1),
-            3 => Union<T, T1, T2, T4>.Type3(_t2),
+            3 => Union<T, T1, T2, T4>.Type1(func(_t3)),
+            1 => Union<T, T1, T2, T4>.Type2(_t1),
+            2 => Union<T, T1, T2, T4>.Type3(_t2),
             4 => Union<T, T1, T2, T4>.Type4(_t4),
             _ => Union<T, T1, T2, T4>.Nothing
         };
@@ -188,10 +188,10 @@ namespace FPLite.Union
         /// <param name="func">The function to bind to the T4 value.</param>
         public Union<T, T1, T2, T3> Bind4<T>(Func<T4, T> func) => _type switch
         {
-            1 => Union<T, T1, T2, T3>.Type1(func(_t4)),
-            2 => Union<T, T1, T2, T3>.Type2(_t1),
-            3 => Union<T, T1, T2, T3>.Type3(_t2),
-            4 => Union<T, T1, T2, T3>.Type4(_t3),
+            4 => Union<T, T1, T2, T3>.Type1(func(_t4)),
+            1 => Union<T, T1, T2, T3>.Type2(_t1),
+            2 => Union<T, T1, T2, T3>.Type3(_t2),
+            3 => Union<T, T1, T2, T3>.Type4(_t3),
             _ => Union<T, T1, T2, T3>.Nothing
         };
 
