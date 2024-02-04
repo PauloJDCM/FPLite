@@ -158,18 +158,22 @@ namespace FPLite
         /// </summary>
         /// <typeparam name="T">The type of the result of the binding function.</typeparam>
         /// <param name="func">The function to bind to the left value.</param>
-        /// <returns>An Option containing the result of the binding function if the Either is of type Left or Both; otherwise, None.</returns>
-        public Option<T> BindLeft<T>(Func<TLeft, T> func) =>
-            _type is EitherType.Left || _type is EitherType.Both ? Option<T>.Some(func(_left)) : Option<T>.None;
+        /// <returns>An Either containing the result of the binding function if the Either is of type Left or Both; otherwise, Right.</returns>
+        public Either<T, TRight> BindLeft<T>(Func<TLeft, T> func) =>
+            _type is EitherType.Left || _type is EitherType.Both
+                ? Either<T, TRight>.Left(func(_left))
+                : Either<T, TRight>.Right(_right);
 
         /// <summary>
         /// Binds a function to the right value of the Either type.
         /// </summary>
         /// <typeparam name="T">The type of the result of the binding function.</typeparam>
         /// <param name="func">The function to bind to the right value.</param>
-        /// <returns>An Option containing the result of the binding function if the Either is of type Right or Both; otherwise, None.</returns>
-        public Option<T> BindRight<T>(Func<TRight, T> func) =>
-            _type is EitherType.Right || _type is EitherType.Both ? Option<T>.Some(func(_right)) : Option<T>.None;
+        /// <returns>An Either containing the result of the binding function if the Either is of type Right or Both; otherwise, Left.</returns>
+        public Either<T, TLeft> BindRight<T>(Func<TRight, T> func) =>
+            _type is EitherType.Right || _type is EitherType.Both
+                ? Either<T, TLeft>.Left(func(_right))
+                : Either<T, TLeft>.Right(_left);
 
         /// <summary>
         /// Binds a function to both the left and right values of the Either type.

@@ -124,23 +124,23 @@ namespace FPLite.Tests.Core
         }
 
         [Fact]
-        public void GivenLeftBind_WhenValueIsNull_ShouldReturnOptionWithNone()
+        public void GivenLeftBind_WhenValueIsNull_ShouldReturnEitherWithNeither()
         {
             var either = Either<string?, int?>.Left(null);
             var result = either.BindLeft(s => $"{s}test");
 
-            result.Should().BeOfType<Option<string>>();
-            result.ToString().Should().Be("None");
+            result.Should().BeOfType<Either<string, int?>>();
+            result.ToString().Should().Be("Neither");
         }
 
         [Fact]
-        public void GivenRightBind_WhenValueIsNull_ShouldReturnOptionWithNone()
+        public void GivenRightBind_WhenValueIsNull_ShouldReturnEitherWithNeither()
         {
             var either = Either<string?, int?>.Right(null);
             var result = either.BindRight(i => (int) i! + 1);
             
-            result.Should().BeOfType<Option<int>>();
-            result.ToString().Should().Be("None");
+            result.Should().BeOfType<Either<int, string>>();
+            result.ToString().Should().Be("Neither");
         }
 
         [Fact]
@@ -154,23 +154,23 @@ namespace FPLite.Tests.Core
         }
 
         [Fact]
-        public void GivenLeftBind_WhenValueIsNotNull_ShouldReturnOptionWithSome()
+        public void GivenLeftBind_WhenValueIsNotNull_ShouldReturnEitherWithLeft()
         {
             var either = Either<string?, int?>.Left("1");
             var result = either.BindLeft(s => $"{s}test");
             
-            result.Should().BeOfType<Option<string>>();
-            result.ToString().Should().Be("1test");
+            result.Should().BeOfType<Either<string, int?>>();
+            result.ToString().Should().Be("Left(1test)");
         }
         
         [Fact]
-        public void GivenRightBind_WhenValueIsNotNull_ShouldReturnOptionWithSome()
+        public void GivenRightBind_WhenValueIsNotNull_ShouldReturnEitherWithRight()
         {
             var either = Either<string?, int?>.Right(1);
             var result = either.BindRight(i => (int) i! + 1);
             
-            result.Should().BeOfType<Option<int>>();
-            result.ToString().Should().Be("2");
+            result.Should().BeOfType<Either<int, string>>();
+            result.ToString().Should().Be("Left(2)");
         }
         
         [Fact]
