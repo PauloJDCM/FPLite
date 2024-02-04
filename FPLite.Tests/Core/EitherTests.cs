@@ -1,4 +1,5 @@
 ﻿using FluentAssertions;
+using FPLite.Union;
 using Xunit;
 
 namespace FPLite.Tests.Core
@@ -144,13 +145,13 @@ namespace FPLite.Tests.Core
         }
 
         [Fact]
-        public void GivenBothBind_WhenValueIsNull_ShouldReturnOptionWithNone()
+        public void GivenBothBind_WhenValueIsNull_ShouldReturnUnionWithNeither()
         {
             var either = Either<string?, int?>.Both(null, null);
             var result = either.BindBoth((s, i) => $"{s}test{i}");
             
-            result.Should().BeOfType<Option<string>>();
-            result.ToString().Should().Be("None");
+            result.Should().BeOfType<Union<string, string?, int?>>();
+            result.ToString().Should().Be("Nothing");
         }
 
         [Fact]
@@ -174,13 +175,13 @@ namespace FPLite.Tests.Core
         }
         
         [Fact]
-        public void GivenBothBind_WhenValueIsNotNull_ShouldReturnOptionWithSome()
+        public void GivenBothBind_WhenValueIsNotNull_ShouldReturnUnionWithRight()
         {
             var either = Either<string?, int?>.Both("1", 1);
             var result = either.BindBoth((s, i) => $"{s}test{i}");
             
-            result.Should().BeOfType<Option<string>>();
-            result.ToString().Should().Be("1test1");
+            result.Should().BeOfType<Union<string, string?, int?>>();
+            result.ToString().Should().Be("T1(1test1)");
         }
 
         [Theory]

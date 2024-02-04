@@ -1,4 +1,5 @@
 ﻿using System;
+using FPLite.Union;
 
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 namespace FPLite
@@ -180,9 +181,14 @@ namespace FPLite
         /// </summary>
         /// <typeparam name="T">The type of the result of the binding function.</typeparam>
         /// <param name="func">The function to bind to both values.</param>
-        /// <returns>An Option containing the result of the binding function if the Either is of type Both; otherwise, None.</returns>
-        public Option<T> BindBoth<T>(Func<TLeft, TRight, T> func) =>
-            _type is EitherType.Both ? Option<T>.Some(func(_left, _right)) : Option<T>.None;
+        /// <returns>A Union containing the result of the binding function and the left and right values.</returns>
+        public Union<T, TLeft, TRight> BindBoth<T>(Func<TLeft, TRight, T> func) => _type switch
+        {
+            EitherType.Both => Union<T, TLeft, TRight>.Type1(func(_left, _right)),
+            EitherType.Left => Union<T, TLeft, TRight>.Type2(_left),
+            EitherType.Right => Union<T, TLeft, TRight>.Type3(_right),
+            _ => Union<T, TLeft, TRight>.Nothing
+        };
 
         public override string ToString() => _type switch
         {
