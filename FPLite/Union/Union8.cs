@@ -7,7 +7,7 @@ namespace FPLite.Union
     /// <summary>
     /// Represents a discriminated union with two possible cases.
     /// </summary>
-    public class Union<T1, T2, T3, T4, T5, T6, T7, T8>
+    public class Union<T1, T2, T3, T4, T5, T6, T7, T8> : IEquatable<Union<T1, T2, T3, T4, T5, T6, T7, T8>>
     {
         private readonly byte _type;
         private readonly T1 _t1;
@@ -64,7 +64,7 @@ namespace FPLite.Union
             _type = 7;
             _t7 = t7;
         }
-        
+
         private Union(T8 t8)
         {
             _type = 8;
@@ -145,7 +145,7 @@ namespace FPLite.Union
         /// </returns>
         public static Union<T1, T2, T3, T4, T5, T6, T7, T8> Type7(T7 t7) =>
             t7 is null ? Nothing : new Union<T1, T2, T3, T4, T5, T6, T7, T8>(t7);
-        
+
         /// <summary>
         /// Creates a Union with a value of Type 8, or returns Nothing if the provided value is null.
         /// </summary>
@@ -219,19 +219,28 @@ namespace FPLite.Union
         /// </summary>
         /// <returns>The result of the invoked delegate or Nothing.</returns>
         public Union<TResult1, TResult2, TResult3, TResult4, TResult5, TResult6, TResult7, TResult8>
-            Match<TResult1, TResult2, TResult3, TResult4, TResult5, TResult6, TResult7, TResult8>(Func<T1, TResult1> case1,
+            Match<TResult1, TResult2, TResult3, TResult4, TResult5, TResult6, TResult7, TResult8>(
+                Func<T1, TResult1> case1,
                 Func<T2, TResult2> case2, Func<T3, TResult3> case3, Func<T4, TResult4> case4, Func<T5, TResult5> case5,
                 Func<T6, TResult6> case6, Func<T7, TResult7> case7, Func<T8, TResult8> case8) =>
             _type switch
             {
-                1 => Union<TResult1, TResult2, TResult3, TResult4, TResult5, TResult6, TResult7, TResult8>.Type1(case1(_t1)),
-                2 => Union<TResult1, TResult2, TResult3, TResult4, TResult5, TResult6, TResult7, TResult8>.Type2(case2(_t2)),
-                3 => Union<TResult1, TResult2, TResult3, TResult4, TResult5, TResult6, TResult7, TResult8>.Type3(case3(_t3)),
-                4 => Union<TResult1, TResult2, TResult3, TResult4, TResult5, TResult6, TResult7, TResult8>.Type4(case4(_t4)),
-                5 => Union<TResult1, TResult2, TResult3, TResult4, TResult5, TResult6, TResult7, TResult8>.Type5(case5(_t5)),
-                6 => Union<TResult1, TResult2, TResult3, TResult4, TResult5, TResult6, TResult7, TResult8>.Type6(case6(_t6)),
-                7 => Union<TResult1, TResult2, TResult3, TResult4, TResult5, TResult6, TResult7, TResult8>.Type7(case7(_t7)),
-                8 => Union<TResult1, TResult2, TResult3, TResult4, TResult5, TResult6, TResult7, TResult8>.Type8(case8(_t8)),
+                1 => Union<TResult1, TResult2, TResult3, TResult4, TResult5, TResult6, TResult7, TResult8>.Type1(
+                    case1(_t1)),
+                2 => Union<TResult1, TResult2, TResult3, TResult4, TResult5, TResult6, TResult7, TResult8>.Type2(
+                    case2(_t2)),
+                3 => Union<TResult1, TResult2, TResult3, TResult4, TResult5, TResult6, TResult7, TResult8>.Type3(
+                    case3(_t3)),
+                4 => Union<TResult1, TResult2, TResult3, TResult4, TResult5, TResult6, TResult7, TResult8>.Type4(
+                    case4(_t4)),
+                5 => Union<TResult1, TResult2, TResult3, TResult4, TResult5, TResult6, TResult7, TResult8>.Type5(
+                    case5(_t5)),
+                6 => Union<TResult1, TResult2, TResult3, TResult4, TResult5, TResult6, TResult7, TResult8>.Type6(
+                    case6(_t6)),
+                7 => Union<TResult1, TResult2, TResult3, TResult4, TResult5, TResult6, TResult7, TResult8>.Type7(
+                    case7(_t7)),
+                8 => Union<TResult1, TResult2, TResult3, TResult4, TResult5, TResult6, TResult7, TResult8>.Type8(
+                    case8(_t8)),
                 _ => Union<TResult1, TResult2, TResult3, TResult4, TResult5, TResult6, TResult7, TResult8>.Nothing
             };
 
@@ -342,7 +351,7 @@ namespace FPLite.Union
             8 => Union<T, T1, T2, T3, T4, T5, T7, T8>.Type8(_t8),
             _ => Union<T, T1, T2, T3, T4, T5, T7, T8>.Nothing
         };
-        
+
         /// <summary>
         /// Binds a function to T7 of the Union type.
         /// </summary>
@@ -360,7 +369,7 @@ namespace FPLite.Union
             8 => Union<T, T1, T2, T3, T4, T5, T6, T8>.Type8(_t8),
             _ => Union<T, T1, T2, T3, T4, T5, T6, T8>.Nothing
         };
-        
+
         /// <summary>
         /// Binds a function to T8 of the Union type.
         /// </summary>
@@ -391,5 +400,18 @@ namespace FPLite.Union
             8 => $"T8({_t8!.ToString()})",
             _ => "Nothing"
         })!;
+
+        public override bool Equals(object? obj) => obj is Union<T1, T2, T3, T4, T5, T6, T7, T8> other && Equals(other);
+
+        public bool Equals(Union<T1, T2, T3, T4, T5, T6, T7, T8>? other) => GetHashCode() == other?.GetHashCode();
+
+        public override int GetHashCode() =>
+            HashCode.Combine(_type, HashCode.Combine(_t1, _t2, _t3, _t4, _t5, _t6, _t7, _t8));
+
+        public static bool operator ==(Union<T1, T2, T3, T4, T5, T6, T7, T8> left,
+            Union<T1, T2, T3, T4, T5, T6, T7, T8> right) => left.Equals(right);
+
+        public static bool operator !=(Union<T1, T2, T3, T4, T5, T6, T7, T8> left,
+            Union<T1, T2, T3, T4, T5, T6, T7, T8> right) => !left.Equals(right);
     }
 }

@@ -7,7 +7,7 @@ namespace FPLite.Union
     /// <summary>
     /// Represents a discriminated union with two possible cases.
     /// </summary>
-    public class Union<T1, T2, T3, T4, T5, T6>
+    public class Union<T1, T2, T3, T4, T5, T6> : IEquatable<Union<T1, T2, T3, T4, T5, T6>>
     {
         private readonly byte _type;
         private readonly T1 _t1;
@@ -296,5 +296,17 @@ namespace FPLite.Union
             6 => $"T6({_t6!.ToString()})",
             _ => "Nothing"
         })!;
+        
+        public override bool Equals(object? obj) => obj is Union<T1, T2, T3, T4, T5, T6> other && Equals(other);
+
+        public bool Equals(Union<T1, T2, T3, T4, T5, T6>? other) => GetHashCode() == other?.GetHashCode();
+
+        public override int GetHashCode() => HashCode.Combine(_type, _t1, _t2, _t3, _t4, _t5, _t6);
+
+        public static bool operator ==(Union<T1, T2, T3, T4, T5, T6> left, Union<T1, T2, T3, T4, T5, T6> right) =>
+            left.Equals(right);
+
+        public static bool operator !=(Union<T1, T2, T3, T4, T5, T6> left, Union<T1, T2, T3, T4, T5, T6> right) =>
+            !left.Equals(right);
     }
 }
