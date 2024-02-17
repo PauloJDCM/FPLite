@@ -64,9 +64,21 @@ namespace FPLite
         /// <param name="func">The function to apply to the value.</param>
         /// <returns>The new Option resulting from the binding.</returns>
         public Option<TResult> Bind<TResult>(Func<T, TResult> func) =>
-            _isSome ? Option<TResult>.Some(func(_value!)) : Option<TResult>.None;
+            IsSome ? Option<TResult>.Some(func(_value!)) : Option<TResult>.None;
 
-        public override string ToString() => (_isSome ? _value!.ToString() : "None")!;
+        /// <summary>
+        /// Unwraps the Option and returns its value.
+        /// </summary>
+        /// <exception cref="InvalidOperationException"> Thrown if the Option is None. </exception>
+        public T Unwrap() => IsSome ? _value! : throw new OptionUnwrapException<T>();
+        
+        /// <summary>
+        /// Unwraps the Option and returns its value or a default value.
+        /// </summary>
+        /// <param name="defaultValue">The default value to return if the Option is None.</param>
+        public T UnwrapOr(T defaultValue) => IsSome ? _value! : defaultValue;
+
+        public override string ToString() => (IsSome ? _value!.ToString() : "None")!;
 
         public override bool Equals(object? obj) => obj is Option<T> option && Equals(option);
 
@@ -77,5 +89,14 @@ namespace FPLite
         public static bool operator ==(Option<T> left, Option<T> right) => left.Equals(right);
 
         public static bool operator !=(Option<T> left, Option<T> right) => !left.Equals(right);
+    }
+    
+    public class OptionUnwrapException<T> : Exception
+    {
+        private const string ErrorMessage = "Called Option<{0}>.Unwrap() on None!.";
+        
+        public OptionUnwrapException() : base(string.Format(ErrorMessage, typeof(T)))
+        {
+        }
     }
 }
