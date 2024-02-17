@@ -12,7 +12,7 @@
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <RepositoryUrl>https://github.com/PauloJDCM/FPLite</RepositoryUrl>
         <PackageIcon>FPLite.png</PackageIcon>
-        <PackageReleaseNotes>Improved functionality with non-nullable ValueTypes, improved bind methods, added compatability with Net Standard 2.1.</PackageReleaseNotes>
+        <PackageReleaseNotes>Improved functionality with non-nullable ValueTypes, improved functionality, added ability to inherit types, created new Result type, added compatability with Net Standard 2.1.</PackageReleaseNotes>
     </PropertyGroup>
 
     <ItemGroup>
