@@ -9,16 +9,16 @@ namespace FPLite
     /// <typeparam name="T">The type of the value.</typeparam>
     public class Option<T> : IEquatable<Option<T>>
     {
-        private readonly bool _isSome;
+        protected readonly bool IsSome;
         private readonly T _value;
 
-        private Option()
+        protected Option()
         {
         }
 
-        private Option(T value)
+        protected Option(T value)
         {
-            _isSome = true;
+            IsSome = true;
             _value = value;
         }
 
@@ -41,8 +41,8 @@ namespace FPLite
         /// <param name="noneAction">The action to execute if it's None.</param>
         public void Match(Action<T> someAction, Action noneAction)
         {
-            if (_isSome)
-                someAction(_value!);
+            if (IsSome)
+                someAction(_value);
             else
                 noneAction();
         }
@@ -55,7 +55,7 @@ namespace FPLite
         /// <param name="noneFunc">The function to execute if it's None.</param>
         /// <returns>The result of executing the appropriate function.</returns>
         public TResult Match<TResult>(Func<T, TResult> someFunc, Func<TResult> noneFunc) =>
-            _isSome ? someFunc(_value!) : noneFunc();
+            IsSome ? someFunc(_value!) : noneFunc();
 
         /// <summary>
         /// Binds the Option to a new Option by applying a function to its value.
@@ -72,10 +72,10 @@ namespace FPLite
 
         public bool Equals(Option<T>? other) => GetHashCode() == other?.GetHashCode();
 
-        public override int GetHashCode() => HashCode.Combine(_isSome, _value);
-        
+        public override int GetHashCode() => HashCode.Combine(IsSome, _value);
+
         public static bool operator ==(Option<T> left, Option<T> right) => left.Equals(right);
-        
+
         public static bool operator !=(Option<T> left, Option<T> right) => !left.Equals(right);
     }
 }

@@ -9,30 +9,30 @@ namespace FPLite.Union
     /// </summary>
     public class Union<T1, T2, T3> : IEquatable<Union<T1, T2, T3>>
     {
-        private readonly byte _type;
+        protected readonly byte Type;
         private readonly T1 _t1;
         private readonly T2 _t2;
         private readonly T3 _t3;
 
-        private Union()
+        protected Union()
         {
         }
 
-        private Union(T1 t1)
+        protected Union(T1 t1)
         {
-            _type = 1;
+            Type = 1;
             _t1 = t1;
         }
 
-        private Union(T2 t2)
+        protected Union(T2 t2)
         {
-            _type = 2;
+            Type = 2;
             _t2 = t2;
         }
 
-        private Union(T3 t3)
+        protected Union(T3 t3)
         {
-            _type = 3;
+            Type = 3;
             _t3 = t3;
         }
 
@@ -73,7 +73,7 @@ namespace FPLite.Union
         /// </summary>
         public void Match(Action<T1> case1, Action<T2> case2, Action<T3> case3, Action caseNothing)
         {
-            switch (_type)
+            switch (Type)
             {
                 case 1:
                     case1(_t1);
@@ -96,7 +96,7 @@ namespace FPLite.Union
         /// <returns>The result of the invoked delegate.</returns>
         public TResult Match<TResult>(Func<T1, TResult> case1, Func<T2, TResult> case2, Func<T3, TResult> case3,
             Func<TResult> caseNothing) =>
-            _type switch
+            Type switch
             {
                 1 => case1(_t1),
                 2 => case2(_t2),
@@ -110,7 +110,7 @@ namespace FPLite.Union
         /// <returns>The result of the invoked delegate or Nothing.</returns>
         public Union<TResult1, TResult2, TResult3> Match<TResult1, TResult2, TResult3>(Func<T1, TResult1> case1,
             Func<T2, TResult2> case2, Func<T3, TResult3> case3) =>
-            _type switch
+            Type switch
             {
                 1 => Union<TResult1, TResult2, TResult3>.Type1(case1(_t1)),
                 2 => Union<TResult1, TResult2, TResult3>.Type2(case2(_t2)),
@@ -124,7 +124,7 @@ namespace FPLite.Union
         /// </summary>
         /// <typeparam name="T">The type of the result of the binding function.</typeparam>
         /// <param name="func">The function to bind to the T1 value.</param>
-        public Union<T, T2, T3> Bind1<T>(Func<T1, T> func) => _type switch
+        public Union<T, T2, T3> Bind1<T>(Func<T1, T> func) => Type switch
         {
             1 => Union<T, T2, T3>.Type1(func(_t1)),
             2 => Union<T, T2, T3>.Type2(_t2),
@@ -137,7 +137,7 @@ namespace FPLite.Union
         /// </summary>
         /// <typeparam name="T">The type of the result of the binding function.</typeparam>
         /// <param name="func">The function to bind to the T2 value.</param>
-        public Union<T1, T, T3> Bind2<T>(Func<T2, T> func) => _type switch
+        public Union<T1, T, T3> Bind2<T>(Func<T2, T> func) => Type switch
         {
             1 => Union<T1, T, T3>.Type1(_t1),
             2 => Union<T1, T, T3>.Type2(func(_t2)),
@@ -150,7 +150,7 @@ namespace FPLite.Union
         /// </summary>
         /// <typeparam name="T">The type of the result of the binding function.</typeparam>
         /// <param name="func">The function to bind to the T3 value.</param>
-        public Union<T1, T2, T> Bind3<T>(Func<T3, T> func) => _type switch
+        public Union<T1, T2, T> Bind3<T>(Func<T3, T> func) => Type switch
         {
             1 => Union<T1, T2, T>.Type1(_t1),
             2 => Union<T1, T2, T>.Type2(_t2),
@@ -158,7 +158,7 @@ namespace FPLite.Union
             _ => Union<T1, T2, T>.Nothing
         };
 
-        public override string ToString() => (_type switch
+        public override string ToString() => (Type switch
         {
             1 => $"T1({_t1!.ToString()})",
             2 => $"T2({_t2!.ToString()})",
@@ -170,7 +170,7 @@ namespace FPLite.Union
 
         public bool Equals(Union<T1, T2, T3>? other) => GetHashCode() == other?.GetHashCode();
 
-        public override int GetHashCode() => HashCode.Combine(_type, _t1, _t2, _t3);
+        public override int GetHashCode() => HashCode.Combine(Type, _t1, _t2, _t3);
 
         public static bool operator ==(Union<T1, T2, T3> left, Union<T1, T2, T3> right) => left.Equals(right);
 

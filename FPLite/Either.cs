@@ -11,7 +11,7 @@ namespace FPLite
     /// <typeparam name="TRight">The type of the right value.</typeparam>
     public class Either<TLeft, TRight> : IEquatable<Either<TLeft, TRight>>
     {
-        private enum EitherType : byte
+        protected enum EitherType : byte
         {
             Neither,
             Left,
@@ -19,30 +19,30 @@ namespace FPLite
             Both
         }
 
-        private readonly EitherType _type;
+        protected readonly EitherType Type;
         private readonly TLeft _left;
         private readonly TRight _right;
 
-        private Either()
+        protected Either()
         {
-            _type = EitherType.Neither;
+            Type = EitherType.Neither;
         }
 
-        private Either(TLeft left)
+        protected Either(TLeft left)
         {
-            _type = EitherType.Left;
+            Type = EitherType.Left;
             _left = left;
         }
 
-        private Either(TRight right)
+        protected Either(TRight right)
         {
-            _type = EitherType.Right;
+            Type = EitherType.Right;
             _right = right;
         }
 
-        private Either(TLeft left, TRight right)
+        protected Either(TLeft left, TRight right)
         {
-            _type = EitherType.Both;
+            Type = EitherType.Both;
             _left = left;
             _right = right;
         }
@@ -100,7 +100,7 @@ namespace FPLite
         public void Match(Action<TLeft> leftAction, Action<TRight> rightAction, Action neitherAction,
             Action<TLeft, TRight> bothAction)
         {
-            switch (_type)
+            switch (Type)
             {
                 case EitherType.Left:
                     leftAction(_left);
@@ -128,7 +128,7 @@ namespace FPLite
         /// <param name="bothFunc">The function to execute if it's Both.</param>
         /// <returns>The result of executing the appropriate function.</returns>
         public TResult Match<TResult>(Func<TLeft, TResult> leftFunc, Func<TRight, TResult> rightFunc,
-            Func<TResult> neitherFunc, Func<TLeft, TRight, TResult> bothFunc) => _type switch
+            Func<TResult> neitherFunc, Func<TLeft, TRight, TResult> bothFunc) => Type switch
         {
             EitherType.Left => leftFunc(_left),
             EitherType.Right => rightFunc(_right),
@@ -146,7 +146,7 @@ namespace FPLite
         /// <param name="bothFunc">The function to execute if it's Both.</param>
         /// <returns>The result of executing the appropriate function or Neither.</returns>
         public Either<TResultL, TResultR> Match<TResultL, TResultR>(Func<TLeft, TResultL> leftFunc,
-            Func<TRight, TResultR> rightFunc, Func<TLeft, TRight, Either<TResultL, TResultR>> bothFunc) => _type switch
+            Func<TRight, TResultR> rightFunc, Func<TLeft, TRight, Either<TResultL, TResultR>> bothFunc) => Type switch
         {
             EitherType.Left => Either<TResultL, TResultR>.Left(leftFunc(_left)),
             EitherType.Right => Either<TResultL, TResultR>.Right(rightFunc(_right)),
@@ -161,7 +161,7 @@ namespace FPLite
         /// <param name="func">The function to bind to the left value.</param>
         /// <returns>An Either containing the result of the binding function if the Either is of type Left or Both; otherwise, Right.</returns>
         public Either<T, TRight> BindLeft<T>(Func<TLeft, T> func) =>
-            _type is EitherType.Left || _type is EitherType.Both
+            Type is EitherType.Left || Type is EitherType.Both
                 ? Either<T, TRight>.Left(func(_left))
                 : Either<T, TRight>.Right(_right);
 
@@ -172,7 +172,7 @@ namespace FPLite
         /// <param name="func">The function to bind to the right value.</param>
         /// <returns>An Either containing the result of the binding function if the Either is of type Right or Both; otherwise, Left.</returns>
         public Either<T, TLeft> BindRight<T>(Func<TRight, T> func) =>
-            _type is EitherType.Right || _type is EitherType.Both
+            Type is EitherType.Right || Type is EitherType.Both
                 ? Either<T, TLeft>.Left(func(_right))
                 : Either<T, TLeft>.Right(_left);
 
@@ -182,7 +182,7 @@ namespace FPLite
         /// <typeparam name="T">The type of the result of the binding function.</typeparam>
         /// <param name="func">The function to bind to both values.</param>
         /// <returns>A Union containing the result of the binding function and the left and right values.</returns>
-        public Union<T, TLeft, TRight> BindBoth<T>(Func<TLeft, TRight, T> func) => _type switch
+        public Union<T, TLeft, TRight> BindBoth<T>(Func<TLeft, TRight, T> func) => Type switch
         {
             EitherType.Both => Union<T, TLeft, TRight>.Type1(func(_left, _right)),
             EitherType.Left => Union<T, TLeft, TRight>.Type2(_left),
@@ -190,7 +190,7 @@ namespace FPLite
             _ => Union<T, TLeft, TRight>.Nothing
         };
 
-        public override string ToString() => _type switch
+        public override string ToString() => Type switch
         {
             EitherType.Left => $"Left({_left!.ToString()})",
             EitherType.Right => $"Right({_right!.ToString()})",
@@ -202,7 +202,7 @@ namespace FPLite
 
         public bool Equals(Either<TLeft, TRight>? other) => GetHashCode() == other?.GetHashCode();
 
-        public override int GetHashCode() => HashCode.Combine(_type, _left, _right);
+        public override int GetHashCode() => HashCode.Combine(Type, _left, _right);
 
         public static bool operator ==(Either<TLeft, TRight> left, Either<TLeft, TRight> right) => left.Equals(right);
 
