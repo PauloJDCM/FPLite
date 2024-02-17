@@ -137,12 +137,12 @@ namespace FPLite.Union
         /// </summary>
         /// <typeparam name="T">The type of the result of the binding function.</typeparam>
         /// <param name="func">The function to bind to the T2 value.</param>
-        public Union<T, T1, T3> Bind2<T>(Func<T2, T> func) => _type switch
+        public Union<T1, T, T3> Bind2<T>(Func<T2, T> func) => _type switch
         {
-            2 => Union<T, T1, T3>.Type1(func(_t2)),
-            1 => Union<T, T1, T3>.Type2(_t1),
-            3 => Union<T, T1, T3>.Type3(_t3),
-            _ => Union<T, T1, T3>.Nothing
+            1 => Union<T1, T, T3>.Type1(_t1),
+            2 => Union<T1, T, T3>.Type2(func(_t2)),
+            3 => Union<T1, T, T3>.Type3(_t3),
+            _ => Union<T1, T, T3>.Nothing
         };
 
         /// <summary>
@@ -150,12 +150,12 @@ namespace FPLite.Union
         /// </summary>
         /// <typeparam name="T">The type of the result of the binding function.</typeparam>
         /// <param name="func">The function to bind to the T3 value.</param>
-        public Union<T, T1, T2> Bind3<T>(Func<T3, T> func) => _type switch
+        public Union<T1, T2, T> Bind3<T>(Func<T3, T> func) => _type switch
         {
-            3 => Union<T, T1, T2>.Type1(func(_t3)),
-            1 => Union<T, T1, T2>.Type2(_t1),
-            2 => Union<T, T1, T2>.Type3(_t2),
-            _ => Union<T, T1, T2>.Nothing
+            1 => Union<T1, T2, T>.Type1(_t1),
+            2 => Union<T1, T2, T>.Type2(_t2),
+            3 => Union<T1, T2, T>.Type3(func(_t3)),
+            _ => Union<T1, T2, T>.Nothing
         };
 
         public override string ToString() => (_type switch

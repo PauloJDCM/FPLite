@@ -116,7 +116,7 @@ namespace FPLite.Tests.Core
             var union = Union<byte, int>.Type1(1);
             var result = union.Bind2(i => i * i);
             
-            result.ToString().Should().Be("T2(1)");
+            result.ToString().Should().Be("T1(1)");
         }
         
         [Fact]
@@ -134,7 +134,7 @@ namespace FPLite.Tests.Core
             var union = Union<byte, int>.Type2(10);
             var result = union.Bind2(i => i * i);
             
-            result.ToString().Should().Be("T1(100)");
+            result.ToString().Should().Be("T2(100)");
         }
         
         [Fact]

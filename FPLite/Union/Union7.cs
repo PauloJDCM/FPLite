@@ -235,16 +235,16 @@ namespace FPLite.Union
         /// </summary>
         /// <typeparam name="T">The type of the result of the binding function.</typeparam>
         /// <param name="func">The function to bind to the T2 value.</param>
-        public Union<T, T1, T3, T4, T5, T6, T7> Bind2<T>(Func<T2, T> func) => _type switch
+        public Union<T1, T, T3, T4, T5, T6, T7> Bind2<T>(Func<T2, T> func) => _type switch
         {
-            2 => Union<T, T1, T3, T4, T5, T6, T7>.Type1(func(_t2)),
-            1 => Union<T, T1, T3, T4, T5, T6, T7>.Type2(_t1),
-            3 => Union<T, T1, T3, T4, T5, T6, T7>.Type3(_t3),
-            4 => Union<T, T1, T3, T4, T5, T6, T7>.Type4(_t4),
-            5 => Union<T, T1, T3, T4, T5, T6, T7>.Type5(_t5),
-            6 => Union<T, T1, T3, T4, T5, T6, T7>.Type6(_t6),
-            7 => Union<T, T1, T3, T4, T5, T6, T7>.Type7(_t7),
-            _ => Union<T, T1, T3, T4, T5, T6, T7>.Nothing
+            1 => Union<T1, T, T3, T4, T5, T6, T7>.Type1(_t1),
+            2 => Union<T1, T, T3, T4, T5, T6, T7>.Type2(func(_t2)),
+            3 => Union<T1, T, T3, T4, T5, T6, T7>.Type3(_t3),
+            4 => Union<T1, T, T3, T4, T5, T6, T7>.Type4(_t4),
+            5 => Union<T1, T, T3, T4, T5, T6, T7>.Type5(_t5),
+            6 => Union<T1, T, T3, T4, T5, T6, T7>.Type6(_t6),
+            7 => Union<T1, T, T3, T4, T5, T6, T7>.Type7(_t7),
+            _ => Union<T1, T, T3, T4, T5, T6, T7>.Nothing
         };
 
         /// <summary>
@@ -252,16 +252,16 @@ namespace FPLite.Union
         /// </summary>
         /// <typeparam name="T">The type of the result of the binding function.</typeparam>
         /// <param name="func">The function to bind to the T3 value.</param>
-        public Union<T, T1, T2, T4, T5, T6, T7> Bind3<T>(Func<T3, T> func) => _type switch
+        public Union<T1, T2, T, T4, T5, T6, T7> Bind3<T>(Func<T3, T> func) => _type switch
         {
-            3 => Union<T, T1, T2, T4, T5, T6, T7>.Type1(func(_t3)),
-            1 => Union<T, T1, T2, T4, T5, T6, T7>.Type2(_t1),
-            2 => Union<T, T1, T2, T4, T5, T6, T7>.Type3(_t2),
-            4 => Union<T, T1, T2, T4, T5, T6, T7>.Type4(_t4),
-            5 => Union<T, T1, T2, T4, T5, T6, T7>.Type5(_t5),
-            6 => Union<T, T1, T2, T4, T5, T6, T7>.Type6(_t6),
-            7 => Union<T, T1, T2, T4, T5, T6, T7>.Type7(_t7),
-            _ => Union<T, T1, T2, T4, T5, T6, T7>.Nothing
+            1 => Union<T1, T2, T, T4, T5, T6, T7>.Type1(_t1),
+            2 => Union<T1, T2, T, T4, T5, T6, T7>.Type2(_t2),
+            3 => Union<T1, T2, T, T4, T5, T6, T7>.Type3(func(_t3)),
+            4 => Union<T1, T2, T, T4, T5, T6, T7>.Type4(_t4),
+            5 => Union<T1, T2, T, T4, T5, T6, T7>.Type5(_t5),
+            6 => Union<T1, T2, T, T4, T5, T6, T7>.Type6(_t6),
+            7 => Union<T1, T2, T, T4, T5, T6, T7>.Type7(_t7),
+            _ => Union<T1, T2, T, T4, T5, T6, T7>.Nothing
         };
 
         /// <summary>
@@ -269,16 +269,16 @@ namespace FPLite.Union
         /// </summary>
         /// <typeparam name="T">The type of the result of the binding function.</typeparam>
         /// <param name="func">The function to bind to the T4 value.</param>
-        public Union<T, T1, T2, T3, T5, T6, T7> Bind4<T>(Func<T4, T> func) => _type switch
+        public Union<T1, T2, T3, T, T5, T6, T7> Bind4<T>(Func<T4, T> func) => _type switch
         {
-            4 => Union<T, T1, T2, T3, T5, T6, T7>.Type1(func(_t4)),
-            1 => Union<T, T1, T2, T3, T5, T6, T7>.Type2(_t1),
-            2 => Union<T, T1, T2, T3, T5, T6, T7>.Type3(_t2),
-            3 => Union<T, T1, T2, T3, T5, T6, T7>.Type4(_t3),
-            5 => Union<T, T1, T2, T3, T5, T6, T7>.Type5(_t5),
-            6 => Union<T, T1, T2, T3, T5, T6, T7>.Type6(_t6),
-            7 => Union<T, T1, T2, T3, T5, T6, T7>.Type7(_t7),
-            _ => Union<T, T1, T2, T3, T5, T6, T7>.Nothing
+            1 => Union<T1, T2, T3, T, T5, T6, T7>.Type1(_t1),
+            2 => Union<T1, T2, T3, T, T5, T6, T7>.Type2(_t2),
+            3 => Union<T1, T2, T3, T, T5, T6, T7>.Type3(_t3),
+            4 => Union<T1, T2, T3, T, T5, T6, T7>.Type4(func(_t4)),
+            5 => Union<T1, T2, T3, T, T5, T6, T7>.Type5(_t5),
+            6 => Union<T1, T2, T3, T, T5, T6, T7>.Type6(_t6),
+            7 => Union<T1, T2, T3, T, T5, T6, T7>.Type7(_t7),
+            _ => Union<T1, T2, T3, T, T5, T6, T7>.Nothing
         };
 
         /// <summary>
@@ -286,16 +286,16 @@ namespace FPLite.Union
         /// </summary>
         /// <typeparam name="T">The type of the result of the binding function.</typeparam>
         /// <param name="func">The function to bind to the T5 value.</param>
-        public Union<T, T1, T2, T3, T4, T6, T7> Bind5<T>(Func<T5, T> func) => _type switch
+        public Union<T1, T2, T3, T4, T, T6, T7> Bind5<T>(Func<T5, T> func) => _type switch
         {
-            5 => Union<T, T1, T2, T3, T4, T6, T7>.Type1(func(_t5)),
-            1 => Union<T, T1, T2, T3, T4, T6, T7>.Type2(_t1),
-            2 => Union<T, T1, T2, T3, T4, T6, T7>.Type3(_t2),
-            3 => Union<T, T1, T2, T3, T4, T6, T7>.Type4(_t3),
-            4 => Union<T, T1, T2, T3, T4, T6, T7>.Type5(_t4),
-            6 => Union<T, T1, T2, T3, T4, T6, T7>.Type6(_t6),
-            7 => Union<T, T1, T2, T3, T4, T6, T7>.Type7(_t7),
-            _ => Union<T, T1, T2, T3, T4, T6, T7>.Nothing
+            1 => Union<T1, T2, T3, T4, T, T6, T7>.Type1(_t1),
+            2 => Union<T1, T2, T3, T4, T, T6, T7>.Type2(_t2),
+            3 => Union<T1, T2, T3, T4, T, T6, T7>.Type3(_t3),
+            4 => Union<T1, T2, T3, T4, T, T6, T7>.Type4(_t4),
+            5 => Union<T1, T2, T3, T4, T, T6, T7>.Type5(func(_t5)),
+            6 => Union<T1, T2, T3, T4, T, T6, T7>.Type6(_t6),
+            7 => Union<T1, T2, T3, T4, T, T6, T7>.Type7(_t7),
+            _ => Union<T1, T2, T3, T4, T, T6, T7>.Nothing
         };
 
         /// <summary>
@@ -303,16 +303,16 @@ namespace FPLite.Union
         /// </summary>
         /// <typeparam name="T">The type of the result of the binding function.</typeparam>
         /// <param name="func">The function to bind to the T6 value.</param>
-        public Union<T, T1, T2, T3, T4, T5, T7> Bind6<T>(Func<T6, T> func) => _type switch
+        public Union<T1, T2, T3, T4, T5, T, T7> Bind6<T>(Func<T6, T> func) => _type switch
         {
-            6 => Union<T, T1, T2, T3, T4, T5, T7>.Type1(func(_t6)),
-            1 => Union<T, T1, T2, T3, T4, T5, T7>.Type2(_t1),
-            2 => Union<T, T1, T2, T3, T4, T5, T7>.Type3(_t2),
-            3 => Union<T, T1, T2, T3, T4, T5, T7>.Type4(_t3),
-            4 => Union<T, T1, T2, T3, T4, T5, T7>.Type5(_t4),
-            5 => Union<T, T1, T2, T3, T4, T5, T7>.Type6(_t5),
-            7 => Union<T, T1, T2, T3, T4, T5, T7>.Type7(_t7),
-            _ => Union<T, T1, T2, T3, T4, T5, T7>.Nothing
+            1 => Union<T1, T2, T3, T4, T5, T, T7>.Type1(_t1),
+            2 => Union<T1, T2, T3, T4, T5, T, T7>.Type2(_t2),
+            3 => Union<T1, T2, T3, T4, T5, T, T7>.Type3(_t3),
+            4 => Union<T1, T2, T3, T4, T5, T, T7>.Type4(_t4),
+            5 => Union<T1, T2, T3, T4, T5, T, T7>.Type5(_t5),
+            6 => Union<T1, T2, T3, T4, T5, T, T7>.Type6(func(_t6)),
+            7 => Union<T1, T2, T3, T4, T5, T, T7>.Type7(_t7),
+            _ => Union<T1, T2, T3, T4, T5, T, T7>.Nothing
         };
 
         /// <summary>
@@ -320,16 +320,16 @@ namespace FPLite.Union
         /// </summary>
         /// <typeparam name="T">The type of the result of the binding function.</typeparam>
         /// <param name="func">The function to bind to the T7 value.</param>
-        public Union<T, T1, T2, T3, T4, T5, T6> Bind7<T>(Func<T7, T> func) => _type switch
+        public Union<T1, T2, T3, T4, T5, T6, T> Bind7<T>(Func<T7, T> func) => _type switch
         {
-            7 => Union<T, T1, T2, T3, T4, T5, T6>.Type1(func(_t7)),
-            1 => Union<T, T1, T2, T3, T4, T5, T6>.Type2(_t1),
-            2 => Union<T, T1, T2, T3, T4, T5, T6>.Type3(_t2),
-            3 => Union<T, T1, T2, T3, T4, T5, T6>.Type4(_t3),
-            4 => Union<T, T1, T2, T3, T4, T5, T6>.Type5(_t4),
-            5 => Union<T, T1, T2, T3, T4, T5, T6>.Type6(_t5),
-            6 => Union<T, T1, T2, T3, T4, T5, T6>.Type7(_t6),
-            _ => Union<T, T1, T2, T3, T4, T5, T6>.Nothing
+            1 => Union<T1, T2, T3, T4, T5, T6, T>.Type1(_t1),
+            2 => Union<T1, T2, T3, T4, T5, T6, T>.Type2(_t2),
+            3 => Union<T1, T2, T3, T4, T5, T6, T>.Type3(_t3),
+            4 => Union<T1, T2, T3, T4, T5, T6, T>.Type4(_t4),
+            5 => Union<T1, T2, T3, T4, T5, T6, T>.Type5(_t5),
+            6 => Union<T1, T2, T3, T4, T5, T6, T>.Type6(_t6),
+            7 => Union<T1, T2, T3, T4, T5, T6, T>.Type7(func(_t7)),
+            _ => Union<T1, T2, T3, T4, T5, T6, T>.Nothing
         };
 
         public override string ToString() => (_type switch
