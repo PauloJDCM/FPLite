@@ -175,13 +175,44 @@ namespace FPLite.Tests.Core
         }
         
         [Fact]
-        public void GivenBothBind_WhenValueIsNotNull_ShouldReturnUnionWithRight()
+        public void GivenBothValues_WhenBindingBoth_ShouldReturnUnionWithT1()
         {
             var either = Either<string?, int?>.Both("1", 1);
             var result = either.BindBoth((s, i) => $"{s}test{i}");
             
             result.Should().BeOfType<Union<string, string?, int?>>();
             result.ToString().Should().Be("T1(1test1)");
+        }
+        
+        [Fact]
+        public void GivenLeftValue_WhenBindingBoth_ShouldReturnUnionWithT2()
+        {
+            var either = Either<string?, int?>.Left("1");
+            var result = either.BindBoth((s, i) => $"{s}test{i}");
+            
+            result.Should().BeOfType<Union<string, string?, int?>>();
+            result.ToString().Should().Be("T2(1)");
+        }
+        
+        [Fact]
+        public void GivenRightValue_WhenBindingBoth_ShouldReturnUnionWithT3()
+        {
+            var either = Either<string?, int?>.Right(1);
+            var result = either.BindBoth((s, i) => $"{s}test{i}");
+            
+            result.Should().BeOfType<Union<string, string?, int?>>();
+            result.ToString().Should().Be("T3(1)");
+        }
+        
+        [Fact]
+        public void GivenEither_WhenValueIsNeither_ShouldBeEqual()
+        {
+            var either = Either<string?, int?>.Neither;
+            var other = Either<string?, int?>.Neither;
+            
+            either.Should().Be(other);
+            (either == other).Should().BeTrue();
+            (either != other).Should().BeFalse();
         }
 
         [Theory]
