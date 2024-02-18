@@ -30,7 +30,9 @@ namespace FPLite
         /// <summary>
         /// Creates an instance representing an error (Error(TError)).
         /// </summary>
-        public static Result<T, TError> Err(TError error) => new Result<T, TError>(error);
+        /// <exception cref="ResultCreateException{TError}"> Thrown if the error is null. </exception>
+        public static Result<T, TError> Err(TError error) =>
+            error is null ? throw new ResultCreateException<TError>() : new Result<T, TError>(error);
 
         /// <summary>
         /// Matches the Result and executes an action based on whether it's Ok or Error.
@@ -70,12 +72,12 @@ namespace FPLite
         /// </summary>
         public T UnwrapOr(T defaultValue) => IsOk ? _value : defaultValue;
 
-        public override string ToString() => IsOk ? $"Ok({_value!.ToString()})" : $"Error({_error.ToErrorString()})";
+        public override string ToString() => IsOk ? $"Ok({_value!.ToString()})" : $"Err({_error.ToErrorString()})";
     }
 
     public class ResultCreateException<T> : Exception
     {
-        private const string ErrorMessage = "Called Result<{0}>.Create() with a null value!";
+        private const string ErrorMessage = "Called Result.Create({0}) with a null value!";
 
         public ResultCreateException() : base(string.Format(ErrorMessage, typeof(T)))
         {
