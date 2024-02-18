@@ -70,7 +70,7 @@ namespace FPLite
         /// </summary>
         public T UnwrapOr(T defaultValue) => IsOk ? _value : defaultValue;
 
-        public override string ToString() => IsOk ? _value!.ToString()! : _error.ToErrorString();
+        public override string ToString() => IsOk ? $"Ok({_value!.ToString()})" : $"Error({_error.ToErrorString()})";
     }
 
     public class ResultCreateException<T> : Exception
