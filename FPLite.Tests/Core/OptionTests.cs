@@ -151,5 +151,33 @@ namespace FPLite.Tests.Core
             (option == other).Should().BeTrue();
             (option != other).Should().BeFalse();
         }
+        
+        [Fact]
+        public void GivenSomeValue_WhenUnwrapping_ShouldReturnValue()
+        {
+            var option = Option<string>.Some("test");
+            option.Unwrap().Should().Be("test");
+        }
+        
+        [Fact]
+        public void GivenNoneValue_WhenUnwrapping_ShouldThrowException()
+        {
+            var option = Option<string>.None;
+            Assert.Throws<OptionUnwrapException<string>>(() => option.Unwrap());
+        }
+        
+        [Fact]
+        public void GivenSomeValue_WhenUnwrappingOr_ShouldReturnValue()
+        {
+            var option = Option<string>.Some("test");
+            option.UnwrapOr("default").Should().Be("test");
+        }
+        
+        [Fact]
+        public void GivenNoneValue_WhenUnwrappingOr_ShouldReturnDefault()
+        {
+            var option = Option<string>.None;
+            option.UnwrapOr("default").Should().Be("default");
+        }
     }
 }
