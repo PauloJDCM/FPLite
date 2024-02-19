@@ -5,12 +5,6 @@ namespace FPLite.Tests.Core
 {
     public class ResultTests
     {
-        private class TestError : IError
-        {
-            public string Code => "TEST_CODE";
-            public string Message => "TEST_MESSAGE";
-        }
-
         [Fact]
         public void GivenSomeValue_WhenCreatingOk_ShouldReturnOk()
         {

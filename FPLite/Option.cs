@@ -1,4 +1,5 @@
 ﻿using System;
+using FPLite.Union;
 
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 namespace FPLite
@@ -71,12 +72,28 @@ namespace FPLite
         /// </summary>
         /// <exception cref="InvalidOperationException"> Thrown if the Option is None. </exception>
         public T Unwrap() => IsSome ? _value! : throw new OptionUnwrapException<T>();
+
+        /// <summary>
+        /// Unwraps the Option and returns its value or executes a function if the Option is None.
+        /// </summary>
+        /// <param name="func">The function to execute if the Option is None.</param>
+        public T UnwrapOr(Func<T> func) => IsSome ? _value! : func();
+
+        /// <summary>
+        /// Unwraps the Option and returns its value or executes a function if the Option is None.
+        /// </summary>
+        /// <param name="otherFunc">The function to execute if the Option is None.</param>
+        public Union<T, TOther> UnwrapOr<TOther>(Func<TOther> otherFunc) =>
+            IsSome ? Union<T, TOther>.Type1(_value) : Union<T, TOther>.Type2(otherFunc());
         
         /// <summary>
-        /// Unwraps the Option and returns its value or a default value.
+        /// Returns a Result containing the value of the Option if it's Some, or an error if it's None.
         /// </summary>
-        /// <param name="defaultValue">The default value to return if the Option is None.</param>
-        public T UnwrapOr(T defaultValue) => IsSome ? _value! : defaultValue;
+        /// <typeparam name="TError">The type of the error.</typeparam>
+        /// <param name="errorFunc">The function to execute if the Option is None.</param>
+        /// <returns>A Result containing the value of the Option if it's Some, or an error if it's None.</returns>
+        public Result<T, TError> OkOr<TError>(Func<TError> errorFunc) where TError : IError =>
+            IsSome ? Result<T, TError>.Ok(_value) : Result<T, TError>.Err(errorFunc());
 
         public override string ToString() => (IsSome ? _value!.ToString() : "None")!;
 
@@ -90,11 +107,11 @@ namespace FPLite
 
         public static bool operator !=(Option<T> left, Option<T> right) => !left.Equals(right);
     }
-    
+
     public class OptionUnwrapException<T> : Exception
     {
         private const string ErrorMessage = "Called Option<{0}>.Unwrap() on None!.";
-        
+
         public OptionUnwrapException() : base(string.Format(ErrorMessage, typeof(T)))
         {
         }
