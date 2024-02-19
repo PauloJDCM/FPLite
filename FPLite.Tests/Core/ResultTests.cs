@@ -47,17 +47,31 @@ namespace FPLite.Tests.Core
         }
         
         [Fact]
-        public void GivenSomeValue_WhenUnwrappingWithOr_ShouldReturnValue()
+        public void GivenSomeValue_WhenUnwrappingOr_ShouldReturnValue()
         {
             var result = Result<string, TestError>.Ok("test");
-            result.UnwrapOr("default").Should().Be("test");
+            result.UnwrapOr(() => "default").Should().Be("test");
         }
         
         [Fact]
-        public void GivenNoneValue_WhenUnwrappingWithOr_ShouldReturnDefault()
+        public void GivenNoneValue_WhenUnwrappingOr_ShouldReturnOther()
         {
             var result = Result<string, TestError>.Err(new TestError());
-            result.UnwrapOr("default").Should().Be("default");
+            result.UnwrapOr(() => "default").Should().Be("default");
+        }
+
+        [Fact]
+        public void GivenSomeValue_WhenUnwrappingOrWithOther_ShouldReturnUnionWithT1()
+        {
+            var result = Result<string, TestError>.Ok("test");
+            result.UnwrapOr(() => 1).ToString().Should().Be("T1(test)");
+        }
+        
+        [Fact]
+        public void GivenNoneValue_WhenUnwrappingOrWithOther_ShouldReturnUnionWithT2()
+        {
+            var result = Result<string, TestError>.Err(new TestError());
+            result.UnwrapOr(() => 1).ToString().Should().Be("T2(1)");
         }
 
         [Fact]
@@ -67,11 +81,11 @@ namespace FPLite.Tests.Core
 
             var testResult = false;
             result.Match(i => testResult = true, _ => testResult = false);
-            
+
             testResult.Should().BeTrue();
             result.ToString().Should().Be("Ok(1)");
         }
-        
+
         [Fact]
         public void GivenError_WhenMatching_ShouldMatchError()
         {
@@ -79,26 +93,26 @@ namespace FPLite.Tests.Core
 
             var testResult = false;
             result.Match(i => testResult = false, _ => testResult = true);
-            
+
             testResult.Should().BeTrue();
             result.ToString().Should().Be("Err(Error: TEST_CODE - TEST_MESSAGE)");
         }
-        
+
         [Fact]
         public void GivenValue_WhenBinding_ShouldBindValue()
         {
             var result = Result<int, TestError>.Ok(1);
             var result2 = result.Bind(i => i + 1);
-            
+
             result2.ToString().Should().Be("Ok(2)");
         }
-        
+
         [Fact]
         public void GivenError_WhenBinding_ShouldKeepError()
         {
             var result = Result<int, TestError>.Err(new TestError());
             var result2 = result.Bind(i => Result<int, TestError>.Ok(i + 1));
-            
+
             result2.ToString().Should().Be("Err(Error: TEST_CODE - TEST_MESSAGE)");
         }
     }

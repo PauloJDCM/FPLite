@@ -83,9 +83,11 @@ namespace FPLite
         /// Unwraps the Option and returns its value or executes a function if the Option is None.
         /// </summary>
         /// <param name="otherFunc">The function to execute if the Option is None.</param>
+        /// <typeparam name="TOther">The type of the other.</typeparam>
+        /// <returns>A Union of the value of the Option if it's Some, or the result of executing the other function.</returns>
         public Union<T, TOther> UnwrapOr<TOther>(Func<TOther> otherFunc) =>
             IsSome ? Union<T, TOther>.Type1(_value) : Union<T, TOther>.Type2(otherFunc());
-        
+
         /// <summary>
         /// Returns a Result containing the value of the Option if it's Some, or an error if it's None.
         /// </summary>

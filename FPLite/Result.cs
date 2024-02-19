@@ -1,4 +1,5 @@
 ﻿using System;
+using FPLite.Union;
 
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 namespace FPLite
@@ -68,9 +69,20 @@ namespace FPLite
         public T Unwrap() => IsOk ? _value : throw new ResultUnwrapException<T, TError>(_error);
 
         /// <summary>
-        /// Unwraps the Result and returns its value or a default value.
+        /// Unwraps the Result and returns its value or executes a function if it's an Error.
         /// </summary>
-        public T UnwrapOr(T defaultValue) => IsOk ? _value : defaultValue;
+        /// <param name="otherFunc"> The function to execute if it's an Error. </param>
+        /// <returns> The value if it's Ok or the function result if it's an Error. </returns>
+        public T UnwrapOr(Func<T> otherFunc) => IsOk ? _value : otherFunc();
+
+        /// <summary>
+        /// Unwraps the Result and returns its value or executes a function if it's an Error.
+        /// </summary>
+        /// <typeparam name="TOther"> The type of the function result. </typeparam>
+        /// <param name="otherFunc"> The function to execute if it's an Error. </param>
+        /// <returns> A Union containing the value if it's Ok or the function result if it's an Error. </returns>
+        public Union<T, TOther> UnwrapOr<TOther>(Func<TOther> otherFunc) =>
+            IsOk ? Union<T, TOther>.Type1(_value) : Union<T, TOther>.Type2(otherFunc());
 
         public override string ToString() => IsOk ? $"Ok({_value!.ToString()})" : $"Err({_error.ToErrorString()})";
     }
