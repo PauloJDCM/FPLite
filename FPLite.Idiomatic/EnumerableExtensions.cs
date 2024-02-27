@@ -1,4 +1,8 @@
-﻿namespace FPLite.Idiomatic
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace FPLite.Idiomatic
 {
     public static class EnumerableExtensions
     {
