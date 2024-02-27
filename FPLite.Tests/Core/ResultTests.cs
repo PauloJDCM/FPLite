@@ -47,6 +47,20 @@ namespace FPLite.Tests.Core
         }
         
         [Fact]
+        public void GivenSomeValue_WhenUnwrappingWithCustomException_ShouldReturnOk()
+        {
+            var result = Result<string, TestError>.Ok("test");
+            result.Unwrap(() => new TestException()).Should().Be("test");
+        }
+        
+        [Fact]
+        public void GivenNoneValue_WhenUnwrappingWithCustomException_ShouldThrowCustomException()
+        {
+            var result = Result<string, TestError>.Err(new TestError());
+            Assert.Throws<TestException>(() => result.Unwrap(() => new TestException()));
+        }
+        
+        [Fact]
         public void GivenSomeValue_WhenUnwrappingOr_ShouldReturnValue()
         {
             var result = Result<string, TestError>.Ok("test");

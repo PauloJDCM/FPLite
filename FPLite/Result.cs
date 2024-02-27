@@ -70,6 +70,15 @@ namespace FPLite
         public T Unwrap() => IsOk ? _value : throw new ResultUnwrapException<T, TError>(_error);
 
         /// <summary>
+        /// Unwraps the Result and returns its value or throws an exception if it's an Error.
+        /// </summary>
+        /// <typeparam name="TException"> The type of the exception. </typeparam>
+        /// <param name="exceptionFunc"> The function to execute if it's an Error. </param>
+        /// <returns> The value if it's Ok. </returns>
+        public T Unwrap<TException>(Func<TException> exceptionFunc) where TException : Exception =>
+            IsOk ? _value : throw exceptionFunc();
+
+        /// <summary>
         /// Unwraps the Result and returns its value or executes a function if it's an Error.
         /// </summary>
         /// <param name="otherFunc"> The function to execute if it's an Error. </param>

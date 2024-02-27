@@ -75,6 +75,14 @@ namespace FPLite
         public T Unwrap() => IsSome ? _value! : throw new OptionUnwrapException<T>();
 
         /// <summary>
+        /// Unwraps the Option and returns its value.
+        /// </summary>
+        /// <typeparam name="TException">The type of the exception.</typeparam>
+        /// <param name="exceptionFunc">The function to execute if the Option is None.</param>
+        public T Unwrap<TException>(Func<TException> exceptionFunc) where TException : Exception =>
+            IsSome ? _value! : throw exceptionFunc();
+
+        /// <summary>
         /// Unwraps the Option and returns its value or executes a function if the Option is None.
         /// </summary>
         /// <param name="func">The function to execute if the Option is None.</param>

@@ -106,7 +106,7 @@ namespace FPLite.Tests.Core
         {
             var option = Option<string>.None;
             var bind = option.Bind(s => s + "test");
-        
+
             bind.ToString().Should().Be("None");
         }
 
@@ -117,7 +117,7 @@ namespace FPLite.Tests.Core
         {
             var option = Option<string>.Some(originalValue);
             var bind = option.Bind(s => s + "test");
-        
+
             bind.ToString().Should().Be(originalValue + "test");
         }
 
@@ -126,7 +126,7 @@ namespace FPLite.Tests.Core
         {
             var option = Option<string>.Some("test");
             var other = Option<int>.Some(1);
-        
+
             option.Should().NotBe(other);
         }
 
@@ -135,7 +135,7 @@ namespace FPLite.Tests.Core
         {
             var option = Option<string>.Some("test");
             var other = Option<string>.Some("test2");
-        
+
             option.Should().NotBe(other);
             (option == other).Should().BeFalse();
             (option != other).Should().BeTrue();
@@ -146,47 +146,61 @@ namespace FPLite.Tests.Core
         {
             var option = Option<string>.Some("test");
             var other = Option<string>.Some("test");
-        
+
             option.Should().Be(other);
             (option == other).Should().BeTrue();
             (option != other).Should().BeFalse();
         }
-        
+
         [Fact]
         public void GivenSomeValue_WhenUnwrapping_ShouldReturnValue()
         {
             var option = Option<string>.Some("test");
             option.Unwrap().Should().Be("test");
         }
-        
+
         [Fact]
-        public void GivenNoneValue_WhenUnwrapping_ShouldThrowException()
+        public void GivenNoneValue_WhenUnwrapping_ShouldThrow()
         {
             var option = Option<string>.None;
             Assert.Throws<OptionUnwrapException<string>>(() => option.Unwrap());
         }
-        
+
+        [Fact]
+        public void GivenSomeValue_WhenUnwrappingWithCustomException_ShouldReturnValue()
+        {
+            var option = Option<string>.Some("test");
+            option.Unwrap(() => new TestException()).Should().Be("test");
+        }
+
+        [Fact]
+        public void GivenNoneValue_WhenUnwrappingWithCustomException_ShouldThrowCustomException()
+        {
+            var option = Option<string>.None;
+            Assert.Throws<TestException>(() => option.Unwrap(() => new TestException()));
+        }
+
         [Fact]
         public void GivenSomeValue_WhenUnwrappingOr_ShouldReturnValue()
         {
             var option = Option<string>.Some("test");
             option.UnwrapOr(() => "default").Should().Be("test");
         }
-        
+
         [Fact]
         public void GivenNoneValue_WhenUnwrappingOr_ShouldReturnOther()
         {
             var option = Option<string>.None;
             option.UnwrapOr(() => "default").Should().Be("default");
         }
-        
+
         [Fact]
         public void GivenSomeValue_WhenUnwrappingOrWithOther_ShouldUnionWithT1()
         {
             var option = Option<string>.Some("test");
             option.UnwrapOr(() => 1).ToString().Should().Be("T1(test)");
         }
-        
+
         [Fact]
         public void GivenNoneValue_WhenUnwrappingOrWithOther_ShouldReturnUnionWithT2()
         {
@@ -200,7 +214,7 @@ namespace FPLite.Tests.Core
             var option = Option<string>.Some("test");
             option.OkOr(() => new TestError()).ToString().Should().Be("Ok(test)");
         }
-        
+
         [Fact]
         public void GivenNoneValue_WhenOkOr_ShouldReturnErr()
         {
