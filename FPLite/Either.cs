@@ -11,7 +11,7 @@ namespace FPLite
     /// <typeparam name="TRight">The type of the right value.</typeparam>
     public class Either<TLeft, TRight> : IEquatable<Either<TLeft, TRight>>
     {
-        protected enum EitherType : byte
+        public enum EitherType : byte
         {
             Neither,
             Left,
@@ -19,7 +19,7 @@ namespace FPLite
             Both
         }
 
-        protected EitherType Type { get; }
+        public EitherType Type { get; }
 
         private readonly TLeft _left;
         private readonly TRight _right;

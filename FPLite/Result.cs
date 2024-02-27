@@ -6,8 +6,8 @@ namespace FPLite
 {
     public class Result<T, TError> where TError : IError
     {
-        protected bool IsOk { get; }
-        
+        public bool IsOk { get; }
+
         private readonly T _value;
         private readonly TError _error;
 
@@ -35,6 +35,16 @@ namespace FPLite
         /// <exception cref="ResultCreateException{TError}"> Thrown if the error is null. </exception>
         public static Result<T, TError> Err(TError error) =>
             error is null ? throw new ResultCreateException<TError>() : new Result<T, TError>(error);
+
+        /// <summary>
+        /// Matches the Result and executes a function based on whether it's Ok or Error.
+        /// </summary>
+        /// <typeparam name="TResult"> The type of the function result. </typeparam>
+        /// <param name="okFunc"> The function to execute if it's Ok. </param>
+        /// <param name="errorFunc"> The function to execute if it's Error. </param>
+        /// <returns> The result of the function. </returns>
+        public TResult Match<TResult>(Func<T, TResult> okFunc, Func<TError, TResult> errorFunc) =>
+            IsOk ? okFunc(_value) : errorFunc(_error);
 
         /// <summary>
         /// Matches the Result and executes an action based on whether it's Ok or Error.
