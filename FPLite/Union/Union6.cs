@@ -9,7 +9,8 @@ namespace FPLite.Union
     /// </summary>
     public class Union<T1, T2, T3, T4, T5, T6> : IEquatable<Union<T1, T2, T3, T4, T5, T6>>
     {
-        protected readonly byte Type;
+        protected byte Type { get; }
+
         private readonly T1 _t1;
         private readonly T2 _t2;
         private readonly T3 _t3;

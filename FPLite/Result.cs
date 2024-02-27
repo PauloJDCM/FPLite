@@ -6,7 +6,8 @@ namespace FPLite
 {
     public class Result<T, TError> where TError : IError
     {
-        protected readonly bool IsOk;
+        protected bool IsOk { get; }
+        
         private readonly T _value;
         private readonly TError _error;
 

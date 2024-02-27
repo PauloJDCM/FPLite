@@ -19,7 +19,8 @@ namespace FPLite
             Both
         }
 
-        protected readonly EitherType Type;
+        protected EitherType Type { get; }
+
         private readonly TLeft _left;
         private readonly TRight _right;
 

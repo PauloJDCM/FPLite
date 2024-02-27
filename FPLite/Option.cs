@@ -10,7 +10,8 @@ namespace FPLite
     /// <typeparam name="T">The type of the value.</typeparam>
     public class Option<T> : IEquatable<Option<T>>
     {
-        protected readonly bool IsSome;
+        protected bool IsSome { get; }
+
         private readonly T _value;
 
         protected Option()
