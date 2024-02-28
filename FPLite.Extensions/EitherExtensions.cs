@@ -13,5 +13,11 @@
         /// </summary>
         public static Either<TLeft, TRight> ToEither<TLeft, TRight>(this TRight right) =>
             Either<TLeft, TRight>.Right(right);
+        
+        /// <summary>
+        /// Converts value to an Either monad with both left and right values.
+        /// </summary>
+        public static Either<TLeft, TRight> ToEither<TLeft, TRight>(this TLeft left, TRight right) =>
+            Either<TLeft, TRight>.Both(left, right);
     }
 }
