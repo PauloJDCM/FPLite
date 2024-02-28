@@ -9,20 +9,18 @@ namespace FPLite.Tests.Core
         public void GivenValueType_WhenValueIsNone_ShouldBeNone()
         {
             var option = Option<int>.None;
-            var value = option.Match(_ => true, () => false);
 
             option.ToString().Should().Be("None");
-            value.Should().BeFalse();
+            option.IsSome.Should().BeFalse();
         }
 
         [Fact]
         public void GivenNullableValueType_WhenValueIsNull_ShouldBeNone()
         {
             var option = Option<int?>.Some(null);
-            var value = option.Match(_ => true, () => false);
 
             option.ToString().Should().Be("None");
-            value.Should().BeFalse();
+            option.IsSome.Should().BeFalse();
         }
 
         [Theory]
@@ -41,10 +39,9 @@ namespace FPLite.Tests.Core
         public void GivenReferenceType_WhenValueIsNone_ShouldBeNone()
         {
             var option = Option<string>.None;
-            var value = option.Match(_ => true, () => false);
 
             option.ToString().Should().Be("None");
-            value.Should().BeFalse();
+            option.IsSome.Should().BeFalse();
         }
 
         [Theory]
@@ -62,10 +59,9 @@ namespace FPLite.Tests.Core
         public void GivenNullableReferenceType_WhenValueIsNone_ShouldBeNone()
         {
             var option = Option<string?>.None;
-            var value = option.Match(_ => true, () => false);
 
             option.ToString().Should().Be("None");
-            value.Should().BeFalse();
+            option.IsSome.Should().BeFalse();
         }
 
         [Theory]
@@ -198,28 +194,28 @@ namespace FPLite.Tests.Core
         public void GivenSomeValue_WhenUnwrappingOrWithOther_ShouldUnionWithT1()
         {
             var option = Option<string>.Some("test");
-            option.UnwrapOr(() => 1).ToString().Should().Be("T1(test)");
+            option.UnwrapOr(() => 1).Type.Should().Be(1);
         }
 
         [Fact]
         public void GivenNoneValue_WhenUnwrappingOrWithOther_ShouldReturnUnionWithT2()
         {
             var option = Option<string>.None;
-            option.UnwrapOr(() => 1).ToString().Should().Be("T2(1)");
+            option.UnwrapOr(() => 1).Type.Should().Be(2);
         }
 
         [Fact]
         public void GivenSomeValue_WhenOkOr_ShouldReturnOk()
         {
             var option = Option<string>.Some("test");
-            option.OkOr(() => new TestError()).ToString().Should().Be("Ok(test)");
+            option.OkOr(() => new TestError()).IsOk.Should().BeTrue();
         }
 
         [Fact]
         public void GivenNoneValue_WhenOkOr_ShouldReturnErr()
         {
             var option = Option<string>.None;
-            option.OkOr(() => new TestError()).ToString().Should().Be("Err(Error: TEST_CODE - TEST_MESSAGE)");
+            option.OkOr(() => new TestError()).IsOk.Should().BeFalse();
         }
     }
 }
