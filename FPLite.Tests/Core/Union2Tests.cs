@@ -17,7 +17,7 @@ namespace FPLite.Tests.Core
 
             bResult.Should().BeTrue();
             result.Should().Be("Nothing");
-            union.ToString().Should().Be("Nothing");
+            union.Type.Should().Be(0);
         }
 
         [Fact]
@@ -31,7 +31,7 @@ namespace FPLite.Tests.Core
 
             bResult.Should().BeTrue();
             result.Should().Be("test");
-            union.ToString().Should().Be("T1(test)");
+            union.Type.Should().Be(1);
         }
 
         [Fact]
@@ -45,7 +45,7 @@ namespace FPLite.Tests.Core
 
             bResult.Should().BeTrue();
             result.Should().Be("123");
-            union.ToString().Should().Be("T2(123)");
+            union.Type.Should().Be(2);
         }
 
         [Fact]
@@ -55,7 +55,7 @@ namespace FPLite.Tests.Core
             var result = union.Match(s => s!, i => i.ToString()!, () => "Nothing");
 
             result.Should().Be("Nothing");
-            union.ToString().Should().Be("Nothing");
+            union.Type.Should().Be(0);
         }
 
         [Fact]
@@ -65,7 +65,7 @@ namespace FPLite.Tests.Core
             var result = union.Match(s => s!, i => i.ToString()!, () => "Nothing");
 
             result.Should().Be("Nothing");
-            union.ToString().Should().Be("Nothing");
+            union.Type.Should().Be(0);
         }
         
         [Theory]
@@ -78,6 +78,7 @@ namespace FPLite.Tests.Core
             var result = union.Match(b => b + b, i => i.ToString());
             
             result.ToString().Should().Be($"T1({expected})");
+            result.Type.Should().Be(1);
         }
         
         [Theory]
@@ -90,6 +91,7 @@ namespace FPLite.Tests.Core
             var result = union.Match(b => b + b, i => i.ToString());
             
             result.ToString().Should().Be($"T2({expected})");
+            result.Type.Should().Be(2);
         }
         
         [Fact]
@@ -108,6 +110,7 @@ namespace FPLite.Tests.Core
             var result = union.Bind1(b => b + b);
             
             result.ToString().Should().Be("T1(2)");
+            result.Type.Should().Be(1);
         }
         
         [Fact]
@@ -117,6 +120,7 @@ namespace FPLite.Tests.Core
             var result = union.Bind2(i => i * i);
             
             result.ToString().Should().Be("T1(1)");
+            result.Type.Should().Be(1);
         }
         
         [Fact]
@@ -126,6 +130,7 @@ namespace FPLite.Tests.Core
             var result = union.Bind1(b => b + b);
             
             result.ToString().Should().Be("T2(10)");
+            result.Type.Should().Be(2);
         }
         
         [Fact]
@@ -135,6 +140,7 @@ namespace FPLite.Tests.Core
             var result = union.Bind2(i => i * i);
             
             result.ToString().Should().Be("T2(100)");
+            result.Type.Should().Be(2);
         }
         
         [Fact]
@@ -143,7 +149,7 @@ namespace FPLite.Tests.Core
             var union = Union<byte, int>.Nothing;
             var result = union.Bind1(b => b + b);
             
-            result.ToString().Should().Be("Nothing");
+            result.Type.Should().Be(0);
         }
         
         [Fact]
@@ -152,7 +158,7 @@ namespace FPLite.Tests.Core
             var union = Union<byte, int>.Nothing;
             var result = union.Bind2(i => i * i);
             
-            result.ToString().Should().Be("Nothing");
+            result.Type.Should().Be(0);
         }
 
         [Fact]

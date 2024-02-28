@@ -10,7 +10,7 @@ namespace FPLite.Tests.Core
         {
             var result = Result<string, TestError>.Ok("test");
             result.Unwrap().Should().Be("test");
-            result.ToString().Should().Be("Ok(test)");
+            result.IsOk.Should().BeTrue();
         }
 
         [Fact]
@@ -23,7 +23,7 @@ namespace FPLite.Tests.Core
         public void GivenSomeValue_WhenCreatingError_ShouldReturnError()
         {
             var result = Result<string, TestError>.Err(new TestError());
-            result.ToString().Should().Be("Err(Error: TEST_CODE - TEST_MESSAGE)");
+            result.IsOk.Should().BeFalse();
         }
 
         [Fact]
