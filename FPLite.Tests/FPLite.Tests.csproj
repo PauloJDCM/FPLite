@@ -24,6 +24,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\FPLite.Extensions\FPLite.Extensions.csproj" />
       <ProjectReference Include="..\FPLite\FPLite.csproj" />
     </ItemGroup>
 
