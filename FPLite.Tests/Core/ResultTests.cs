@@ -33,6 +33,26 @@ namespace FPLite.Tests.Core
         }
 
         [Fact]
+        public void GivenSomeValue_WhenMatching_ShouldDoSomeAction()
+        {
+            var obj = Result<string, TestError>.Ok("test");
+            var result = false;
+            obj.Match(_ => { result = true; }, _ => { });
+            
+            result.Should().BeTrue();
+        }
+        
+        [Fact]
+        public void GivenNoneValue_WhenMatching_ShouldDoErrorAction()
+        {
+            var obj = Result<string, TestError>.Err(new TestError());
+            var result = false;
+            obj.Match(_ => { result = true; }, _ => { });
+            
+            result.Should().BeFalse();
+        }
+
+        [Fact]
         public void GivenSomeValue_WhenUnwrapping_ShouldReturnValue()
         {
             var result = Result<string, TestError>.Ok("test");
