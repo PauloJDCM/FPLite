@@ -23,16 +23,6 @@ namespace FPLite.Extensions
         public static void Pipe<T>(this T input, Action<T> action) => action(input);
 
         /// <summary>
-        /// Returns an empty function that ignores its input and performs no action.
-        /// </summary>
-        /// <typeparam name="T">The type of the input parameter (ignored).</typeparam>
-        /// <returns>An empty Action that ignores its input.</returns>
-        public static Action<T> Ignore<T>() => _ =>
-        {
-            /* Empty action, does nothing */
-        };
-
-        /// <summary>
         /// Returns an empty action that performs no action.
         /// </summary>
         /// <returns>An empty Action that does nothing.</returns>
