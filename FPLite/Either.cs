@@ -11,14 +11,6 @@ namespace FPLite
     /// <typeparam name="TRight">The type of the right value.</typeparam>
     public class Either<TLeft, TRight> : IEquatable<Either<TLeft, TRight>>
     {
-        public enum EitherType : byte
-        {
-            Neither,
-            Left,
-            Right,
-            Both
-        }
-
         public EitherType Type { get; }
 
         private readonly TLeft _left;
@@ -208,5 +200,13 @@ namespace FPLite
         public static bool operator ==(Either<TLeft, TRight> left, Either<TLeft, TRight> right) => left.Equals(right);
 
         public static bool operator !=(Either<TLeft, TRight> left, Either<TLeft, TRight> right) => !left.Equals(right);
+    }
+    
+    public enum EitherType : byte
+    {
+        Neither,
+        Left,
+        Right,
+        Both
     }
 }
