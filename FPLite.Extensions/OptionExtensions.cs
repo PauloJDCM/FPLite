@@ -10,7 +10,7 @@ namespace FPLite.Extensions
         /// <summary>
         /// Converts a value of type <typeparamref name="TIn"/> to an <see cref="Option{TOut}"/>.
         /// </summary>
-        public static Option<TOut> AsOptionOf<TIn, TOut>(this TIn value) where TOut : class =>
+        public static Option<TOut> AsOptionOf<TIn, TOut>(this TIn value) =>
             value is TOut cast ? Option<TOut>.Some(cast) : Option<TOut>.None;
     }
 }
