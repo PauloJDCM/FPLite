@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace FPLite.Tests.Core
+namespace FPLite.Tests
 {
     public class TestException : Exception
     {

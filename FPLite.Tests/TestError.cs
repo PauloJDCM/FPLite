@@ -1,4 +1,4 @@
-﻿namespace FPLite.Tests.Core
+﻿namespace FPLite.Tests
 {
     public class TestError : IError
     {
