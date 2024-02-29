@@ -12,7 +12,7 @@ Represents a value of TLeft, TRight, Both or Neither.
 Represents a value that could be one of the specified types or Nothing.
 
 ## [Result](Result.cs)
-Represents a value that could be one of the specified types or Nothing.
+Represents a value that could be one of the specified types or an Error.
 
 # Author
 [Paulo Miranda](https://github.com/PauloJDCM)
