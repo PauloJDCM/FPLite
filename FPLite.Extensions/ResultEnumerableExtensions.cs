@@ -13,7 +13,7 @@ namespace FPLite.Extensions
         /// <param name="source">The sequence to return the first element from.</param>
         /// <param name="predicate">The predicate to filter by.</param>
         /// <param name="errorFunc">The function to return an error if the predicate fails.</param>
-        /// <returns>An <see cref="Option{T}"/> instance containing the first element if present.</returns>
+        /// <returns>An <see cref="Result{T,TError}"/> instance containing the first element if present.</returns>
         public static Result<T, TError> FirstOrNone<T, TError>(this IEnumerable<T> source, Predicate<T> predicate,
             Func<TError> errorFunc)
             where TError : IError
@@ -34,7 +34,7 @@ namespace FPLite.Extensions
         /// </summary>
         /// <param name="source">The sequence to return the first element from.</param>
         /// <param name="errorFunc">The function to return an error if the predicate fails.</param>
-        /// <returns>An <see cref="Option{T}"/> instance containing the first element if present.</returns>
+        /// <returns>An <see cref="Result{T,TError}"/> instance containing the first element if present.</returns>
         public static Result<T, TError> FirstOrNone<T, TError>(this IEnumerable<T> source, Func<TError> errorFunc)
             where TError : IError
         {
@@ -56,7 +56,7 @@ namespace FPLite.Extensions
         /// <param name="source">The sequence to return the last element from.</param>
         /// <param name="predicate">The predicate to filter by.</param>
         /// <param name="errorFunc">The function to return an error if the predicate fails.</param>
-        /// <returns>An <see cref="Option{T}"/> instance containing the last element if present.</returns>
+        /// <returns>An <see cref="Result{T,TError}"/> instance containing the last element if present.</returns>
         public static Result<T, TError> LastOrNone<T, TError>(this IEnumerable<T> source, Predicate<T> predicate,
             Func<TError> errorFunc)
             where TError : IError
@@ -77,7 +77,7 @@ namespace FPLite.Extensions
         /// </summary>
         /// <param name="source">The sequence to return the last element from.</param>
         /// <param name="errorFunc">The function to return an error if the predicate fails.</param>
-        /// <returns>An <see cref="Option{T}"/> instance containing the last element if present.</returns>
+        /// <returns>An <see cref="Result{T,TError}"/> instance containing the last element if present.</returns>
         public static Result<T, TError> LastOrNone<T, TError>(this IEnumerable<T> source, Func<TError> errorFunc)
             where TError : IError
         {
@@ -99,7 +99,7 @@ namespace FPLite.Extensions
         /// <param name="source">The sequence to return the element from.</param>
         /// <param name="predicate">The predicate to filter by.</param>
         /// <param name="errorFunc">The function to return an error if the predicate fails.</param>
-        /// <returns>An <see cref="Option{T}"/> instance containing the element if present.</returns>
+        /// <returns>An <see cref="Result{T,TError}"/> instance containing the element if present.</returns>
         public static Result<T, TError> SingleOrNone<T, TError>(this IEnumerable<T> source, Predicate<T> predicate,
             Func<TError> errorFunc)
             where TError : IError
@@ -120,7 +120,7 @@ namespace FPLite.Extensions
         /// </summary>
         /// <param name="source">The sequence to return the element from.</param>
         /// <param name="errorFunc">The function to return an error if the predicate fails.</param>
-        /// <returns>An <see cref="Option{T}"/> instance containing the element if present.</returns>
+        /// <returns>An <see cref="Result{T,TError}"/> instance containing the element if present.</returns>
         public static Result<T, TError> SingleOrNone<T, TError>(this IEnumerable<T> source, Func<TError> errorFunc)
             where TError : IError
         {
@@ -141,7 +141,7 @@ namespace FPLite.Extensions
         /// <param name="source">The sequence to return the element from.</param>
         /// <param name="index">The index in the sequence.</param>
         /// <param name="errorFunc">The function to return an error if the predicate fails.</param>
-        /// <returns>An <see cref="Option{T}"/> instance containing the element if found.</returns>
+        /// <returns>An <see cref="Result{T,TError}"/> instance containing the element if found.</returns>
         public static Result<T, TError> ElementAtOrNone<T, TError>(this IEnumerable<T> source, int index,
             Func<TError> errorFunc)
             where TError : IError
@@ -165,7 +165,7 @@ namespace FPLite.Extensions
         /// <param name="source">The dictionary or enumerable in which to locate the key.</param>
         /// <param name="key">The key to locate.</param>
         /// <param name="errorFunc">The function to return an error if the predicate fails.</param>
-        /// <returns>An <see cref="Option{TValue}"/> instance containing the associated value if located.</returns>
+        /// <returns>An <see cref="Result{TValue,TError}"/> instance containing the associated value if located.</returns>
         public static Result<TValue, TError> GetValueOrNone<TKey, TValue, TError>(
             this IEnumerable<KeyValuePair<TKey, TValue>> source,
             TKey key, Func<TError> errorFunc)
