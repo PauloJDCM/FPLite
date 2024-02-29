@@ -151,12 +151,7 @@ namespace FPLite.Extensions
             TKey key) =>
             source switch
             {
-                null => Option<TValue>.None,
                 IDictionary<TKey, TValue> dictionary => dictionary.TryGetValue(key, out var value)
-                    ? Option<TValue>.Some(value)
-                    : Option<TValue>.None,
-                IReadOnlyDictionary<TKey, TValue> readOnlyDictionary => readOnlyDictionary.TryGetValue(key,
-                    out var value)
                     ? Option<TValue>.Some(value)
                     : Option<TValue>.None,
                 _ => source.FirstOrNone(pair => EqualityComparer<TKey>.Default.Equals(pair.Key, key))
