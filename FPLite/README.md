@@ -11,8 +11,8 @@ Represents a value of TLeft, TRight, Both or Neither.
 ## [Union<T1 ... T8>](Union)
 Represents a value that could be one of the specified types or Nothing.
 
-## [Result](Result.cs)
-Represents a value that could be one of the specified types or an Error.
+## [Result<T, TError>](Result.cs)
+Represents a value of T or an Error.
 
 # Author
 [Paulo Miranda](https://github.com/PauloJDCM)
