@@ -11,149 +11,149 @@ namespace FPLite.Tests.Extensions
         private static readonly int[] Numbers = { 1, 2, 3, 4, 5 };
 
         [Fact]
-        public void GivenPopulatedEnumerable_WhenFirstOrNone_ThenReturnsOkWithFirst()
+        public void GivenPopulatedEnumerable_WhenFirstOrError_ThenReturnsOkWithFirst()
         {
-            var result = Numbers.FirstOrNone(() => new TestError());
+            var result = Numbers.FirstOrError(() => new TestError());
             result.IsOk.Should().BeTrue();
             result.Unwrap().Should().Be(1);
         }
 
         [Fact]
-        public void GivenEmptyEnumerable_WhenFirstOrNone_ThenReturnsError()
+        public void GivenEmptyEnumerable_WhenFirstOrError_ThenReturnsError()
         {
-            var result = Array.Empty<int>().FirstOrNone(() => new TestError());
+            var result = Array.Empty<int>().FirstOrError(() => new TestError());
             result.IsOk.Should().BeFalse();
         }
 
         [Fact]
-        public void GivenPopulatedEnumerable_WhenFirstOrNoneWithPredicate_ThenReturnsOkWithFirst()
+        public void GivenPopulatedEnumerable_WhenFirstOrErrorWithPredicate_ThenReturnsOkWithFirst()
         {
-            var result = Numbers.FirstOrNone(x => x > 2, () => new TestError());
+            var result = Numbers.FirstOrError(x => x > 2, () => new TestError());
             result.IsOk.Should().BeTrue();
             result.Unwrap().Should().Be(3);
         }
 
         [Fact]
-        public void GivenEmptyEnumerable_WhenFirstOrNoneWithPredicate_ThenReturnsError()
+        public void GivenEmptyEnumerable_WhenFirstOrErrorWithPredicate_ThenReturnsError()
         {
-            var result = Array.Empty<int>().FirstOrNone(x => x > 2, () => new TestError());
+            var result = Array.Empty<int>().FirstOrError(x => x > 2, () => new TestError());
             result.IsOk.Should().BeFalse();
         }
 
         [Fact]
-        public void GivenPopulatedEnumerable_WhenLastOrNone_ThenReturnsOkWithLast()
+        public void GivenPopulatedEnumerable_WhenLastOrError_ThenReturnsOkWithLast()
         {
-            var result = Numbers.LastOrNone(() => new TestError());
+            var result = Numbers.LastOrError(() => new TestError());
             result.IsOk.Should().BeTrue();
             result.Unwrap().Should().Be(5);
         }
 
         [Fact]
-        public void GivenEmptyEnumerable_WhenLastOrNone_ThenReturnsError()
+        public void GivenEmptyEnumerable_WhenLastOrError_ThenReturnsError()
         {
-            var result = Array.Empty<int>().LastOrNone(() => new TestError());
+            var result = Array.Empty<int>().LastOrError(() => new TestError());
             result.IsOk.Should().BeFalse();
         }
 
         [Fact]
-        public void GivenPopulatedEnumerable_WhenLastOrNoneWithPredicate_ThenReturnsOkWithLast()
+        public void GivenPopulatedEnumerable_WhenLastOrErrorWithPredicate_ThenReturnsOkWithLast()
         {
-            var result = Numbers.LastOrNone(x => x < 4, () => new TestError());
+            var result = Numbers.LastOrError(x => x < 4, () => new TestError());
             result.IsOk.Should().BeTrue();
             result.Unwrap().Should().Be(3);
         }
 
         [Fact]
-        public void GivenEmptyEnumerable_WhenLastOrNoneWithPredicate_ThenReturnsError()
+        public void GivenEmptyEnumerable_WhenLastOrErrorWithPredicate_ThenReturnsError()
         {
-            var result = Array.Empty<int>().LastOrNone(x => x < 4, () => new TestError());
+            var result = Array.Empty<int>().LastOrError(x => x < 4, () => new TestError());
             result.IsOk.Should().BeFalse();
         }
 
         [Fact]
-        public void GivenPopulatedEnumerableWithOneValue_WhenSingleOrNone_ThenReturnsOkWithSingle()
+        public void GivenPopulatedEnumerableWithOneValue_WhenSingleOrError_ThenReturnsOkWithSingle()
         {
-            var result = new[] { 5 }.SingleOrNone(() => new TestError());
+            var result = new[] { 5 }.SingleOrError(() => new TestError());
             result.IsOk.Should().BeTrue();
             result.Unwrap().Should().Be(5);
         }
 
         [Fact]
-        public void GivenEmptyEnumerable_WhenSingleOrNone_ThenReturnsError()
+        public void GivenEmptyEnumerable_WhenSingleOrError_ThenReturnsError()
         {
-            var result = Array.Empty<int>().SingleOrNone(() => new TestError());
+            var result = Array.Empty<int>().SingleOrError(() => new TestError());
             result.IsOk.Should().BeFalse();
         }
 
         [Fact]
-        public void GivenPopulatedEnumerable_WhenSingleOrNoneWithPredicate_ThenReturnsOkWithSingle()
+        public void GivenPopulatedEnumerable_WhenSingleOrErrorWithPredicate_ThenReturnsOkWithSingle()
         {
-            var result = Numbers.SingleOrNone(x => x == 4, () => new TestError());
+            var result = Numbers.SingleOrError(x => x == 4, () => new TestError());
             result.IsOk.Should().BeTrue();
             result.Unwrap().Should().Be(4);
         }
 
         [Fact]
-        public void GivenEmptyEnumerable_WhenSingleOrNoneWithPredicate_ThenReturnsError()
+        public void GivenEmptyEnumerable_WhenSingleOrErrorWithPredicate_ThenReturnsError()
         {
-            var result = Array.Empty<int>().SingleOrNone(x => x == 4, () => new TestError());
+            var result = Array.Empty<int>().SingleOrError(x => x == 4, () => new TestError());
             result.IsOk.Should().BeFalse();
         }
 
         [Fact]
-        public void GivenPopulatedEnumerable_WhenElementAtOrNone_ThenReturnsOkWithElement()
+        public void GivenPopulatedEnumerable_WhenElementAtOrError_ThenReturnsOkWithElement()
         {
-            var result = Numbers.ElementAtOrNone(3, () => new TestError());
+            var result = Numbers.ElementAtOrError(3, () => new TestError());
             result.IsOk.Should().BeTrue();
             result.Unwrap().Should().Be(4);
         }
 
         [Fact]
-        public void GivenEmptyEnumerable_WhenElementAtOrNone_ThenReturnsError()
+        public void GivenEmptyEnumerable_WhenElementAtOrError_ThenReturnsError()
         {
-            var result = Array.Empty<int>().ElementAtOrNone(3, () => new TestError());
+            var result = Array.Empty<int>().ElementAtOrError(3, () => new TestError());
             result.IsOk.Should().BeFalse();
         }
 
         [Fact]
-        public void GivenPopulatedEnumerable_WhenElementAtOrNoneOutOfRange_ThenReturnsError()
+        public void GivenPopulatedEnumerable_WhenElementAtOrErrorOutOfRange_ThenReturnsError()
         {
-            var result = Array.Empty<int>().ElementAtOrNone(10, () => new TestError());
+            var result = Array.Empty<int>().ElementAtOrError(10, () => new TestError());
             result.IsOk.Should().BeFalse();
         }
 
         [Fact]
-        public void GivenPopulatedKeyValuePairEnumerable_WhenGetValueOrNone_ThenReturnsOk()
+        public void GivenPopulatedKeyValuePairEnumerable_WhenGetValueOrError_ThenReturnsOk()
         {
             var source = new[] { new KeyValuePair<int, string>(1, "Value") };
-            var result = source.GetValueOrNone(1, () => new TestError());
+            var result = source.GetValueOrError(1, () => new TestError());
 
             result.IsOk.Should().BeTrue();
             result.Unwrap().Should().Be("Value");
         }
 
         [Fact]
-        public void GivenEmptyEnumerable_WhenGetValueOrNone_ThenReturnsError()
+        public void GivenEmptyEnumerable_WhenGetValueOrError_ThenReturnsError()
         {
-            var result = Array.Empty<KeyValuePair<int, string>>().GetValueOrNone(1, () => new TestError());
+            var result = Array.Empty<KeyValuePair<int, string>>().GetValueOrError(1, () => new TestError());
             result.IsOk.Should().BeFalse();
         }
 
         [Fact]
-        public void GivenDictionaryWithKey_WhenGetValueOrNone_ThenReturnsOk()
+        public void GivenDictionaryWithKey_WhenGetValueOrError_ThenReturnsOk()
         {
             var source = new Dictionary<int, string> { { 1, "Value" } };
-            var result = source.GetValueOrNone(1, () => new TestError());
+            var result = source.GetValueOrError(1, () => new TestError());
 
             result.IsOk.Should().BeTrue();
             result.Unwrap().Should().Be("Value");
         }
 
         [Fact]
-        public void GivenDictionaryWithoutKey_WhenGetValueOrNone_ThenReturnsError()
+        public void GivenDictionaryWithoutKey_WhenGetValueOrError_ThenReturnsError()
         {
             var source = new Dictionary<int, string> { { 1, "One" } };
-            var result = source.GetValueOrNone(2, () => new TestError());
+            var result = source.GetValueOrError(2, () => new TestError());
 
             result.IsOk.Should().BeFalse();
         }
