@@ -5,14 +5,14 @@
         <Nullable>enable</Nullable>
         <RootNamespace>FPLite</RootNamespace>
         <PackageId>PauloJDCM.FPLite</PackageId>
-        <Version>2.0.0</Version>
+        <Version>2.0.1</Version>
         <Authors>Paulo Miranda</Authors>
         <Product>FPLite</Product>
         <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <RepositoryUrl>https://github.com/PauloJDCM/FPLite</RepositoryUrl>
         <PackageIcon>FPLite.png</PackageIcon>
-        <PackageReleaseNotes>Improved functionality with non-nullable ValueTypes, improved functionality, added ability to inherit types, created new Result type, added compatability with Net Standard 2.1.</PackageReleaseNotes>
+        <PackageReleaseNotes>Fixed README.</PackageReleaseNotes>
     </PropertyGroup>
 
     <ItemGroup>

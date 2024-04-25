@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using static FPLite.Extensions.OptionExtensions;
 
 namespace FPLite.Extensions
 {
@@ -13,36 +14,15 @@ namespace FPLite.Extensions
         /// <param name="source">The sequence to return the first element from.</param>
         /// <param name="predicate">The predicate to filter by.</param>
         /// <returns>An <see cref="Option{T}"/> instance containing the first element if present.</returns>
-        public static Option<T> FirstOrNone<T>(this IEnumerable<T> source, Predicate<T> predicate)
-        {
-            try
-            {
-                var result = source.First(arg => predicate(arg));
-                return Option<T>.Some(result);
-            }
-            catch
-            {
-                return Option<T>.None;
-            }
-        }
+        public static Option<T> FirstOrNone<T>(this IEnumerable<T> source, Predicate<T> predicate) =>
+            TryOption(() => source.First(x => predicate(x)));
 
         /// <summary>
         /// Returns the first element of a sequence, if such exists.
         /// </summary>
         /// <param name="source">The sequence to return the first element from.</param>
         /// <returns>An <see cref="Option{T}"/> instance containing the first element if present.</returns>
-        public static Option<T> FirstOrNone<T>(this IEnumerable<T> source)
-        {
-            try
-            {
-                var result = source.First();
-                return Option<T>.Some(result);
-            }
-            catch
-            {
-                return Option<T>.None;
-            }
-        }
+        public static Option<T> FirstOrNone<T>(this IEnumerable<T> source) => TryOption(source.First);
 
         /// <summary>
         /// Returns the last element of a sequence, satisfying a specified predicate, 
@@ -51,36 +31,15 @@ namespace FPLite.Extensions
         /// <param name="source">The sequence to return the last element from.</param>
         /// <param name="predicate">The predicate to filter by.</param>
         /// <returns>An <see cref="Option{T}"/> instance containing the last element if present.</returns>
-        public static Option<T> LastOrNone<T>(this IEnumerable<T> source, Predicate<T> predicate)
-        {
-            try
-            {
-                var result = source.Last(arg => predicate(arg));
-                return Option<T>.Some(result);
-            }
-            catch
-            {
-                return Option<T>.None;
-            }
-        }
+        public static Option<T> LastOrNone<T>(this IEnumerable<T> source, Predicate<T> predicate) =>
+            TryOption(() => source.Last(x => predicate(x)));
 
         /// <summary>
         /// Returns the last element of a sequence, if such exists.
         /// </summary>
         /// <param name="source">The sequence to return the last element from.</param>
         /// <returns>An <see cref="Option{T}"/> instance containing the last element if present.</returns>
-        public static Option<T> LastOrNone<T>(this IEnumerable<T> source)
-        {
-            try
-            {
-                var result = source.Last();
-                return Option<T>.Some(result);
-            }
-            catch
-            {
-                return Option<T>.None;
-            }
-        }
+        public static Option<T> LastOrNone<T>(this IEnumerable<T> source) => TryOption(source.Last);
 
         /// <summary>
         /// Returns a single element from a sequence, satisfying a specified predicate, 
@@ -89,36 +48,15 @@ namespace FPLite.Extensions
         /// <param name="source">The sequence to return the element from.</param>
         /// <param name="predicate">The predicate to filter by.</param>
         /// <returns>An <see cref="Option{T}"/> instance containing the element if present.</returns>
-        public static Option<T> SingleOrNone<T>(this IEnumerable<T> source, Predicate<T> predicate)
-        {
-            try
-            {
-                var result = source.Single(arg => predicate(arg));
-                return Option<T>.Some(result);
-            }
-            catch
-            {
-                return Option<T>.None;
-            }
-        }
+        public static Option<T> SingleOrNone<T>(this IEnumerable<T> source, Predicate<T> predicate) =>
+            TryOption(() => source.Single(x => predicate(x)));
 
         /// <summary>
         /// Returns a single element from a sequence, if it exists and is the only element in the sequence.
         /// </summary>
         /// <param name="source">The sequence to return the element from.</param>
         /// <returns>An <see cref="Option{T}"/> instance containing the element if present.</returns>
-        public static Option<T> SingleOrNone<T>(this IEnumerable<T> source)
-        {
-            try
-            {
-                var result = source.Single();
-                return Option<T>.Some(result);
-            }
-            catch
-            {
-                return Option<T>.None;
-            }
-        }
+        public static Option<T> SingleOrNone<T>(this IEnumerable<T> source) => TryOption(source.Single);
 
         /// <summary>
         /// Returns an element at a specified position in a sequence if such exists.
@@ -126,18 +64,8 @@ namespace FPLite.Extensions
         /// <param name="source">The sequence to return the element from.</param>
         /// <param name="index">The index in the sequence.</param>
         /// <returns>An <see cref="Option{T}"/> instance containing the element if found.</returns>
-        public static Option<T> ElementAtOrNone<T>(this IEnumerable<T> source, int index)
-        {
-            try
-            {
-                var result = source.ElementAt(index);
-                return Option<T>.Some(result);
-            }
-            catch
-            {
-                return Option<T>.None;
-            }
-        }
+        public static Option<T> ElementAtOrNone<T>(this IEnumerable<T> source, int index) =>
+            TryOption(() => source.ElementAt(index));
 
         /// <summary>
         /// Returns the value associated with the specified key if such exists.
