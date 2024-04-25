@@ -21,16 +21,16 @@ namespace FPLite.Extensions
         /// <summary>
         /// Tries to execute a function and returns a <see cref="Result{T, TError}"/>.
         /// </summary>
-        public static Result<T, TError> Try<T, TError>(Func<T> func, Func<TError> errorFunc)
+        public static Result<T, TError> TryResult<T, TError>(Func<T> func, Func<Exception, TError> errorFunc)
             where TError : IError
         {
             try
             {
                 return Result<T, TError>.Ok(func());
             }
-            catch
+            catch (Exception e)
             {
-                return Result<T, TError>.Err(errorFunc());
+                return Result<T, TError>.Err(errorFunc(e));
             }
         }
     }

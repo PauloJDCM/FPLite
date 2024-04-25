@@ -18,7 +18,7 @@ namespace FPLite.Extensions
         /// <summary>
         /// Tries to execute a function and returns a <see cref="Option{T}"/> with the result.
         /// </summary>
-        public static Option<T> Try<T>(Func<T> func)
+        public static Option<T> TryOption<T>(Func<T> func)
         {
             try
             {
@@ -33,16 +33,17 @@ namespace FPLite.Extensions
         /// <summary>
         /// Tries to execute an action and returns a <see cref="Option{TError}"/> with the result if an exception is thrown.
         /// </summary>
-        public static Option<TError> Try<TError>(Action action, Func<TError> failFunc) where TError : IError
+        public static Option<TError> TryOption<TError>(Action action, Func<Exception, TError> failFunc)
+            where TError : IError
         {
             try
             {
                 action();
                 return Option<TError>.None;
             }
-            catch
+            catch (Exception e)
             {
-                return Option<TError>.Some(failFunc());
+                return Option<TError>.Some(failFunc(e));
             }
         }
     }
