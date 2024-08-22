@@ -14,7 +14,7 @@ public static class OptionExtensions
     /// <summary>
     /// Tries to execute a function and returns a <see cref="IOption{T}"/> with the result.
     /// </summary>
-    public static IOption<T> TryOption<T>(Func<T> func)
+    public static IOption<T> TryOption<T>(Func<T> func) where T : notnull
     {
         try
         {
@@ -30,6 +30,7 @@ public static class OptionExtensions
     /// Tries to execute an action and returns a <see cref="IOption{TError}"/> with the result if an exception is thrown.
     /// </summary>
     public static IOption<TError> TryOption<TError>(Action action, Func<Exception, TError> failFunc)
+        where TError : notnull
     {
         try
         {
@@ -47,6 +48,7 @@ public static class OptionExtensions
     /// if an exception of type <typeparamref name="TException"/> is thrown.
     /// </summary>
     public static IOption<TError> TryOption<TException, TError>(Action action, Func<TException, TError> failFunc)
+        where TError : notnull
         where TException : Exception
     {
         try

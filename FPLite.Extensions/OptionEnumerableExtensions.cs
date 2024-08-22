@@ -15,7 +15,8 @@ public static class OptionEnumerableExtensions
     /// <param name="source">The sequence to return the first element from.</param>
     /// <param name="predicate">The predicate to filter by.</param>
     /// <returns>An <see cref="IOption{T}"/> instance containing the first element if present.</returns>
-    public static IOption<T> FirstOrNone<T>(this IEnumerable<T> source, Predicate<T> predicate) =>
+    public static IOption<T> FirstOrNone<T>(this IEnumerable<T> source, Predicate<T> predicate)
+        where T : notnull =>
         TryOption(() => source.First(x => predicate(x)));
 
     /// <summary>
@@ -23,7 +24,9 @@ public static class OptionEnumerableExtensions
     /// </summary>
     /// <param name="source">The sequence to return the first element from.</param>
     /// <returns>An <see cref="IOption{T}"/> instance containing the first element if present.</returns>
-    public static IOption<T> FirstOrNone<T>(this IEnumerable<T> source) => TryOption(source.First);
+    public static IOption<T> FirstOrNone<T>(this IEnumerable<T> source)
+        where T : notnull =>
+        TryOption(source.First);
 
     /// <summary>
     /// Returns the last element of a sequence, satisfying a specified predicate, 
@@ -32,7 +35,8 @@ public static class OptionEnumerableExtensions
     /// <param name="source">The sequence to return the last element from.</param>
     /// <param name="predicate">The predicate to filter by.</param>
     /// <returns>An <see cref="IOption{T}"/> instance containing the last element if present.</returns>
-    public static IOption<T> LastOrNone<T>(this IEnumerable<T> source, Predicate<T> predicate) =>
+    public static IOption<T> LastOrNone<T>(this IEnumerable<T> source, Predicate<T> predicate)
+        where T : notnull =>
         TryOption(() => source.Last(x => predicate(x)));
 
     /// <summary>
@@ -40,7 +44,9 @@ public static class OptionEnumerableExtensions
     /// </summary>
     /// <param name="source">The sequence to return the last element from.</param>
     /// <returns>An <see cref="IOption{T}"/> instance containing the last element if present.</returns>
-    public static IOption<T> LastOrNone<T>(this IEnumerable<T> source) => TryOption(source.Last);
+    public static IOption<T> LastOrNone<T>(this IEnumerable<T> source)
+        where T : notnull =>
+        TryOption(source.Last);
 
     /// <summary>
     /// Returns a single element from a sequence, satisfying a specified predicate, 
@@ -49,7 +55,8 @@ public static class OptionEnumerableExtensions
     /// <param name="source">The sequence to return the element from.</param>
     /// <param name="predicate">The predicate to filter by.</param>
     /// <returns>An <see cref="IOption{T}"/> instance containing the element if present.</returns>
-    public static IOption<T> SingleOrNone<T>(this IEnumerable<T> source, Predicate<T> predicate) =>
+    public static IOption<T> SingleOrNone<T>(this IEnumerable<T> source, Predicate<T> predicate)
+        where T : notnull =>
         TryOption(() => source.Single(x => predicate(x)));
 
     /// <summary>
@@ -57,7 +64,9 @@ public static class OptionEnumerableExtensions
     /// </summary>
     /// <param name="source">The sequence to return the element from.</param>
     /// <returns>An <see cref="IOption{T}"/> instance containing the element if present.</returns>
-    public static IOption<T> SingleOrNone<T>(this IEnumerable<T> source) => TryOption(source.Single);
+    public static IOption<T> SingleOrNone<T>(this IEnumerable<T> source)
+        where T : notnull =>
+        TryOption(source.Single);
 
     /// <summary>
     /// Returns an element at a specified position in a sequence if such exists.
@@ -65,7 +74,8 @@ public static class OptionEnumerableExtensions
     /// <param name="source">The sequence to return the element from.</param>
     /// <param name="index">The index in the sequence.</param>
     /// <returns>An <see cref="IOption{T}"/> instance containing the element if found.</returns>
-    public static IOption<T> ElementAtOrNone<T>(this IEnumerable<T> source, int index) =>
+    public static IOption<T> ElementAtOrNone<T>(this IEnumerable<T> source, int index)
+        where T : notnull =>
         TryOption(() => source.ElementAt(index));
 
     /// <summary>
@@ -77,7 +87,8 @@ public static class OptionEnumerableExtensions
     /// <param name="key">The key to locate.</param>
     /// <returns>An <see cref="IOption{TValue}"/> instance containing the associated value if located.</returns>
     public static IOption<TValue> GetValueOrNone<TKey, TValue>(this IEnumerable<KeyValuePair<TKey, TValue>> source,
-        TKey key) =>
+        TKey key)
+        where TValue : notnull =>
         source switch
         {
             IDictionary<TKey, TValue> dictionary => dictionary.TryGetValue(key, out var value)
