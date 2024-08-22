@@ -23,10 +23,12 @@ public static class FPLite
 
     #region Either
 
-    public static IEither<T, TError> Left<T, TError>(T value) => new Left<T, TError>(value);
-    public static IEither<T, TError> Right<T, TError>(TError error) => new Right<T, TError>(error);
-    public static IEither<T, TError> Both<T, TError>(T value, TError error) => new Both<T, TError>(value, error);
-    public static IEither<T, TError> Neither<T, TError>() => new Neither<T, TError>();
+    public static IEither<TLeft, TRight> Left<TLeft, TRight>(TLeft value) => new Left<TLeft, TRight>(value);
+    public static IEither<TLeft, TRight> Right<TLeft, TRight>(TRight value) => new Right<TLeft, TRight>(value);
+    public static IEither<TLeft, TRight> Neither<TLeft, TRight>(TRight value) => new Neither<TLeft, TRight>();
+
+    public static IEither<TLeft, TRight> Both<TLeft, TRight>(TLeft left, TRight right) =>
+        new Both<TLeft, TRight>(left, right);
 
     #endregion
 
@@ -80,16 +82,16 @@ public static class FPLite
 
     public static IUnion<T1, T2, T3, T4, T5, T6> T2<T1, T2, T3, T4, T5, T6>(T2 value) =>
         new UnionT2<T1, T2, T3, T4, T5, T6>(value);
-    
+
     public static IUnion<T1, T2, T3, T4, T5, T6> T3<T1, T2, T3, T4, T5, T6>(T3 value) =>
         new UnionT3<T1, T2, T3, T4, T5, T6>(value);
-    
+
     public static IUnion<T1, T2, T3, T4, T5, T6> T4<T1, T2, T3, T4, T5, T6>(T4 value) =>
         new UnionT4<T1, T2, T3, T4, T5, T6>(value);
-    
+
     public static IUnion<T1, T2, T3, T4, T5, T6> T5<T1, T2, T3, T4, T5, T6>(T5 value) =>
         new UnionT5<T1, T2, T3, T4, T5, T6>(value);
-    
+
     public static IUnion<T1, T2, T3, T4, T5, T6> T6<T1, T2, T3, T4, T5, T6>(T6 value) =>
         new UnionT6<T1, T2, T3, T4, T5, T6>(value);
 
@@ -99,19 +101,19 @@ public static class FPLite
 
     public static IUnion<T1, T2, T3, T4, T5, T6, T7> T1<T1, T2, T3, T4, T5, T6, T7>(T1 value) =>
         new UnionT1<T1, T2, T3, T4, T5, T6, T7>(value);
-    
+
     public static IUnion<T1, T2, T3, T4, T5, T6, T7> T2<T1, T2, T3, T4, T5, T6, T7>(T2 value) =>
         new UnionT2<T1, T2, T3, T4, T5, T6, T7>(value);
-    
+
     public static IUnion<T1, T2, T3, T4, T5, T6, T7> T3<T1, T2, T3, T4, T5, T6, T7>(T3 value) =>
         new UnionT3<T1, T2, T3, T4, T5, T6, T7>(value);
-    
+
     public static IUnion<T1, T2, T3, T4, T5, T6, T7> T4<T1, T2, T3, T4, T5, T6, T7>(T4 value) =>
         new UnionT4<T1, T2, T3, T4, T5, T6, T7>(value);
-    
+
     public static IUnion<T1, T2, T3, T4, T5, T6, T7> T5<T1, T2, T3, T4, T5, T6, T7>(T5 value) =>
         new UnionT5<T1, T2, T3, T4, T5, T6, T7>(value);
-    
+
     public static IUnion<T1, T2, T3, T4, T5, T6, T7> T6<T1, T2, T3, T4, T5, T6, T7>(T6 value) =>
         new UnionT6<T1, T2, T3, T4, T5, T6, T7>(value);
 
@@ -124,25 +126,25 @@ public static class FPLite
 
     public static IUnion<T1, T2, T3, T4, T5, T6, T7, T8> T1<T1, T2, T3, T4, T5, T6, T7, T8>(T1 value) =>
         new UnionT1<T1, T2, T3, T4, T5, T6, T7, T8>(value);
-    
+
     public static IUnion<T1, T2, T3, T4, T5, T6, T7, T8> T2<T1, T2, T3, T4, T5, T6, T7, T8>(T2 value) =>
         new UnionT2<T1, T2, T3, T4, T5, T6, T7, T8>(value);
-    
+
     public static IUnion<T1, T2, T3, T4, T5, T6, T7, T8> T3<T1, T2, T3, T4, T5, T6, T7, T8>(T3 value) =>
         new UnionT3<T1, T2, T3, T4, T5, T6, T7, T8>(value);
-    
+
     public static IUnion<T1, T2, T3, T4, T5, T6, T7, T8> T4<T1, T2, T3, T4, T5, T6, T7, T8>(T4 value) =>
         new UnionT4<T1, T2, T3, T4, T5, T6, T7, T8>(value);
-    
+
     public static IUnion<T1, T2, T3, T4, T5, T6, T7, T8> T5<T1, T2, T3, T4, T5, T6, T7, T8>(T5 value) =>
         new UnionT5<T1, T2, T3, T4, T5, T6, T7, T8>(value);
-    
+
     public static IUnion<T1, T2, T3, T4, T5, T6, T7, T8> T6<T1, T2, T3, T4, T5, T6, T7, T8>(T6 value) =>
         new UnionT6<T1, T2, T3, T4, T5, T6, T7, T8>(value);
-    
+
     public static IUnion<T1, T2, T3, T4, T5, T6, T7, T8> T7<T1, T2, T3, T4, T5, T6, T7, T8>(T7 value) =>
         new UnionT7<T1, T2, T3, T4, T5, T6, T7, T8>(value);
-    
+
     public static IUnion<T1, T2, T3, T4, T5, T6, T7, T8> T8<T1, T2, T3, T4, T5, T6, T7, T8>(T8 value) =>
         new UnionT8<T1, T2, T3, T4, T5, T6, T7, T8>(value);
 
