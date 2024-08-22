@@ -65,8 +65,7 @@ internal record Neither<TLeft, TRight> : IEither<TLeft, TRight>
 
     public IEither<TResultLeft, TResultRight> Match<TResultLeft, TResultRight>(Func<TLeft, TResultLeft> leftFunc,
         Func<TRight, TResultRight> rightFunc, Func<IEither<TResultLeft, TResultRight>> neitherFunc,
-        Func<TLeft, TRight, IEither<TResultLeft, TResultRight>> bothFunc) =>
-        neitherFunc();
+        Func<TLeft, TRight, IEither<TResultLeft, TResultRight>> bothFunc) => neitherFunc();
 
     public void Match(Action<TLeft> leftAct, Action<TRight> rightAct, Action neitherAct,
         Action<TLeft, TRight> bothAct) => neitherAct();
@@ -81,8 +80,7 @@ internal record Both<TLeft, TRight>(TLeft Left, TRight Right) : IEither<TLeft, T
 
     public IEither<TResultLeft, TResultRight> Match<TResultLeft, TResultRight>(Func<TLeft, TResultLeft> leftFunc,
         Func<TRight, TResultRight> rightFunc, Func<IEither<TResultLeft, TResultRight>> neitherFunc,
-        Func<TLeft, TRight, IEither<TResultLeft, TResultRight>> bothFunc) =>
-        new Both<TResultLeft, TResultRight>(leftFunc(Left), rightFunc(Right));
+        Func<TLeft, TRight, IEither<TResultLeft, TResultRight>> bothFunc) => bothFunc(Left, Right);
 
     public void Match(Action<TLeft> leftAct, Action<TRight> rightAct, Action neitherAct,
         Action<TLeft, TRight> bothAct) => bothAct(Left, Right);
