@@ -1,218 +1,73 @@
 ﻿using System;
 
-#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+namespace FPLite.Union;
 
-namespace FPLite.Union
+public interface IUnion<out T1, out T2, out T3, out T4>
 {
-    /// <summary>
-    /// Represents a discriminated union with two possible cases.
-    /// </summary>
-    public class Union<T1, T2, T3, T4> : IEquatable<Union<T1, T2, T3, T4>>
-    {
-        public byte Type { get; }
-        
-        private readonly T1 _t1;
-        private readonly T2 _t2;
-        private readonly T3 _t3;
-        private readonly T4 _t4;
+    UnionType Type { get; }
 
-        protected Union()
-        {
-        }
+    TResult Match<TResult>(Func<T1, TResult> t1Func, Func<T2, TResult> t2Func, Func<T3, TResult> t3Func,
+        Func<T4, TResult> t4Func);
 
-        protected Union(T1 t1)
-        {
-            Type = 1;
-            _t1 = t1;
-        }
+    IUnion<T1Result, T2Result, T3Result, T4Result> Match<TResult, T1Result, T2Result, T3Result, T4Result>(
+        Func<T1, T1Result> t1Func, Func<T2, T2Result> t2Func, Func<T3, T3Result> t3Func, Func<T4, T4Result> t4Func);
 
-        protected Union(T2 t2)
-        {
-            Type = 2;
-            _t2 = t2;
-        }
+    void Match(Action<T1> t1Act, Action<T2> t2Act, Action<T3> t3Act, Action<T4> t4Act);
+}
 
-        protected Union(T3 t3)
-        {
-            Type = 3;
-            _t3 = t3;
-        }
+internal record UnionT1<T1, T2, T3, T4>(T1 Value) : IUnion<T1, T2, T3, T4>
+{
+    public UnionType Type => UnionType.T1;
 
-        protected Union(T4 t4)
-        {
-            Type = 4;
-            _t4 = t4;
-        }
+    public TResult Match<TResult>(Func<T1, TResult> t1Func, Func<T2, TResult> t2Func, Func<T3, TResult> t3Func,
+        Func<T4, TResult> t4Func) => t1Func(Value);
 
-        /// <summary>
-        /// Represents a Union of 2 types with no value. Used to indicate the absence of a value in Union types.
-        /// </summary>
-        public static Union<T1, T2, T3, T4> Nothing => new Union<T1, T2, T3, T4>();
+    public IUnion<T1Result, T2Result, T3Result, T4Result> Match<TResult, T1Result, T2Result, T3Result, T4Result>(
+        Func<T1, T1Result> t1Func, Func<T2, T2Result> t2Func, Func<T3, T3Result> t3Func, Func<T4, T4Result> t4Func) =>
+        new UnionT1<T1Result, T2Result, T3Result, T4Result>(t1Func(Value));
 
-        /// <summary>
-        /// Creates a Union with a value of Type 1, or returns Nothing if the provided value is null.
-        /// </summary>
-        /// <param name="t1">The value of Type 1 to be included in the Union, or null.</param>
-        /// <returns>
-        /// A Union containing the provided value if it is not null, or Nothing if the value is null.
-        /// </returns>
-        public static Union<T1, T2, T3, T4> Type1(T1 t1) => t1 is null ? Nothing : new Union<T1, T2, T3, T4>(t1);
+    public void Match(Action<T1> t1Act, Action<T2> t2Act, Action<T3> t3Act, Action<T4> t4Act) => t1Act(Value);
+}
 
-        /// <summary>
-        /// Creates a Union with a value of Type 2, or returns Nothing if the provided value is null.
-        /// </summary>
-        /// <param name="t2">The value of Type 2 to be included in the Union, or null.</param>
-        /// <returns>
-        /// A Union containing the provided value if it is not null, or Nothing if the value is null.
-        /// </returns>
-        public static Union<T1, T2, T3, T4> Type2(T2 t2) => t2 is null ? Nothing : new Union<T1, T2, T3, T4>(t2);
+internal record UnionT2<T1, T2, T3, T4>(T2 Value) : IUnion<T1, T2, T3, T4>
+{
+    public UnionType Type => UnionType.T2;
 
-        /// <summary>
-        /// Creates a Union with a value of Type 3, or returns Nothing if the provided value is null.
-        /// </summary>
-        /// <param name="t3">The value of Type 3 to be included in the Union, or null.</param>
-        /// <returns>
-        /// A Union containing the provided value if it is not null, or Nothing if the value is null.
-        /// </returns>
-        public static Union<T1, T2, T3, T4> Type3(T3 t3) => t3 is null ? Nothing : new Union<T1, T2, T3, T4>(t3);
 
-        /// <summary>
-        /// Creates a Union with a value of Type 4, or returns Nothing if the provided value is null.
-        /// </summary>
-        /// <param name="t4">The value of Type 4 to be included in the Union, or null.</param>
-        /// <returns>
-        /// A Union containing the provided value if it is not null, or Nothing if the value is null.
-        /// </returns>
-        public static Union<T1, T2, T3, T4> Type4(T4 t4) => t4 is null ? Nothing : new Union<T1, T2, T3, T4>(t4);
+    public TResult Match<TResult>(Func<T1, TResult> t1Func, Func<T2, TResult> t2Func, Func<T3, TResult> t3Func,
+        Func<T4, TResult> t4Func) => t2Func(Value);
 
-        /// <summary>
-        /// Matches the active case and invokes the appropriate action.
-        /// </summary>
-        public void Match(Action<T1> case1, Action<T2> case2, Action<T3> case3, Action<T4> case4, Action caseNothing)
-        {
-            switch (Type)
-            {
-                case 1:
-                    case1(_t1);
-                    break;
-                case 2:
-                    case2(_t2);
-                    break;
-                case 3:
-                    case3(_t3);
-                    break;
-                case 4:
-                    case4(_t4);
-                    break;
-                default:
-                    caseNothing();
-                    break;
-            }
-        }
+    public IUnion<T1Result, T2Result, T3Result, T4Result> Match<TResult, T1Result, T2Result, T3Result, T4Result>(
+        Func<T1, T1Result> t1Func, Func<T2, T2Result> t2Func, Func<T3, T3Result> t3Func, Func<T4, T4Result> t4Func) =>
+        new UnionT2<T1Result, T2Result, T3Result, T4Result>(t2Func(Value));
 
-        /// <summary>
-        /// Matches the active case and invokes the appropriate delegate.
-        /// </summary>
-        /// <returns>The result of the invoked delegate.</returns>
-        public TResult Match<TResult>(Func<T1, TResult> case1, Func<T2, TResult> case2, Func<T3, TResult> case3,
-            Func<T4, TResult> case4, Func<TResult> caseNothing) =>
-            Type switch
-            {
-                1 => case1(_t1),
-                2 => case2(_t2),
-                3 => case3(_t3),
-                4 => case4(_t4),
-                _ => caseNothing()
-            };
+    public void Match(Action<T1> t1Act, Action<T2> t2Act, Action<T3> t3Act, Action<T4> t4Act) => t2Act(Value);
+}
 
-        /// <summary>
-        /// Matches the active case and invokes the appropriate delegate.
-        /// </summary>
-        /// <returns>The result of the invoked delegate or Nothing.</returns>
-        public Union<TResult1, TResult2, TResult3, TResult4> Match<TResult1, TResult2, TResult3, TResult4>(
-            Func<T1, TResult1> case1, Func<T2, TResult2> case2, Func<T3, TResult3> case3, Func<T4, TResult4> case4) =>
-            Type switch
-            {
-                1 => Union<TResult1, TResult2, TResult3, TResult4>.Type1(case1(_t1)),
-                2 => Union<TResult1, TResult2, TResult3, TResult4>.Type2(case2(_t2)),
-                3 => Union<TResult1, TResult2, TResult3, TResult4>.Type3(case3(_t3)),
-                4 => Union<TResult1, TResult2, TResult3, TResult4>.Type4(case4(_t4)),
-                _ => Union<TResult1, TResult2, TResult3, TResult4>.Nothing
-            };
+internal record UnionT3<T1, T2, T3, T4>(T3 Value) : IUnion<T1, T2, T3, T4>
+{
+    public UnionType Type => UnionType.T3;
 
-        /// <summary>
-        /// Binds a function to T1 of the Union type.
-        /// </summary>
-        /// <typeparam name="T">The type of the result of the binding function.</typeparam>
-        /// <param name="func">The function to bind to the T1 value.</param>
-        public Union<T, T2, T3, T4> Bind1<T>(Func<T1, T> func) => Type switch
-        {
-            1 => Union<T, T2, T3, T4>.Type1(func(_t1)),
-            2 => Union<T, T2, T3, T4>.Type2(_t2),
-            3 => Union<T, T2, T3, T4>.Type3(_t3),
-            4 => Union<T, T2, T3, T4>.Type4(_t4),
-            _ => Union<T, T2, T3, T4>.Nothing
-        };
+    public TResult Match<TResult>(Func<T1, TResult> t1Func, Func<T2, TResult> t2Func, Func<T3, TResult> t3Func,
+        Func<T4, TResult> t4Func) => t3Func(Value);
 
-        /// <summary>
-        /// Binds a function to T2 of the Union type.
-        /// </summary>
-        /// <typeparam name="T">The type of the result of the binding function.</typeparam>
-        /// <param name="func">The function to bind to the T2 value.</param>
-        public Union<T1, T, T3, T4> Bind2<T>(Func<T2, T> func) => Type switch
-        {
-            1 => Union<T1, T, T3, T4>.Type1(_t1),
-            2 => Union<T1, T, T3, T4>.Type2(func(_t2)),
-            3 => Union<T1, T, T3, T4>.Type3(_t3),
-            4 => Union<T1, T, T3, T4>.Type4(_t4),
-            _ => Union<T1, T, T3, T4>.Nothing
-        };
+    public IUnion<T1Result, T2Result, T3Result, T4Result> Match<TResult, T1Result, T2Result, T3Result, T4Result>(
+        Func<T1, T1Result> t1Func, Func<T2, T2Result> t2Func, Func<T3, T3Result> t3Func, Func<T4, T4Result> t4Func) =>
+        new UnionT3<T1Result, T2Result, T3Result, T4Result>(t3Func(Value));
 
-        /// <summary>
-        /// Binds a function to T3 of the Union type.
-        /// </summary>
-        /// <typeparam name="T">The type of the result of the binding function.</typeparam>
-        /// <param name="func">The function to bind to the T3 value.</param>
-        public Union<T1, T2, T, T4> Bind3<T>(Func<T3, T> func) => Type switch
-        {
-            1 => Union<T1, T2, T, T4>.Type1(_t1),
-            2 => Union<T1, T2, T, T4>.Type2(_t2),
-            3 => Union<T1, T2, T, T4>.Type3(func(_t3)),
-            4 => Union<T1, T2, T, T4>.Type4(_t4),
-            _ => Union<T1, T2, T, T4>.Nothing
-        };
+    public void Match(Action<T1> t1Act, Action<T2> t2Act, Action<T3> t3Act, Action<T4> t4Act) => t3Act(Value);
+}
 
-        /// <summary>
-        /// Binds a function to T4 of the Union type.
-        /// </summary>
-        /// <typeparam name="T">The type of the result of the binding function.</typeparam>
-        /// <param name="func">The function to bind to the T4 value.</param>
-        public Union<T1, T2, T3, T> Bind4<T>(Func<T4, T> func) => Type switch
-        {
-            1 => Union<T1, T2, T3, T>.Type1(_t1),
-            2 => Union<T1, T2, T3, T>.Type2(_t2),
-            3 => Union<T1, T2, T3, T>.Type3(_t3),
-            4 => Union<T1, T2, T3, T>.Type4(func(_t4)),
-            _ => Union<T1, T2, T3, T>.Nothing
-        };
+internal record UnionT4<T1, T2, T3, T4>(T4 Value) : IUnion<T1, T2, T3, T4>
+{
+    public UnionType Type => UnionType.T4;
 
-        public override string ToString() => (Type switch
-        {
-            1 => $"T1({_t1!.ToString()})",
-            2 => $"T2({_t2!.ToString()})",
-            3 => $"T3({_t3!.ToString()})",
-            4 => $"T4({_t4!.ToString()})",
-            _ => "Nothing"
-        })!;
-        
-        public override bool Equals(object? obj) => obj is Union<T1, T2, T3, T4> other && Equals(other);
+    public TResult Match<TResult>(Func<T1, TResult> t1Func, Func<T2, TResult> t2Func, Func<T3, TResult> t3Func,
+        Func<T4, TResult> t4Func) => t4Func(Value);
 
-        public bool Equals(Union<T1, T2, T3, T4>? other) => GetHashCode() == other?.GetHashCode();
+    public IUnion<T1Result, T2Result, T3Result, T4Result> Match<TResult, T1Result, T2Result, T3Result, T4Result>(
+        Func<T1, T1Result> t1Func, Func<T2, T2Result> t2Func, Func<T3, T3Result> t3Func, Func<T4, T4Result> t4Func) =>
+        new UnionT4<T1Result, T2Result, T3Result, T4Result>(t4Func(Value));
 
-        public override int GetHashCode() => HashCode.Combine(Type, _t1, _t2, _t3, _t4);
-
-        public static bool operator ==(Union<T1, T2, T3, T4> left, Union<T1, T2, T3, T4> right) => left.Equals(right);
-
-        public static bool operator !=(Union<T1, T2, T3, T4> left, Union<T1, T2, T3, T4> right) => !left.Equals(right);
-    }
+    public void Match(Action<T1> t1Act, Action<T2> t2Act, Action<T3> t3Act, Action<T4> t4Act) => t4Act(Value);
 }
