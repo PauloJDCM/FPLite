@@ -1,50 +1,62 @@
 using System;
+using FPLite.Option;
 
-namespace FPLite.Extensions
+namespace FPLite.Extensions;
+
+public static class OptionExtensions
 {
-    public static class OptionExtensions
+    /// <summary>
+    /// Converts a value of type <typeparamref name="TIn"/> to an <see cref="IOption{TOut}"/>.
+    /// </summary>
+    public static IOption<TOut> AsOptionOf<TIn, TOut>(this TIn value) =>
+        value is TOut cast ? FPLite.Some(cast) : FPLite.None<TOut>();
+
+    /// <summary>
+    /// Tries to execute a function and returns a <see cref="IOption{T}"/> with the result.
+    /// </summary>
+    public static IOption<T> TryOption<T>(Func<T> func)
     {
-        /// <summary>
-        /// Converts a nullable value to an Option type.
-        /// </summary>
-        public static Option<T> ToOption<T>(this T value) => Option<T>.Some(value);
-
-        /// <summary>
-        /// Converts a value of type <typeparamref name="TIn"/> to an <see cref="Option{TOut}"/>.
-        /// </summary>
-        public static Option<TOut> AsOptionOf<TIn, TOut>(this TIn value) =>
-            value is TOut cast ? Option<TOut>.Some(cast) : Option<TOut>.None;
-
-        /// <summary>
-        /// Tries to execute a function and returns a <see cref="Option{T}"/> with the result.
-        /// </summary>
-        public static Option<T> TryOption<T>(Func<T> func)
+        try
         {
-            try
-            {
-                return Option<T>.Some(func());
-            }
-            catch
-            {
-                return Option<T>.None;
-            }
+            return FPLite.Some(func());
         }
-
-        /// <summary>
-        /// Tries to execute an action and returns a <see cref="Option{TError}"/> with the result if an exception is thrown.
-        /// </summary>
-        public static Option<TError> TryOption<TError>(Action action, Func<Exception, TError> failFunc)
-            where TError : IError
+        catch
         {
-            try
-            {
-                action();
-                return Option<TError>.None;
-            }
-            catch (Exception e)
-            {
-                return Option<TError>.Some(failFunc(e));
-            }
+            return FPLite.None<T>();
+        }
+    }
+
+    /// <summary>
+    /// Tries to execute an action and returns a <see cref="IOption{TError}"/> with the result if an exception is thrown.
+    /// </summary>
+    public static IOption<TError> TryOption<TError>(Action action, Func<Exception, TError> failFunc)
+    {
+        try
+        {
+            action();
+            return FPLite.None<TError>();
+        }
+        catch (Exception e)
+        {
+            return FPLite.Some(failFunc(e));
+        }
+    }
+
+    /// <summary>
+    /// Tries to execute an action and returns a <see cref="IOption{TError}"/> with the result
+    /// if an exception of type <typeparamref name="TException"/> is thrown.
+    /// </summary>
+    public static IOption<TError> TryOption<TException, TError>(Action action, Func<TException, TError> failFunc)
+        where TException : Exception
+    {
+        try
+        {
+            action();
+            return FPLite.None<TError>();
+        }
+        catch (TException e)
+        {
+            return FPLite.Some(failFunc(e));
         }
     }
 }

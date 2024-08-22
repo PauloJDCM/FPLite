@@ -1,18 +1,18 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFrameworks>netstandard2.1;net6.0</TargetFrameworks>
+        <TargetFramework>net6.0</TargetFramework>
         <Nullable>enable</Nullable>
         <RootNamespace>FPLite.Extensions</RootNamespace>
         <PackageId>PauloJDCM.FPLite.Extensions</PackageId>
-        <Version>3.0.0</Version>
+        <Version>4.0.0</Version>
         <Authors>Paulo Miranda</Authors>
         <Product>FPLite.Extensions</Product>
         <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <RepositoryUrl>https://github.com/PauloJDCM/FPLite</RepositoryUrl>
         <PackageIcon>FPLite_Extensions.png</PackageIcon>
-        <PackageReleaseNotes>Fixed ResultEnumerableExtensions incorrect method names, added Try methods for Option and Result types.</PackageReleaseNotes>
+        <PackageReleaseNotes>Updated to use remodeled types. Removed functionality that didn't really add much. Dropped support for .Net Standard.</PackageReleaseNotes>
     </PropertyGroup>
 
     <ItemGroup>
