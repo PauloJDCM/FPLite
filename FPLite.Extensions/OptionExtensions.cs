@@ -6,9 +6,17 @@ namespace FPLite.Extensions;
 public static class OptionExtensions
 {
     /// <summary>
+    /// Converts a nullable value of type <typeparamref name="T"/> to an <see cref="IOption{T}"/>.
+    /// </summary>
+    public static IOption<T> ToOption<T>(this T? value) where T : notnull =>
+        value is null ? FPLite.None<T>() : FPLite.Some(value);
+
+    /// <summary>
     /// Converts a value of type <typeparamref name="TIn"/> to an <see cref="IOption{TOut}"/>.
     /// </summary>
-    public static IOption<TOut> AsOptionOf<TIn, TOut>(this TIn value) =>
+    public static IOption<TOut> AsOptionOf<TIn, TOut>(this TIn value)
+        where TIn : notnull
+        where TOut : notnull =>
         value is TOut cast ? FPLite.Some(cast) : FPLite.None<TOut>();
 
     /// <summary>
