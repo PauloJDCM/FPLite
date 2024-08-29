@@ -1,5 +1,4 @@
 ﻿using System;
-using FPLite.Result;
 
 namespace FPLite.Extensions;
 
@@ -9,7 +8,8 @@ public static class ResultExtensions
     /// Converts a nullable value of type <typeparamref name="TIn"/> to an <see cref="IResult{TOut, TError}"/>.
     /// </summary>
     public static IResult<TOut, TError> AsResultOf<TIn, TOut, TError>(this TIn value, Func<TError> errorFunc)
-        where TError : notnull =>
+        where TError : notnull
+        where TOut : notnull =>
         value is TOut cast ? FPLite.Ok<TOut, TError>(cast) : FPLite.Err<TOut, TError>(errorFunc());
 
     /// <summary>

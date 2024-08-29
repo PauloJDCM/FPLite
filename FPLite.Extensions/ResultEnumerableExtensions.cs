@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using FPLite.Result;
 using static FPLite.Extensions.ResultExtensions;
 
 namespace FPLite.Extensions

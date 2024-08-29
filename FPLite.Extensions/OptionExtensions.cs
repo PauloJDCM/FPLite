@@ -1,5 +1,4 @@
 using System;
-using FPLite.Option;
 
 namespace FPLite.Extensions;
 
