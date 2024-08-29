@@ -5,10 +5,16 @@ namespace FPLite.Extensions;
 public static class OptionExtensions
 {
     /// <summary>
-    /// Converts a nullable value of type <typeparamref name="T"/> to an <see cref="IOption{T}"/>.
+    /// Converts a nullable value (reference type) of type <typeparamref name="T"/> to an <see cref="IOption{T}"/>.
     /// </summary>
     public static IOption<T> ToOption<T>(this T? value) where T : notnull =>
         value is null ? FPLite.None<T>() : FPLite.Some(value);
+    
+    /// <summary>
+    /// Converts a nullable value (value type) of type <typeparamref name="T"/> to an <see cref="IOption{T}"/>.
+    /// </summary>
+    public static IOption<T> ToOption<T>(this T? value) where T : unmanaged =>
+        value is null ? FPLite.None<T>() : FPLite.Some((T)value);
 
     /// <summary>
     /// Converts a value of type <typeparamref name="TIn"/> to an <see cref="IOption{TOut}"/>.
