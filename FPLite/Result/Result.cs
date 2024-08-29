@@ -3,21 +3,7 @@ using FPLite.Union;
 
 namespace FPLite.Result;
 
-public interface IResult<T, out TError>
-{
-    bool IsOk { get; }
-
-    TResult Match<TResult>(Func<T, TResult> okFunc, Func<TError, TResult> errFunc);
-    void Match(Action<T> okAct, Action<TError> errAct);
-
-    IResult<TResult, TError> Bind<TResult>(Func<T, TResult> okFunc);
-
-    T Unwrap();
-    T UnwrapOr(Func<TError, T> func);
-    IUnion<T, TOr> UnwrapOr<TOr>(Func<TError, TOr> func);
-}
-
-public class ResultUnwrapException<T, TError> : Exception
+internal sealed class ResultUnwrapException<T, TError> : UnwrapException
 {
     private const string ErrorMessage = "Called Result<{0}, {1}>.Unwrap() on Error!";
 
@@ -56,6 +42,6 @@ internal record Err<T, TError>(TError Value) : IResult<T, TError>
     public T Unwrap() => throw new ResultUnwrapException<T, TError>();
 
     public T UnwrapOr(Func<TError, T> func) => func(Value);
-    
+
     public IUnion<T, TOr> UnwrapOr<TOr>(Func<TError, TOr> func) => new UnionT2<T, TOr>(func(Value));
 }

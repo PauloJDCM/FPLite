@@ -2,28 +2,6 @@
 
 namespace FPLite.Either;
 
-public enum EitherType : byte
-{
-    Neither,
-    Left,
-    Right,
-    Both
-}
-
-public interface IEither<out TLeft, out TRight>
-{
-    EitherType Type { get; }
-
-    TResult Match<TResult>(Func<TLeft, TResult> leftFunc, Func<TRight, TResult> rightFunc,
-        Func<TResult> neitherFunc, Func<TLeft, TRight, TResult> bothFunc);
-
-    IEither<TResultLeft, TResultRight> Match<TResultLeft, TResultRight>(Func<TLeft, TResultLeft> leftFunc,
-        Func<TRight, TResultRight> rightFunc, Func<IEither<TResultLeft, TResultRight>> neitherFunc,
-        Func<TLeft, TRight, IEither<TResultLeft, TResultRight>> bothFunc);
-
-    void Match(Action<TLeft> leftAct, Action<TRight> rightAct, Action neitherAct, Action<TLeft, TRight> bothAct);
-}
-
 internal record Left<TLeft, TRight>(TLeft Value) : IEither<TLeft, TRight>
 {
     public EitherType Type => EitherType.Left;

@@ -3,21 +3,7 @@ using FPLite.Union;
 
 namespace FPLite.Option;
 
-public interface IOption<T>
-{
-    bool IsSome { get; }
-
-    TResult Match<TResult>(Func<T, TResult> someFunc, Func<TResult> noneFunc);
-    void Match(Action<T> someAct, Action noneAct);
-
-    IOption<TResult> Bind<TResult>(Func<T, TResult> someFunc);
-
-    T Unwrap();
-    T UnwrapOr(Func<T> func);
-    IUnion<T, TOr> UnwrapOr<TOr>(Func<TOr> func);
-}
-
-public class OptionUnwrapException<T> : Exception
+internal sealed class OptionUnwrapException<T> : UnwrapException
 {
     private const string ErrorMessage = "Called Option<{0}>.Unwrap() on None!";
 
