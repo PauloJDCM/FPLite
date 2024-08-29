@@ -1,8 +1,6 @@
-﻿namespace FPLite.Tests
+﻿namespace FPLite.Tests;
+
+public readonly struct TestError
 {
-    public class TestError : IError
-    {
-        public string Code => "TEST_CODE";
-        public string Message => "TEST_MESSAGE";
-    }
+    public static string Message => "TEST_MESSAGE";
 }

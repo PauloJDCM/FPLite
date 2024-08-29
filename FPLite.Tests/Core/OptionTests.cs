@@ -1,221 +1,162 @@
 using FluentAssertions;
 using Xunit;
 
-namespace FPLite.Tests.Core
+namespace FPLite.Tests.Core;
+
+public class OptionTests
 {
-    public class OptionTests
+    [Fact]
+    public void GivenInt_WhenValueIsNone_ShouldBeNone()
     {
-        [Fact]
-        public void GivenValueType_WhenValueIsNone_ShouldBeNone()
-        {
-            var option = Option<int>.None;
+        var option = FPLite.None<string>();
+        var result = option.Match(_ => false, () => true);
+            
+        option.IsSome.Should().BeFalse();
+        result.Should().BeTrue();
+    }
 
-            option.ToString().Should().Be("None");
-            option.IsSome.Should().BeFalse();
-        }
+    [Theory]
+    [InlineData(1)]
+    [InlineData(0)]
+    [InlineData(-1)]
+    public void GivenInt_WhenValueIsSome_ShouldReturnValue(int originalValue)
+    {
+        var option = FPLite.Some(originalValue);
+        var value = option.Match(i => i, () => originalValue - 1);
 
-        [Fact]
-        public void GivenNullableValueType_WhenValueIsNull_ShouldBeNone()
-        {
-            var option = Option<int?>.Some(null);
+        option.IsSome.Should().BeTrue();
+        value.Should().Be(originalValue);
+    }
 
-            option.ToString().Should().Be("None");
-            option.IsSome.Should().BeFalse();
-        }
+    [Fact]
+    public void GivenNone_WhenMatching_ShouldExecuteNone()
+    {
+        var option = FPLite.None<int>();
+        var result = false;
+        option.Match(_ => { }, () => result = true);
 
-        [Theory]
-        [InlineData(1)]
-        [InlineData(0)]
-        [InlineData(-1)]
-        public void GivenValueType_WhenValueIsSome_ShouldReturnValue(int originalValue)
-        {
-            var option = Option<int>.Some(originalValue);
-            var value = option.Match(i => i, () => originalValue - 1);
+        result.Should().BeTrue();
+    }
 
-            value.Should().Be(originalValue);
-        }
+    [Fact]
+    public void GivenSome_WhenMatching_ShouldExecuteSome()
+    {
+        var option = FPLite.Some(1);
+        var result = false;
+        option.Match(_ => result = true, () => { });
 
-        [Fact]
-        public void GivenReferenceType_WhenValueIsNone_ShouldBeNone()
-        {
-            var option = Option<string>.None;
+        result.Should().BeTrue();
+    }
 
-            option.ToString().Should().Be("None");
-            option.IsSome.Should().BeFalse();
-        }
+    [Fact]
+    public void GivenNone_WhenBinding_ShouldNotBind()
+    {
+        var option = FPLite.None<int>();
+        var bind = option.Bind(i => i + i);
+        var result = bind.Match(i => i, () => 0);
 
-        [Theory]
-        [InlineData("test")]
-        [InlineData("123")]
-        public void GivenReferenceType_WhenValueIsSome_ShouldReturnValue(string originalValue)
-        {
-            var option = Option<string>.Some(originalValue);
-            var value = option.Match(s => s, () => string.Empty);
+        bind.IsSome.Should().BeFalse();
+        result.Should().Be(0);
+    }
 
-            value.Should().Be(originalValue);
-        }
+    [Fact]
+    public void GivenSome_WhenBinding_ShouldBind()
+    {
+        var option = FPLite.Some(1);
+        var bind = option.Bind(i => i + i);
+        var result = bind.Match(i => i, () => 0);
+            
+        bind.IsSome.Should().BeTrue();
+        result.Should().Be(2);
+    }
 
-        [Fact]
-        public void GivenNullableReferenceType_WhenValueIsNone_ShouldBeNone()
-        {
-            var option = Option<string?>.None;
+    [Fact]
+    public void Given2None_WhenEquating_ShouldBeEqual()
+    {
+        var option = FPLite.None<int>();
+        var other = FPLite.None<int>();
 
-            option.ToString().Should().Be("None");
-            option.IsSome.Should().BeFalse();
-        }
+        option.Should().Be(other);
+        option.Equals(other).Should().BeTrue();
+    }
 
-        [Theory]
-        [InlineData("test")]
-        [InlineData("123")]
-        public void GivenNullableReferenceType_WhenValueIsSome_ShouldReturnValue(string originalValue)
-        {
-            var option = Option<string?>.Some(originalValue);
-            var value = option.Match(s => s, () => string.Empty);
+    [Fact]
+    public void Given2EqualSome_WhenEquating_ShouldBeEqual()
+    {
+        var option = FPLite.Some(1);
+        var other = FPLite.Some(1);
 
-            value.Should().Be(originalValue);
-        }
+        option.Should().Be(other);
+        option.Equals(other).Should().BeTrue();
+    }
+    
+    [Fact]
+    public void Given2DifferentSome_WhenEquating_ShouldNotBeEqual()
+    {
+        var option = FPLite.Some(1);
+        var other = FPLite.Some(2);
+        
+        option.Should().NotBe(other);
+        option.Equals(other).Should().BeFalse();
+    }
+    
+    [Fact]
+    public void GivenSomeAndNone_WhenEquating_ShouldBeNotBeEqual()
+    {
+        var option = FPLite.Some(1);
+        var other = FPLite.None<int>();
+        
+        option.Should().NotBe(other);
+        option.Equals(other).Should().BeFalse();
+    }
 
-        [Fact]
-        public void GivenReferenceType_WhenValueIsNone_ShouldExecuteNone()
-        {
-            var option = Option<string>.None;
-            var result = false;
-            option.Match(_ => result = true, () => { });
+    [Fact]
+    public void GivenNone_WhenUnwrapping_ShouldThrow()
+    {
+        var option = FPLite.None<int>();
+        Assert.ThrowsAny<UnwrapException>(() => option.Unwrap());
+    }
 
-            result.Should().BeFalse();
-        }
+    [Fact]
+    public void GivenSome_WhenUnwrapping_ShouldReturnValue()
+    {
+        var option = FPLite.Some(1);
+        option.Unwrap().Should().Be(1);
+    }
+    
+    [Fact]
+    public void GivenNone_WhenUnwrappingOrWithSameType_ShouldReturnSomeWithOrValue()
+    {
+        var option = FPLite.None<int>();
+        option.UnwrapOr(() => 2).Should().Be(2);
+    }
+    
+    [Fact]
+    public void GivenSome_WhenUnwrappingOrWithSameType_ShouldReturnValue()
+    {
+        var option = FPLite.Some(1);
+        option.UnwrapOr(() => 2).Should().Be(1);
+    }
+    
+    [Fact]
+    public void GivenNone_WhenUnwrappingOrWithDifferentType_ShouldReturnSomeWithOrValue()
+    {
+        var option = FPLite.None<int>();
+        var unwrap = option.UnwrapOr(() => "2");
+        var result = unwrap.Match(i => i.ToString(), s => s);
 
-        [Theory]
-        [InlineData("test")]
-        [InlineData("123")]
-        public void GivenReferenceType_WhenValueIsSome_ShouldExecuteSome(string originalValue)
-        {
-            var option = Option<string>.Some(originalValue);
-            var result = string.Empty;
-            option.Match(s => result = s, () => { });
-
-            result.Should().Be(originalValue);
-        }
-
-        [Fact]
-        public void GivenReferenceType_WhenValueIsNone_ShouldNotBind()
-        {
-            var option = Option<string>.None;
-            var bind = option.Bind(s => s + "test");
-
-            bind.ToString().Should().Be("None");
-        }
-
-        [Theory]
-        [InlineData("test")]
-        [InlineData("123")]
-        public void GivenReferenceType_WhenValueIsSome_ShouldBind(string originalValue)
-        {
-            var option = Option<string>.Some(originalValue);
-            var bind = option.Bind(s => s + "test");
-
-            bind.ToString().Should().Be(originalValue + "test");
-        }
-
-        [Fact]
-        public void Given2DifferentTypes_WhenValuesMatch_ShouldNotBeEqual()
-        {
-            var option = Option<string>.Some("test");
-            var other = Option<int>.Some(1);
-
-            option.Should().NotBe(other);
-        }
-
-        [Fact]
-        public void Given2EqualTypes_WhenValuesDontMatch_ShouldNotBeEqual()
-        {
-            var option = Option<string>.Some("test");
-            var other = Option<string>.Some("test2");
-
-            option.Should().NotBe(other);
-            (option == other).Should().BeFalse();
-            (option != other).Should().BeTrue();
-        }
-
-        [Fact]
-        public void Given2EqualTypes_WhenValuesMatch_ShouldBeEqual()
-        {
-            var option = Option<string>.Some("test");
-            var other = Option<string>.Some("test");
-
-            option.Should().Be(other);
-            (option == other).Should().BeTrue();
-            (option != other).Should().BeFalse();
-        }
-
-        [Fact]
-        public void GivenSomeValue_WhenUnwrapping_ShouldReturnValue()
-        {
-            var option = Option<string>.Some("test");
-            option.Unwrap().Should().Be("test");
-        }
-
-        [Fact]
-        public void GivenNoneValue_WhenUnwrapping_ShouldThrow()
-        {
-            var option = Option<string>.None;
-            Assert.Throws<OptionUnwrapException<string>>(() => option.Unwrap());
-        }
-
-        [Fact]
-        public void GivenSomeValue_WhenUnwrappingWithCustomException_ShouldReturnValue()
-        {
-            var option = Option<string>.Some("test");
-            option.Unwrap(() => new TestException()).Should().Be("test");
-        }
-
-        [Fact]
-        public void GivenNoneValue_WhenUnwrappingWithCustomException_ShouldThrowCustomException()
-        {
-            var option = Option<string>.None;
-            Assert.Throws<TestException>(() => option.Unwrap(() => new TestException()));
-        }
-
-        [Fact]
-        public void GivenSomeValue_WhenUnwrappingOr_ShouldReturnValue()
-        {
-            var option = Option<string>.Some("test");
-            option.UnwrapOr(() => "default").Should().Be("test");
-        }
-
-        [Fact]
-        public void GivenNoneValue_WhenUnwrappingOr_ShouldReturnOther()
-        {
-            var option = Option<string>.None;
-            option.UnwrapOr(() => "default").Should().Be("default");
-        }
-
-        [Fact]
-        public void GivenSomeValue_WhenUnwrappingOrWithOther_ShouldUnionWithT1()
-        {
-            var option = Option<string>.Some("test");
-            option.UnwrapOr(() => 1).Type.Should().Be(1);
-        }
-
-        [Fact]
-        public void GivenNoneValue_WhenUnwrappingOrWithOther_ShouldReturnUnionWithT2()
-        {
-            var option = Option<string>.None;
-            option.UnwrapOr(() => 1).Type.Should().Be(2);
-        }
-
-        [Fact]
-        public void GivenSomeValue_WhenOkOr_ShouldReturnOk()
-        {
-            var option = Option<string>.Some("test");
-            option.OkOr(() => new TestError()).IsOk.Should().BeTrue();
-        }
-
-        [Fact]
-        public void GivenNoneValue_WhenOkOr_ShouldReturnErr()
-        {
-            var option = Option<string>.None;
-            option.OkOr(() => new TestError()).IsOk.Should().BeFalse();
-        }
+        unwrap.Type.Should().Be(UnionType.T2);
+        result.Should().Be("2");
+    }
+    
+    [Fact]
+    public void GivenSome_WhenUnwrappingOrWithDifferentType_ShouldReturnValue()
+    {
+        var option = FPLite.Some(1);
+        var unwrap = option.UnwrapOr(() => "2");
+        var result = unwrap.Match(i => i.ToString(), s => s);
+        
+        unwrap.Type.Should().Be(UnionType.T1);
+        result.Should().Be("1");
     }
 }
