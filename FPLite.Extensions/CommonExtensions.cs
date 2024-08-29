@@ -29,4 +29,9 @@ public static class CommonExtensions
     {
         /* Empty action, does nothing */
     };
+    
+    /// <summary>
+    /// Returns an empty function.
+    /// </summary>
+    public static void Ignore<T>(this T _) { }
 }

@@ -27,6 +27,7 @@ public class CommonTests
     public void GivenValue_WhenIgnoring_ShouldDoNothing()
     {
         var result = 5;
+        result.Pipe(CommonExtensions.Ignore);
         result.Pipe(_ => CommonExtensions.Ignore());
 
         result.Should().Be(5);
