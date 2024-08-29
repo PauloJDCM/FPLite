@@ -9,7 +9,7 @@ internal record UnionT1<T1, T2, T3>(T1 Value) : IUnion<T1, T2, T3>
     public TResult Match<TResult>(Func<T1, TResult> t1Func, Func<T2, TResult> t2Func, Func<T3, TResult> t3Func) =>
         t1Func(Value);
 
-    public IUnion<T1Result, T2Result, T3Result> Match<TResult, T1Result, T2Result, T3Result>(Func<T1, T1Result> t1Func,
+    public IUnion<T1Result, T2Result, T3Result> Match<T1Result, T2Result, T3Result>(Func<T1, T1Result> t1Func,
         Func<T2, T2Result> t2Func, Func<T3, T3Result> t3Func) =>
         new UnionT1<T1Result, T2Result, T3Result>(t1Func(Value));
 
@@ -23,7 +23,7 @@ internal record UnionT2<T1, T2, T3>(T2 Value) : IUnion<T1, T2, T3>
     public TResult Match<TResult>(Func<T1, TResult> t1Func, Func<T2, TResult> t2Func, Func<T3, TResult> t3Func) =>
         t2Func(Value);
 
-    public IUnion<T1Result, T2Result, T3Result> Match<TResult, T1Result, T2Result, T3Result>(Func<T1, T1Result> t1Func,
+    public IUnion<T1Result, T2Result, T3Result> Match<T1Result, T2Result, T3Result>(Func<T1, T1Result> t1Func,
         Func<T2, T2Result> t2Func, Func<T3, T3Result> t3Func) =>
         new UnionT2<T1Result, T2Result, T3Result>(t2Func(Value));
 
@@ -37,7 +37,7 @@ internal record UnionT3<T1, T2, T3>(T3 Value) : IUnion<T1, T2, T3>
     public TResult Match<TResult>(Func<T1, TResult> t1Func, Func<T2, TResult> t2Func, Func<T3, TResult> t3Func) =>
         t3Func(Value);
 
-    public IUnion<T1Result, T2Result, T3Result> Match<TResult, T1Result, T2Result, T3Result>(Func<T1, T1Result> t1Func,
+    public IUnion<T1Result, T2Result, T3Result> Match<T1Result, T2Result, T3Result>(Func<T1, T1Result> t1Func,
         Func<T2, T2Result> t2Func, Func<T3, T3Result> t3Func) =>
         new UnionT3<T1Result, T2Result, T3Result>(t3Func(Value));
 
