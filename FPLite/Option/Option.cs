@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
+using System.Diagnostics.Contracts;
 using FPLite.Union;
 
 namespace FPLite.Option;
 
-internal sealed class OptionUnwrapException<T> : UnwrapException
+public sealed class OptionUnwrapException<T> : UnwrapException
 {
     private const string ErrorMessage = "Called Option<{0}>.Unwrap() on None!";
 
@@ -12,38 +14,84 @@ internal sealed class OptionUnwrapException<T> : UnwrapException
     }
 }
 
-internal record Some<T>(T Value) : IOption<T>
+public enum OptionType : byte
 {
-    public bool IsSome => true;
-
-    public TResult Match<TResult>(Func<T, TResult> someFunc, Func<TResult> _) =>
-        someFunc(Value);
-
-    public void Match(Action<T> someAct, Action _) => someAct(Value);
-
-    public IOption<TResult> Bind<TResult>(Func<T, TResult> someFunc) => new Some<TResult>(someFunc(Value));
-
-    public T Unwrap() => Value;
-
-    public T UnwrapOr(Func<T> func) => Value;
-
-    public IUnion<T, TOr> UnwrapOr<TOr>(Func<TOr> func) => new UnionT1<T, TOr>(Value);
+    NotSet,
+    None,
+    Some
 }
 
-internal record None<T> : IOption<T>
+public readonly record struct Option<T>(T? Value = default, OptionType Type = OptionType.NotSet)
+    where T : notnull
 {
-    public bool IsSome => false;
+    [Pure]
+    public static Option<T> Some([DisallowNull] T value) => new(value, OptionType.Some);
 
-    public TResult Match<TResult>(Func<T, TResult> _, Func<TResult> noneFunc) =>
-        noneFunc();
+    [Pure]
+    public static Option<T> None() => new(Type: OptionType.None);
 
-    public void Match(Action<T> _, Action noneAct) => noneAct();
+    [Pure]
+    public TResult Match<TResult>(Func<T, TResult> someFunc, Func<TResult> noneFunc) => Type switch
+    {
+        OptionType.Some => someFunc(Value!),
+        OptionType.None => noneFunc(),
+        _ => throw new ArgumentOutOfRangeException(nameof(Type), Type,
+            $"{GetType()} does not support {Type.ToString()}!")
+    };
 
-    public IOption<TResult> Bind<TResult>(Func<T, TResult> someFunc) => new None<TResult>();
+    public void Match(Action<T> someAct, Action noneAct)
+    {
+        switch (Type)
+        {
+            case OptionType.Some:
+                someAct(Value!);
+                break;
+            case OptionType.None:
+                noneAct();
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(Type), Type,
+                    $"{GetType()} does not support {Type.ToString()}!");
+        }
+    }
 
-    public T Unwrap() => throw new OptionUnwrapException<T>();
+    [Pure]
+    public Option<TResult> Bind<TResult>(Func<T, TResult> someFunc)
+        where TResult : notnull =>
+        Type switch
+        {
+            OptionType.Some => new(someFunc(Value!), OptionType.Some),
+            OptionType.None => new(Type: OptionType.None),
+            _ => throw new ArgumentOutOfRangeException(nameof(Type), Type,
+                $"{GetType()} does not support {Type.ToString()}!")
+        };
 
-    public T UnwrapOr(Func<T> func) => func();
+    [Pure]
+    public T Unwrap() => Type switch
+    {
+        OptionType.Some => Value!,
+        OptionType.None => throw new OptionUnwrapException<T>(),
+        _ => throw new ArgumentOutOfRangeException(nameof(Type), Type,
+            $"{GetType()} does not support {Type.ToString()}!")
+    };
 
-    public IUnion<T, TOr> UnwrapOr<TOr>(Func<TOr> func) => new UnionT2<T, TOr>(func());
+    [Pure]
+    public T UnwrapOr(Func<T> func) => Type switch
+    {
+        OptionType.Some => Value!,
+        OptionType.None => func(),
+        _ => throw new ArgumentOutOfRangeException(nameof(Type), Type,
+            $"{GetType()} does not support {Type.ToString()}!")
+    };
+
+    [Pure]
+    public Union<T, TOr> UnwrapOr<TOr>(Func<TOr> func)
+        where TOr : notnull =>
+        Type switch
+        {
+            OptionType.Some => new(V1: Value!, Type: UnionType.T1),
+            OptionType.None => new(V2: func(), Type: UnionType.T2),
+            _ => throw new ArgumentOutOfRangeException(nameof(Type), Type,
+                $"{GetType()} does not support {Type.ToString()}!")
+        };
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using FPLite.Option;
 using static FPLite.Extensions.OptionExtensions;
 
 namespace FPLite.Extensions;
@@ -13,8 +14,8 @@ public static class OptionEnumerableExtensions
     /// </summary>
     /// <param name="source">The sequence to return the first element from.</param>
     /// <param name="predicate">The predicate to filter by.</param>
-    /// <returns>An <see cref="IOption{T}"/> instance containing the first element if present.</returns>
-    public static IOption<T> FirstOrNone<T>(this IEnumerable<T> source, Predicate<T> predicate)
+    /// <returns>An <see cref="Option{T}"/> instance containing the first element if present.</returns>
+    public static Option<T> FirstOrNone<T>(this IEnumerable<T> source, Predicate<T> predicate)
         where T : notnull =>
         TryOption(() => source.First(x => predicate(x)));
 
@@ -22,8 +23,8 @@ public static class OptionEnumerableExtensions
     /// Returns the first element of a sequence, if such exists.
     /// </summary>
     /// <param name="source">The sequence to return the first element from.</param>
-    /// <returns>An <see cref="IOption{T}"/> instance containing the first element if present.</returns>
-    public static IOption<T> FirstOrNone<T>(this IEnumerable<T> source)
+    /// <returns>An <see cref="Option{T}"/> instance containing the first element if present.</returns>
+    public static Option<T> FirstOrNone<T>(this IEnumerable<T> source)
         where T : notnull =>
         TryOption(source.First);
 
@@ -33,8 +34,8 @@ public static class OptionEnumerableExtensions
     /// </summary>
     /// <param name="source">The sequence to return the last element from.</param>
     /// <param name="predicate">The predicate to filter by.</param>
-    /// <returns>An <see cref="IOption{T}"/> instance containing the last element if present.</returns>
-    public static IOption<T> LastOrNone<T>(this IEnumerable<T> source, Predicate<T> predicate)
+    /// <returns>An <see cref="Option{T}"/> instance containing the last element if present.</returns>
+    public static Option<T> LastOrNone<T>(this IEnumerable<T> source, Predicate<T> predicate)
         where T : notnull =>
         TryOption(() => source.Last(x => predicate(x)));
 
@@ -42,8 +43,8 @@ public static class OptionEnumerableExtensions
     /// Returns the last element of a sequence, if such exists.
     /// </summary>
     /// <param name="source">The sequence to return the last element from.</param>
-    /// <returns>An <see cref="IOption{T}"/> instance containing the last element if present.</returns>
-    public static IOption<T> LastOrNone<T>(this IEnumerable<T> source)
+    /// <returns>An <see cref="Option{T}"/> instance containing the last element if present.</returns>
+    public static Option<T> LastOrNone<T>(this IEnumerable<T> source)
         where T : notnull =>
         TryOption(source.Last);
 
@@ -53,8 +54,8 @@ public static class OptionEnumerableExtensions
     /// </summary>
     /// <param name="source">The sequence to return the element from.</param>
     /// <param name="predicate">The predicate to filter by.</param>
-    /// <returns>An <see cref="IOption{T}"/> instance containing the element if present.</returns>
-    public static IOption<T> SingleOrNone<T>(this IEnumerable<T> source, Predicate<T> predicate)
+    /// <returns>An <see cref="Option{T}"/> instance containing the element if present.</returns>
+    public static Option<T> SingleOrNone<T>(this IEnumerable<T> source, Predicate<T> predicate)
         where T : notnull =>
         TryOption(() => source.Single(x => predicate(x)));
 
@@ -62,8 +63,8 @@ public static class OptionEnumerableExtensions
     /// Returns a single element from a sequence, if it exists and is the only element in the sequence.
     /// </summary>
     /// <param name="source">The sequence to return the element from.</param>
-    /// <returns>An <see cref="IOption{T}"/> instance containing the element if present.</returns>
-    public static IOption<T> SingleOrNone<T>(this IEnumerable<T> source)
+    /// <returns>An <see cref="Option{T}"/> instance containing the element if present.</returns>
+    public static Option<T> SingleOrNone<T>(this IEnumerable<T> source)
         where T : notnull =>
         TryOption(source.Single);
 
@@ -72,8 +73,8 @@ public static class OptionEnumerableExtensions
     /// </summary>
     /// <param name="source">The sequence to return the element from.</param>
     /// <param name="index">The index in the sequence.</param>
-    /// <returns>An <see cref="IOption{T}"/> instance containing the element if found.</returns>
-    public static IOption<T> ElementAtOrNone<T>(this IEnumerable<T> source, int index)
+    /// <returns>An <see cref="Option{T}"/> instance containing the element if found.</returns>
+    public static Option<T> ElementAtOrNone<T>(this IEnumerable<T> source, int index)
         where T : notnull =>
         TryOption(() => source.ElementAt(index));
 
@@ -84,19 +85,19 @@ public static class OptionEnumerableExtensions
     /// </summary>
     /// <param name="source">The dictionary or enumerable in which to locate the key.</param>
     /// <param name="key">The key to locate.</param>
-    /// <returns>An <see cref="IOption{TValue}"/> instance containing the associated value if located.</returns>
-    public static IOption<TValue> GetValueOrNone<TKey, TValue>(this IEnumerable<KeyValuePair<TKey, TValue>> source,
+    /// <returns>An <see cref="Option{TValue}"/> instance containing the associated value if located.</returns>
+    public static Option<TValue> GetValueOrNone<TKey, TValue>(this IEnumerable<KeyValuePair<TKey, TValue>> source,
         TKey key)
         where TValue : notnull =>
         source switch
         {
             IDictionary<TKey, TValue> dictionary => dictionary.TryGetValue(key, out var value)
-                ? FPLite.Some(value)
-                : FPLite.None<TValue>(),
+                ? Option<TValue>.Some(value)
+                : Option<TValue>.None(),
             _ => source.FirstOrNone(pair => EqualityComparer<TKey>.Default.Equals(pair.Key, key))
                 .Match(
-                    pair => FPLite.Some(pair.Value),
-                    FPLite.None<TValue>
+                    pair => Option<TValue>.Some(pair.Value),
+                    () => Option<TValue>.None()
                 )
         };
 }

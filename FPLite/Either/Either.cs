@@ -1,47 +1,69 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
+using System.Diagnostics.Contracts;
 
 namespace FPLite.Either;
 
-internal record Left<TLeft, TRight>(TLeft Value) : IEither<TLeft, TRight>
+public enum EitherType : byte
 {
-    public EitherType Type => EitherType.Left;
-
-    public TResult Match<TResult>(Func<TLeft, TResult> leftFunc, Func<TRight, TResult> rightFunc,
-        Func<TResult> neitherFunc, Func<TLeft, TRight, TResult> bothFunc) => leftFunc(Value);
-
-    public void Match(Action<TLeft> leftAct, Action<TRight> rightAct, Action neitherAct,
-        Action<TLeft, TRight> bothAct) => leftAct(Value);
+    NotSet,
+    Neither,
+    Left,
+    Right,
+    Both
 }
 
-internal record Right<TLeft, TRight>(TRight Value) : IEither<TLeft, TRight>
+public readonly record struct Either<TLeft, TRight>(
+    TLeft? L = default,
+    TRight? R = default,
+    EitherType Type = EitherType.NotSet)
+    where TLeft : notnull where TRight : notnull
 {
-    public EitherType Type => EitherType.Right;
+    [Pure]
+    public static Either<TLeft, TRight> Left([DisallowNull] TLeft value) => new(L: value, Type: EitherType.Left);
 
+    [Pure]
+    public static Either<TLeft, TRight> Right([DisallowNull] TRight value) => new(R: value, Type: EitherType.Right);
+
+    [Pure]
+    public static Either<TLeft, TRight> Both([DisallowNull] TLeft left, [DisallowNull] TRight right) =>
+        new(L: left, R: right, Type: EitherType.Both);
+
+    [Pure]
+    public static Either<TLeft, TRight> Neither() => new(Type: EitherType.Neither);
+
+    [Pure]
     public TResult Match<TResult>(Func<TLeft, TResult> leftFunc, Func<TRight, TResult> rightFunc,
-        Func<TResult> neitherFunc, Func<TLeft, TRight, TResult> bothFunc) => rightFunc(Value);
+        Func<TResult> neitherFunc, Func<TLeft, TRight, TResult> bothFunc) => Type switch
+    {
+        EitherType.Neither => neitherFunc(),
+        EitherType.Both => bothFunc(L!, R!),
+        EitherType.Left => leftFunc(L!),
+        EitherType.Right => rightFunc(R!),
+        _ => throw new ArgumentOutOfRangeException(nameof(Type), Type,
+            $"{GetType()} does not support {Type.ToString()}!")
+    };
 
     public void Match(Action<TLeft> leftAct, Action<TRight> rightAct, Action neitherAct,
-        Action<TLeft, TRight> bothAct) => rightAct(Value);
-}
-
-internal record Neither<TLeft, TRight> : IEither<TLeft, TRight>
-{
-    public EitherType Type => EitherType.Neither;
-
-    public TResult Match<TResult>(Func<TLeft, TResult> leftFunc, Func<TRight, TResult> rightFunc,
-        Func<TResult> neitherFunc, Func<TLeft, TRight, TResult> bothFunc) => neitherFunc();
-
-    public void Match(Action<TLeft> leftAct, Action<TRight> rightAct, Action neitherAct,
-        Action<TLeft, TRight> bothAct) => neitherAct();
-}
-
-internal record Both<TLeft, TRight>(TLeft Left, TRight Right) : IEither<TLeft, TRight>
-{
-    public EitherType Type => EitherType.Both;
-
-    public TResult Match<TResult>(Func<TLeft, TResult> leftFunc, Func<TRight, TResult> rightFunc,
-        Func<TResult> neitherFunc, Func<TLeft, TRight, TResult> bothFunc) => bothFunc(Left, Right);
-
-    public void Match(Action<TLeft> leftAct, Action<TRight> rightAct, Action neitherAct,
-        Action<TLeft, TRight> bothAct) => bothAct(Left, Right);
+        Action<TLeft, TRight> bothAct)
+    {
+        switch (Type)
+        {
+            case EitherType.Neither:
+                neitherAct();
+                break;
+            case EitherType.Both:
+                bothAct(L!, R!);
+                break;
+            case EitherType.Left:
+                leftAct(L!);
+                break;
+            case EitherType.Right:
+                rightAct(R!);
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(Type), Type,
+                    $"{GetType()} does not support {Type.ToString()}!");
+        }
+    }
 }

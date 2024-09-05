@@ -20,21 +20,21 @@ public class OptionBenchmarks
     public string[] BaselineString() => Array.Select(i => (i + i).ToString()).ToArray();
 
     [Benchmark]
-    public IOption<int>[] SomeInt() => Array.Select(i => FPLite.Some(i + i)).ToArray();
+    public Option<int>[] SomeInt() => Array.Select(i => Option<int>.Some(i + i)).ToArray();
 
     [Benchmark]
-    public IOption<int>[] NoneInt() => Array.Select(_ => FPLite.None<int>()).ToArray();
+    public Option<int>[] NoneInt() => Array.Select(_ => Option<int>.None()).ToArray();
 
     [Benchmark]
-    public IOption<string>[] SomeString() => Array.Select(i => FPLite.Some((i + i).ToString())).ToArray();
+    public Option<string>[] SomeString() => Array.Select(i => Option<string>.Some((i + i).ToString())).ToArray();
 
     [Benchmark]
-    public IOption<string>[] NoneString() => Array.Select(_ => FPLite.None<string>()).ToArray();
+    public Option<string>[] NoneString() => Array.Select(_ => Option<string>.None()).ToArray();
 
     [Benchmark]
-    public int[] MatchInt() => Array.Select(i => FPLite.Some(i + i).Match(i1 => i1, () => 0)).ToArray();
+    public int[] MatchInt() => Array.Select(i => Option<int>.Some(i + i).Match(i1 => i1, () => 0)).ToArray();
 
     [Benchmark]
     public string[] MatchString() =>
-        Array.Select(i => FPLite.Some((i + i).ToString()).Match(s => s, () => "")).ToArray();
+        Array.Select(i => Option<string>.Some((i + i).ToString()).Match(s => s, () => "")).ToArray();
 }
