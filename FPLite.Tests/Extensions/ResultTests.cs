@@ -1,5 +1,6 @@
 using FluentAssertions;
 using FPLite.Extensions;
+using FPLite.Result;
 using Xunit;
 
 namespace FPLite.Tests.Extensions;
@@ -25,7 +26,7 @@ public class ResultTests
     public void GivenValue_WhenCasting_ShouldReturnSome()
     {
         var result = new A().AsResultOf<A, IA, TestError>(() => new TestError());
-        result.IsOk.Should().BeTrue();
+        result.Type.Should().Be(ResultType.Ok);
         result.Unwrap().Value.Should().Be(1);
     }
         
@@ -34,13 +35,13 @@ public class ResultTests
     {
         A? value = null;
         var result = value.AsResultOf<A?, IA, TestError>(() => new TestError());
-        result.IsOk.Should().BeFalse();
+        result.Type.Should().Be(ResultType.Err);
     }
         
     [Fact]
     public void GivenOtherTypeValue_WhenCasting_ShouldReturnNone()
     {
         var result = new B().AsResultOf<B, A, TestError>(() => new TestError());
-        result.IsOk.Should().BeFalse();
+        result.Type.Should().Be(ResultType.Err);
     }
 }
