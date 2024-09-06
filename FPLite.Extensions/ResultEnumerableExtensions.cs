@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using System.Linq;
 using FPLite.Result;
 using static FPLite.Extensions.ResultExtensions;
@@ -16,6 +17,7 @@ namespace FPLite.Extensions
         /// <param name="predicate">The predicate to filter by.</param>
         /// <param name="errorFunc">The function to return an error if the predicate fails.</param>
         /// <returns>An <see cref="Result{T,TError}"/> instance containing the first element if present.</returns>
+        [Pure]
         public static Result<T, TError> FirstOrError<T, TError>(this IEnumerable<T> source, Predicate<T> predicate,
             Func<Exception, TError> errorFunc)
             where T : notnull
@@ -28,6 +30,7 @@ namespace FPLite.Extensions
         /// <param name="source">The sequence to return the first element from.</param>
         /// <param name="errorFunc">The function to return an error if the predicate fails.</param>
         /// <returns>An <see cref="Result{T,TError}"/> instance containing the first element if present.</returns>
+        [Pure]
         public static Result<T, TError> FirstOrError<T, TError>(this IEnumerable<T> source,
             Func<Exception, TError> errorFunc)
             where T : notnull
@@ -42,6 +45,7 @@ namespace FPLite.Extensions
         /// <param name="predicate">The predicate to filter by.</param>
         /// <param name="errorFunc">The function to return an error if the predicate fails.</param>
         /// <returns>An <see cref="Result{T,TError}"/> instance containing the last element if present.</returns>
+        [Pure]
         public static Result<T, TError> LastOrError<T, TError>(this IEnumerable<T> source, Predicate<T> predicate,
             Func<Exception, TError> errorFunc)
             where T : notnull
@@ -54,6 +58,7 @@ namespace FPLite.Extensions
         /// <param name="source">The sequence to return the last element from.</param>
         /// <param name="errorFunc">The function to return an error if the predicate fails.</param>
         /// <returns>An <see cref="Result{T,TError}"/> instance containing the last element if present.</returns>
+        [Pure]
         public static Result<T, TError> LastOrError<T, TError>(this IEnumerable<T> source,
             Func<Exception, TError> errorFunc)
             where T : notnull
@@ -68,6 +73,7 @@ namespace FPLite.Extensions
         /// <param name="predicate">The predicate to filter by.</param>
         /// <param name="errorFunc">The function to return an error if the predicate fails.</param>
         /// <returns>An <see cref="Result{T,TError}"/> instance containing the element if present.</returns>
+        [Pure]
         public static Result<T, TError> SingleOrError<T, TError>(this IEnumerable<T> source, Predicate<T> predicate,
             Func<Exception, TError> errorFunc)
             where T : notnull
@@ -80,6 +86,7 @@ namespace FPLite.Extensions
         /// <param name="source">The sequence to return the element from.</param>
         /// <param name="errorFunc">The function to return an error if the predicate fails.</param>
         /// <returns>An <see cref="Result{T,TError}"/> instance containing the element if present.</returns>
+        [Pure]
         public static Result<T, TError> SingleOrError<T, TError>(this IEnumerable<T> source,
             Func<Exception, TError> errorFunc)
             where T : notnull
@@ -93,6 +100,7 @@ namespace FPLite.Extensions
         /// <param name="index">The index in the sequence.</param>
         /// <param name="errorFunc">The function to return an error if the predicate fails.</param>
         /// <returns>An <see cref="Result{T,TError}"/> instance containing the element if found.</returns>
+        [Pure]
         public static Result<T, TError> ElementAtOrError<T, TError>(this IEnumerable<T> source, int index,
             Func<Exception, TError> errorFunc)
             where T : notnull
@@ -108,6 +116,7 @@ namespace FPLite.Extensions
         /// <param name="key">The key to locate.</param>
         /// <param name="errorFunc">The function to return an error if the predicate fails.</param>
         /// <returns>An <see cref="Result{TValue,TError}"/> instance containing the associated value if located.</returns>
+        [Pure]
         public static Result<TValue, TError> GetValueOrError<TKey, TValue, TError>(
             this IEnumerable<KeyValuePair<TKey, TValue>> source, TKey key, Func<Exception, TError> errorFunc)
             where TValue : notnull

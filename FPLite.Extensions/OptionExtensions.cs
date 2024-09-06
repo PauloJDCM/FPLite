@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics.Contracts;
 using FPLite.Option;
 
 namespace FPLite.Extensions;
@@ -8,18 +9,21 @@ public static class OptionExtensions
     /// <summary>
     /// Converts a nullable value (reference type) of type <typeparamref name="T"/> to an <see cref="Option{T}"/>.
     /// </summary>
+    [Pure]
     public static Option<T> ToOption<T>(this T? value) where T : notnull =>
         value is null ? Option<T>.None() : Option<T>.Some(value);
     
     /// <summary>
     /// Converts a nullable value (value type) of type <typeparamref name="T"/> to an <see cref="Option{T}"/>.
     /// </summary>
+    [Pure]
     public static Option<T> ToOption<T>(this T? value) where T : unmanaged =>
         value is null ? Option<T>.None() : Option<T>.Some((T)value);
 
     /// <summary>
     /// Converts a value of type <typeparamref name="TIn"/> to an <see cref="Option{TOut}"/>.
     /// </summary>
+    [Pure]
     public static Option<TOut> AsOptionOf<TIn, TOut>(this TIn value)
         where TIn : notnull
         where TOut : notnull =>
@@ -28,6 +32,7 @@ public static class OptionExtensions
     /// <summary>
     /// Tries to execute a function and returns a <see cref="Option{T}"/> with the result.
     /// </summary>
+    [Pure]
     public static Option<T> TryOption<T>(Func<T> func) where T : notnull
     {
         try

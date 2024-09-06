@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.Contracts;
 
 namespace FPLite.Extensions;
 
@@ -12,6 +13,7 @@ public static class CommonExtensions
     /// <param name="input">The input value to be processed.</param>
     /// <param name="func">The function to apply to the input value.</param>
     /// <returns>The result of applying the function to the input value.</returns>
+    [Pure]
     public static TResult Pipe<T, TResult>(this T input, Func<T, TResult> func) => func(input);
     
     /// <summary>
@@ -25,6 +27,7 @@ public static class CommonExtensions
     /// <summary>
     /// Returns an empty action.
     /// </summary>
+    [Pure]
     public static Action Ignore() => () =>
     {
         /* Empty action, does nothing */
