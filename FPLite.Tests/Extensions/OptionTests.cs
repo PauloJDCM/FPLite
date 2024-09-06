@@ -37,7 +37,7 @@ public class OptionTests
 
         result.Type.Should().Be(OptionType.None);
     }
-    
+
     [Fact]
     public void GivenRefNull_WhenConvertingToOption_ShouldReturnNone()
     {
@@ -60,5 +60,18 @@ public class OptionTests
     {
         var result = new B().AsOptionOf<B, A>();
         result.Type.Should().Be(OptionType.None);
+    }
+
+    [Fact]
+    public void GivenNone_WhenUnwrappingWithTryOption_ShouldReturnSomeWithExceptionMessage()
+    {
+        var option = Option<int>.None();
+        
+        // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
+        var result = OptionExtensions.TryOption<OptionUnwrapException<int>, TestError>(() => option.Unwrap(),
+            exception => new TestError(exception.Message));
+
+        result.Type.Should().Be(OptionType.Some);
+        result.Value.Message.Should().Contain("Called Option");
     }
 }

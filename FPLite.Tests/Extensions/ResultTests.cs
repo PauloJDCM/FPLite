@@ -1,5 +1,6 @@
 using FluentAssertions;
 using FPLite.Extensions;
+using FPLite.Option;
 using FPLite.Result;
 using Xunit;
 
@@ -21,7 +22,7 @@ public class ResultTests
     {
         public int Value => 2;
     }
-        
+
     [Fact]
     public void GivenValue_WhenCasting_ShouldReturnSome()
     {
@@ -29,7 +30,7 @@ public class ResultTests
         result.Type.Should().Be(ResultType.Ok);
         result.Unwrap().Value.Should().Be(1);
     }
-        
+
     [Fact]
     public void GivenNull_WhenCasting_ShouldReturnNone()
     {
@@ -37,11 +38,22 @@ public class ResultTests
         var result = value.AsResultOf<A?, IA, TestError>(() => new TestError());
         result.Type.Should().Be(ResultType.Err);
     }
-        
+
     [Fact]
     public void GivenOtherTypeValue_WhenCasting_ShouldReturnNone()
     {
         var result = new B().AsResultOf<B, A, TestError>(() => new TestError());
         result.Type.Should().Be(ResultType.Err);
+    }
+
+    [Fact]
+    public void GivenNone_WhenUnwrappingWithTryResult_ShouldReturnErrorWithExceptionMessage()
+    {
+        var option = Option<int>.None();
+        var result = ResultExtensions.TryResult<int, OptionUnwrapException<int>, TestError>(() => option.Unwrap(),
+            exception => new TestError(exception.Message));
+
+        result.Type.Should().Be(ResultType.Err);
+        result.Error.Message.Should().Contain("Called Option");
     }
 }
