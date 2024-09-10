@@ -1,6 +1,10 @@
 using System;
 using System.Diagnostics.Contracts;
+using System.Threading;
+using System.Threading.Tasks;
+using FPLite.Either;
 using FPLite.Option;
+using FPLite.Union;
 
 namespace FPLite.Extensions;
 
@@ -12,7 +16,7 @@ public static class OptionExtensions
     [Pure]
     public static Option<T> ToOption<T>(this T? value) where T : notnull =>
         value is null ? Option<T>.None() : Option<T>.Some(value);
-    
+
     /// <summary>
     /// Converts a nullable value (value type) of type <typeparamref name="T"/> to an <see cref="Option{T}"/>.
     /// </summary>
@@ -46,38 +50,88 @@ public static class OptionExtensions
     }
 
     /// <summary>
-    /// Tries to execute an action and returns a <see cref="Option{TError}"/> with the result if an exception is thrown.
+    /// Tries to execute an async function and returns a <see cref="Option{T}"/> with the result.
     /// </summary>
-    public static Option<TError> TryOption<TError>(Action action, Func<Exception, TError> failFunc)
-        where TError : notnull
+    [Pure]
+    public static async Task<Option<T>> TryOptionAsyncTask<T>(Func<CancellationToken, Task<T>> func,
+        CancellationToken ct = default) where T : notnull
     {
         try
         {
-            action();
-            return Option<TError>.None();
+            return Option<T>.Some(await func(ct));
         }
-        catch (Exception e)
+        catch
         {
-            return Option<TError>.Some(failFunc(e));
+            return Option<T>.None();
         }
     }
 
     /// <summary>
-    /// Tries to execute an action and returns a <see cref="Option{TError}"/> with the result
-    /// if an exception of type <typeparamref name="TException"/> is thrown.
+    /// Tries to execute an async function and returns a <see cref="Option{T}"/> with the result.
     /// </summary>
-    public static Option<TError> TryOption<TException, TError>(Action action, Func<TException, TError> failFunc)
-        where TError : notnull
-        where TException : Exception
+    [Pure]
+    public static async ValueTask<Option<T>> TryOptionAsyncValue<T>(Func<CancellationToken, ValueTask<T>> func,
+        CancellationToken ct = default) where T : notnull
+    {
+        try
+        {
+            return Option<T>.Some(await func(ct));
+        }
+        catch
+        {
+            return Option<T>.None();
+        }
+    }
+
+    /// <summary>
+    /// Tries to execute an action and returns a <see cref="Option{Exception}"/> with the result if an exception is thrown.
+    /// </summary>
+    public static Option<Exception> TryOption(Action action)
     {
         try
         {
             action();
-            return Option<TError>.None();
+            return Option<Exception>.None();
         }
-        catch (TException e)
+        catch (Exception e)
         {
-            return Option<TError>.Some(failFunc(e));
+            return Option<Exception>.Some(e);
+        }
+    }
+
+    /// <summary>
+    /// Tries to execute an async action and returns a <see cref="Option{Exception}"/> with the result
+    /// if an exception is thrown.
+    /// </summary>
+    public static async Task<Option<Exception>> TryOptionAsyncTask(Func<CancellationToken, Task> action,
+        CancellationToken ct = default)
+    {
+        try
+        {
+            await action(ct);
+            return Option<Exception>.None();
+        }
+        catch (Exception e)
+        {
+            return Option<Exception>.Some(e);
+        }
+    }
+
+    /// <summary>
+    /// Tries to execute an async action and returns a <see cref="Option{Exception}"/> with the result
+    /// if an exception is thrown.
+    /// </summary>
+    public static async ValueTask<Option<Exception>> TryOptionAsyncValue(Func<CancellationToken, ValueTask> action,
+        CancellationToken ct = default)
+    {
+        try
+        {
+            await action(ct);
+            return Option<Exception>.None();
+        }
+        catch (Exception e)
+        {
+            return Option<Exception>.Some(e);
         }
     }
 }

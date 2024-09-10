@@ -2,6 +2,7 @@ using FluentAssertions;
 using FPLite.Extensions;
 using FPLite.Option;
 using FPLite.Result;
+using FPLite.Union;
 using Xunit;
 
 namespace FPLite.Tests.Extensions;
@@ -47,13 +48,12 @@ public class ResultTests
     }
 
     [Fact]
-    public void GivenNone_WhenUnwrappingWithTryResult_ShouldReturnErrorWithExceptionMessage()
+    public void GivenNone_WhenUnwrappingWithTryResult_ShouldReturnUnwrapException()
     {
         var option = Option<int>.None();
-        var result = ResultExtensions.TryResult<int, OptionUnwrapException<int>, TestError>(() => option.Unwrap(),
-            exception => new TestError(exception.Message));
+        var result = ResultExtensions.TryResult<int, OptionUnwrapException<int>>(() => option.Unwrap());
 
         result.Type.Should().Be(ResultType.Err);
-        result.Error.Message.Should().Contain("Called Option");
+        result.Error.Type.Should().Be(UnionType.T1);
     }
 }
