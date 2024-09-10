@@ -13,6 +13,8 @@ public class EitherTests
         var check = either.Match(_ => false, _ => false, () => true, (_, _) => false);
 
         either.Type.Should().Be(EitherType.Neither);
+        either.L.Should().BeNull();
+        either.R.Should().Be(default);
         check.Should().BeTrue();
     }
 
@@ -20,30 +22,30 @@ public class EitherTests
     public void GivenStringOrInt_WhenValueIsLeft_ShouldBeString()
     {
         var either = Either<string, int>.Left("test");
-        var check = either.Match(_ => true, _ => false, () => false, (_, _) => false);
 
         either.Type.Should().Be(EitherType.Left);
-        check.Should().BeTrue();
+        either.L.Should().Be("test");
+        either.R.Should().Be(default);
     }
 
     [Fact]
     public void GivenStringOrInt_WhenValueIsRight_ShouldBeInt()
     {
         var either = Either<string, int>.Right(1);
-        var check = either.Match(_ => false, _ => true, () => false, (_, _) => false);
 
         either.Type.Should().Be(EitherType.Right);
-        check.Should().BeTrue();
+        either.L.Should().BeNull();
+        either.R.Should().Be(1);
     }
 
     [Fact]
     public void GivenStringOrInt_WhenValueIsBoth_ShouldBeBoth()
     {
         var either = Either<string, int>.Both("test", 1);
-        var check = either.Match(_ => false, _ => false, () => false, (_, _) => true);
 
         either.Type.Should().Be(EitherType.Both);
-        check.Should().BeTrue();
+        either.L.Should().Be("test");
+        either.R.Should().Be(1);
     }
 
     [Fact]
@@ -130,6 +132,8 @@ public class EitherTests
 
         either.Should().Be(other);
         either.Equals(other).Should().BeTrue();
+        (either == other).Should().BeTrue();
+        (either != other).Should().BeFalse();
     }
 
     [Fact]
@@ -140,6 +144,8 @@ public class EitherTests
 
         either.Should().Be(other);
         either.Equals(other).Should().BeTrue();
+        (either == other).Should().BeTrue();
+        (either != other).Should().BeFalse();
     }
 
     [Fact]
@@ -150,6 +156,8 @@ public class EitherTests
 
         either.Should().NotBe(other);
         either.Equals(other).Should().BeFalse();
+        (either == other).Should().BeFalse();
+        (either != other).Should().BeTrue();
     }
 
     [Fact]
@@ -160,6 +168,8 @@ public class EitherTests
 
         either.Should().Be(other);
         either.Equals(other).Should().BeTrue();
+        (either == other).Should().BeTrue();
+        (either != other).Should().BeFalse();
     }
 
     [Fact]
@@ -170,6 +180,8 @@ public class EitherTests
 
         either.Should().Be(other);
         either.Equals(other).Should().BeTrue();
+        (either == other).Should().BeTrue();
+        (either != other).Should().BeFalse();
     }
 
     [Fact]
@@ -182,20 +194,32 @@ public class EitherTests
 
         both.Should().NotBe(left);
         both.Equals(left).Should().BeFalse();
+        (both == left).Should().BeFalse();
+        (both != left).Should().BeTrue();
 
         both.Should().NotBe(right);
         both.Equals(right).Should().BeFalse();
+        (both == right).Should().BeFalse();
+        (both != right).Should().BeTrue();
         
         both.Should().NotBe(neither);
         both.Equals(neither).Should().BeFalse();
+        (both == neither).Should().BeFalse();
+        (both != neither).Should().BeTrue();
 
         left.Should().NotBe(right);
         left.Equals(right).Should().BeFalse();
+        (left == right).Should().BeFalse();
+        (left != right).Should().BeTrue();
         
         left.Should().NotBe(neither);
         left.Equals(neither).Should().BeFalse();
+        (left == neither).Should().BeFalse();
+        (left != neither).Should().BeTrue();
         
         right.Should().NotBe(neither);
         right.Equals(neither).Should().BeFalse();
+        (right == neither).Should().BeFalse();
+        (right != neither).Should().BeTrue();
     }
 }

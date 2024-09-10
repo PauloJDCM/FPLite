@@ -8,20 +8,28 @@ namespace FPLite.Tests.Core;
 public class OptionTests
 {
     [Fact]
-    public void GivenInt_WhenValueIsNone_ShouldBeNone()
+    public void GivenValueType_WhenValueIsNone_ShouldBeNoneWithDefaultValue()
     {
         var option = Option<int>.None();
-        var result = option.Match(_ => false, () => true);
 
         option.Type.Should().Be(OptionType.None);
-        result.Should().BeTrue();
+        option.Value.Should().Be(default);
+    }
+    
+    [Fact]
+    public void GivenReferenceType_WhenValueIsNone_ShouldBeNoneWithNull()
+    {
+        var option = Option<string>.None();
+
+        option.Type.Should().Be(OptionType.None);
+        option.Value.Should().BeNull();
     }
 
     [Theory]
     [InlineData(1)]
     [InlineData(0)]
     [InlineData(-1)]
-    public void GivenInt_WhenValueIsSome_ShouldReturnValue(int originalValue)
+    public void GivenIntType_WhenValueIsSome_ShouldReturnValue(int originalValue)
     {
         var option = Option<int>.Some(originalValue);
         var value = option.Match(i => i, () => originalValue - 1);
@@ -80,6 +88,8 @@ public class OptionTests
 
         option.Should().Be(other);
         option.Equals(other).Should().BeTrue();
+        (option == other).Should().BeTrue();
+        (option != other).Should().BeFalse();
     }
 
     [Fact]
@@ -90,6 +100,8 @@ public class OptionTests
 
         option.Should().Be(other);
         option.Equals(other).Should().BeTrue();
+        (option == other).Should().BeTrue();
+        (option != other).Should().BeFalse();
     }
 
     [Fact]
@@ -100,6 +112,8 @@ public class OptionTests
 
         option.Should().NotBe(other);
         option.Equals(other).Should().BeFalse();
+        (option == other).Should().BeFalse();
+        (option != other).Should().BeTrue();
     }
 
     [Fact]
@@ -110,6 +124,8 @@ public class OptionTests
 
         option.Should().NotBe(other);
         option.Equals(other).Should().BeFalse();
+        (option == other).Should().BeFalse();
+        (option != other).Should().BeTrue();
     }
 
     [Fact]

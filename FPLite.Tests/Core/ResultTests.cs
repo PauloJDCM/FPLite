@@ -10,11 +10,11 @@ public class ResultTests
     [Fact]
     public void GivenInt_WhenValueIsErr_ShouldReturnError()
     {
-        var value = Result<int, TestError>.Err(new TestError());
-        var result = value.Match(_ => false, _ => true);
+        var result = Result<int, TestError>.Err(new TestError());
 
-        value.Type.Should().Be(ResultType.Err);
-        result.Should().BeTrue();
+        result.Type.Should().Be(ResultType.Err);
+        result.Value.Should().Be(default);
+        result.Error.Should().Be(new TestError());
     }
 
     [Theory]
@@ -112,5 +112,60 @@ public class ResultTests
 
         unwrap.Type.Should().Be(UnionType.T2);
         unwrap.Match(i => i.ToString(), _ => "test").Should().Be("test");
+    }
+    
+    [Fact]
+    public void Given2Ok_WhenEquatingWithSameValue_ShouldReturnTrue()
+    {
+        var value = Result<int, TestError>.Ok(1);
+        var other = Result<int, TestError>.Ok(1);
+        
+        value.Equals(other).Should().BeTrue();
+        (value == other).Should().BeTrue();
+        (value != other).Should().BeFalse();
+    }
+    
+    [Fact]
+    public void Given2Ok_WhenEquatingWithDifferentValue_ShouldReturnFalse()
+    {
+        var value = Result<int, TestError>.Ok(1);
+        var other = Result<int, TestError>.Ok(2);
+        
+        value.Equals(other).Should().BeFalse();
+        (value == other).Should().BeFalse();
+        (value != other).Should().BeTrue();
+    }
+    
+    [Fact]
+    public void Given2Err_WhenEquatingWithSameValue_ShouldReturnTrue()
+    {
+        var value = Result<int, TestError>.Err(new TestError());
+        var other = Result<int, TestError>.Err(new TestError());
+        
+        value.Equals(other).Should().BeTrue();
+        (value == other).Should().BeTrue();
+        (value != other).Should().BeFalse();
+    }
+    
+    [Fact]
+    public void Given2Err_WhenEquatingWithDifferentValue_ShouldReturnFalse()
+    {
+        var value = Result<int, TestError>.Err(new TestError());
+        var other = Result<int, TestError>.Err(new TestError("test"));
+        
+        value.Equals(other).Should().BeFalse();
+        (value == other).Should().BeFalse();
+        (value != other).Should().BeTrue();
+    }
+    
+    [Fact]
+    public void GivenOkAndErr_WhenEquating_ShouldReturnFalse()
+    {
+        var value = Result<int, TestError>.Ok(1);
+        var other = Result<int, TestError>.Err(new TestError());
+        
+        value.Equals(other).Should().BeFalse();
+        (value == other).Should().BeFalse();
+        (value != other).Should().BeTrue();
     }
 }
