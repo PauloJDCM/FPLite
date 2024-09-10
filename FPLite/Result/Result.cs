@@ -27,12 +27,21 @@ public readonly record struct Result<T, TError>(
     ResultType Type = ResultType.NotSet)
     where T : notnull where TError : notnull
 {
+    /// <summary>
+    /// Creates a <see cref="Result{T, TError}"/> with the given value.
+    /// </summary>
     [Pure]
     public static Result<T, TError> Ok([DisallowNull] T value) => new(Value: value, Type: ResultType.Ok);
 
+    /// <summary>
+    /// Creates a <see cref="Result{T, TError}"/> with the given error.
+    /// </summary>
     [Pure]
     public static Result<T, TError> Err([DisallowNull] TError error) => new(Error: error, Type: ResultType.Err);
 
+    /// <summary>
+    /// Applies the appropriate function depending on the type of <see cref="Result{T, TError}" />.
+    /// </summary>
     [Pure]
     public TResult Match<TResult>(Func<T, TResult> okFunc, Func<TError, TResult> errFunc) => Type switch
     {
@@ -42,6 +51,9 @@ public readonly record struct Result<T, TError>(
             $"{GetType()} does not support {Type.ToString()}!")
     };
 
+    /// <summary>
+    /// Applies the appropriate action depending on the type of <see cref="Result{T, TError}" />.
+    /// </summary>
     public void Match(Action<T> okAct, Action<TError> errAct)
     {
         switch (Type)
@@ -58,6 +70,9 @@ public readonly record struct Result<T, TError>(
         }
     }
 
+    /// <summary>
+    /// Applies the function if <see cref="Result{T, TError}" /> is <see cref="ResultType.Ok" />.
+    /// </summary>
     [Pure]
     public Result<TResult, TError> Bind<TResult>(Func<T, TResult> okFunc)
         where TResult : notnull =>
@@ -69,6 +84,11 @@ public readonly record struct Result<T, TError>(
                 $"{GetType()} does not support {Type.ToString()}!")
         };
 
+    /// <summary>
+    /// Gives the value if <see cref="Result{T, TError}" /> is <see cref="ResultType.Ok" />.
+    /// <br/>
+    /// Throws a <see cref="ResultUnwrapException{T, TError}" /> if <see cref="Result{T, TError}" /> is <see cref="ResultType.Err" />.
+    /// </summary>
     [Pure]
     public T Unwrap() => Type switch
     {
@@ -78,6 +98,11 @@ public readonly record struct Result<T, TError>(
             $"{GetType()} does not support {Type.ToString()}!")
     };
 
+    /// <summary>
+    /// Gives the value if <see cref="Result{T, TError}" /> is <see cref="ResultType.Ok" />.
+    /// <br/>
+    /// Returns the function value if <see cref="Result{T, TError}" /> is <see cref="ResultType.Err" />.
+    /// </summary>
     [Pure]
     public T UnwrapOr(Func<TError, T> func) => Type switch
     {
@@ -87,6 +112,12 @@ public readonly record struct Result<T, TError>(
             $"{GetType()} does not support {Type.ToString()}!")
     };
 
+    /// <summary>
+    /// Gives the value if <see cref="Result{T, TError}" /> is <see cref="ResultType.Ok" />.
+    /// <br/>
+    /// Returns the function value if <see cref="Result{T, TError}" /> is <see cref="ResultType.Err" />.
+    /// </summary>
+    /// <returns>A <see cref="Union{T,TOr}"/> with the value of <see cref="Result{T, TError}" /> or the function value.</returns>
     [Pure]
     public Union<T, TOr> UnwrapOr<TOr>(Func<TError, TOr> func)
         where TOr : notnull =>

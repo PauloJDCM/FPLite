@@ -19,19 +19,34 @@ public readonly record struct Either<TLeft, TRight>(
     EitherType Type = EitherType.NotSet)
     where TLeft : notnull where TRight : notnull
 {
+    /// <summary>
+    /// Creates a <see cref="Either{TLeft, TRight}" /> with <paramref name="value" /> as the Left.
+    /// </summary>
     [Pure]
     public static Either<TLeft, TRight> Left([DisallowNull] TLeft value) => new(L: value, Type: EitherType.Left);
 
+    /// <summary>
+    /// Creates a <see cref="Either{TLeft, TRight}" /> with <paramref name="value" /> as the Right.
+    /// </summary>
     [Pure]
     public static Either<TLeft, TRight> Right([DisallowNull] TRight value) => new(R: value, Type: EitherType.Right);
 
+    /// <summary>
+    /// Creates a <see cref="Either{TLeft, TRight}" /> with <paramref name="left" /> and <paramref name="right" />.
+    /// </summary>
     [Pure]
     public static Either<TLeft, TRight> Both([DisallowNull] TLeft left, [DisallowNull] TRight right) =>
         new(L: left, R: right, Type: EitherType.Both);
 
+    /// <summary>
+    /// Creates a <see cref="Either{TLeft, TRight}" /> with no value.
+    /// </summary>
     [Pure]
     public static Either<TLeft, TRight> Neither() => new(Type: EitherType.Neither);
 
+    /// <summary>
+    /// Applies the appropriate function depending on the type of <see cref="Either{TLeft, TRight}" />.
+    /// </summary>
     [Pure]
     public TResult Match<TResult>(Func<TLeft, TResult> leftFunc, Func<TRight, TResult> rightFunc,
         Func<TResult> neitherFunc, Func<TLeft, TRight, TResult> bothFunc) => Type switch
@@ -44,6 +59,10 @@ public readonly record struct Either<TLeft, TRight>(
             $"{GetType()} does not support {Type.ToString()}!")
     };
 
+    
+    /// <summary>
+    /// Applies the appropriate action depending on the type of <see cref="Either{TLeft, TRight}" />.
+    /// </summary>
     public void Match(Action<TLeft> leftAct, Action<TRight> rightAct, Action neitherAct,
         Action<TLeft, TRight> bothAct)
     {

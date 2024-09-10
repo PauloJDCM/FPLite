@@ -13,15 +13,27 @@ public readonly record struct Union<T1, T2, T3>(
     where T2 : notnull
     where T3 : notnull
 {
+    /// <summary>
+    /// Creates a <see cref="Union{T1, T2, T3}"/> with the given value.
+    /// </summary>
     [Pure]
     public static Union<T1, T2, T3> U1([DisallowNull] T1 value) => new(V1: value, Type: UnionType.T1);
 
+    /// <summary>
+    /// Creates a <see cref="Union{T1, T2, T3}"/> with the given value.
+    /// </summary>
     [Pure]
     public static Union<T1, T2, T3> U2([DisallowNull] T2 value) => new(V2: value, Type: UnionType.T2);
 
+    /// <summary>
+    /// Creates a <see cref="Union{T1, T2, T3}"/> with the given value.
+    /// </summary>
     [Pure]
     public static Union<T1, T2, T3> U3([DisallowNull] T3 value) => new(V3: value, Type: UnionType.T3);
 
+    /// <summary>
+    /// Applies the appropriate function depending on the type of <see cref="Union{T1, T2, T3}"/>.
+    /// </summary>
     [Pure]
     public TResult Match<TResult>(Func<T1, TResult> t1Func, Func<T2, TResult> t2Func, Func<T3, TResult> t3Func) =>
         Type switch
@@ -33,6 +45,9 @@ public readonly record struct Union<T1, T2, T3>(
                 $"{GetType()} does not support {Type.ToString()}!")
         };
 
+    /// <summary>
+    /// Applies the appropriate action depending on the type of <see cref="Union{T1, T2, T3}"/>.
+    /// </summary>
     public void Match(Action<T1> t1Act, Action<T2> t2Act, Action<T3> t3Act)
     {
         switch (Type)
