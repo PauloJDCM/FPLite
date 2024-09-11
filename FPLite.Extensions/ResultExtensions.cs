@@ -98,31 +98,7 @@ public static class ResultExtensions
     /// Tries to execute an async function and returns a <see cref="Result{T, Union{TException, Exception}}"/>.
     /// </summary>
     [Pure]
-    public static async Task<Result<T, Union<TException, Exception>>> TryResultAsyncTask<T, TException>(
-        Func<CancellationToken, Task<T>> func,
-        CancellationToken cancellationToken = default)
-        where T : notnull
-        where TException : Exception
-    {
-        try
-        {
-            return Result<T, Union<TException, Exception>>.Ok(await func(cancellationToken));
-        }
-        catch (TException e)
-        {
-            return Result<T, Union<TException, Exception>>.Err(Union<TException, Exception>.U1(e));
-        }
-        catch (Exception e)
-        {
-            return Result<T, Union<TException, Exception>>.Err(Union<TException, Exception>.U2(e));
-        }
-    }
-
-    /// <summary>
-    /// Tries to execute an async function and returns a <see cref="Result{T, Union{TException, Exception}}"/>.
-    /// </summary>
-    [Pure]
-    public static async ValueTask<Result<T, Union<TException, Exception>>> TryResultAsyncValue<T, TException>(
+    public static async ValueTask<Result<T, Union<TException, Exception>>> TryResultAsync<T, TException>(
         Func<CancellationToken, ValueTask<T>> func,
         CancellationToken cancellationToken = default)
         where T : notnull
