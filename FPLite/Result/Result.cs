@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Diagnostics.Contracts;
+using System.Threading;
+using System.Threading.Tasks;
 using FPLite.Union;
 
 namespace FPLite.Result;
@@ -52,6 +54,20 @@ public readonly record struct Result<T, TError>(
     };
 
     /// <summary>
+    /// Applies the appropriate async function depending on the type of <see cref="Result{T, TError}" />.
+    /// <para><b>Note:</b> The caller is responsible for using <c>ConfigureAwait</c> if necessary.</para>
+    /// </summary>
+    [Pure]
+    public async ValueTask<TResult> MatchAsync<TResult>(Func<T, CancellationToken, ValueTask<TResult>> okFunc,
+        Func<TError, CancellationToken, ValueTask<TResult>> errFunc, CancellationToken ct = default) => Type switch
+    {
+        ResultType.Ok => await okFunc(Value!, ct),
+        ResultType.Err => await errFunc(Error!, ct),
+        _ => throw new ArgumentOutOfRangeException(nameof(Type), Type,
+            $"{GetType()} does not support {Type.ToString()}!")
+    };
+
+    /// <summary>
     /// Applies the appropriate action depending on the type of <see cref="Result{T, TError}" />.
     /// </summary>
     public void Match(Action<T> okAct, Action<TError> errAct)
@@ -71,6 +87,28 @@ public readonly record struct Result<T, TError>(
     }
 
     /// <summary>
+    /// Applies the appropriate async action depending on the type of <see cref="Result{T, TError}" />.
+    /// <para><b>Note:</b> The caller is responsible for using <c>ConfigureAwait</c> if necessary.</para>
+    /// </summary>
+    public async ValueTask MatchAsync(Func<T, CancellationToken, ValueTask> okAct,
+        Func<TError, CancellationToken, ValueTask> errAct,
+        CancellationToken ct = default)
+    {
+        switch (Type)
+        {
+            case ResultType.Ok:
+                await okAct(Value!, ct);
+                break;
+            case ResultType.Err:
+                await errAct(Error!, ct);
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(Type), Type,
+                    $"{GetType()} does not support {Type.ToString()}!");
+        }
+    }
+
+    /// <summary>
     /// Applies the function if <see cref="Result{T, TError}" /> is <see cref="ResultType.Ok" />.
     /// </summary>
     [Pure]
@@ -79,6 +117,19 @@ public readonly record struct Result<T, TError>(
         Type switch
         {
             ResultType.Ok => new(Value: okFunc(Value!), Type: ResultType.Ok),
+            ResultType.Err => new(Error: Error, Type: ResultType.Err),
+            _ => throw new ArgumentOutOfRangeException(nameof(Type), Type,
+                $"{GetType()} does not support {Type.ToString()}!")
+        };
+
+    [Pure]
+    public async ValueTask<Result<TResult, TError>> BindAsync<TResult>(
+        Func<T, CancellationToken, ValueTask<TResult>> okFunc,
+        CancellationToken ct = default)
+        where TResult : notnull =>
+        Type switch
+        {
+            ResultType.Ok => new(Value: await okFunc(Value!, ct), Type: ResultType.Ok),
             ResultType.Err => new(Error: Error, Type: ResultType.Err),
             _ => throw new ArgumentOutOfRangeException(nameof(Type), Type,
                 $"{GetType()} does not support {Type.ToString()}!")
@@ -111,6 +162,22 @@ public readonly record struct Result<T, TError>(
         _ => throw new ArgumentOutOfRangeException(nameof(Type), Type,
             $"{GetType()} does not support {Type.ToString()}!")
     };
+    
+    /// <summary>
+    /// Gives the value if <see cref="Result{T, TError}" /> is <see cref="ResultType.Ok" />.
+    /// <br/>
+    /// Returns the async function value if <see cref="Result{T, TError}" /> is <see cref="ResultType.Err" />.
+    /// <para><b>Note:</b> The caller is responsible for using <c>ConfigureAwait</c> if necessary.</para>
+    /// </summary>
+    [Pure]
+    public async ValueTask<T> UnwrapOrAsync(Func<TError, CancellationToken, ValueTask<T>> func,
+        CancellationToken ct = default) => Type switch
+    {
+        ResultType.Ok => Value!,
+        ResultType.Err => await func(Error!, ct),
+        _ => throw new ArgumentOutOfRangeException(nameof(Type), Type,
+            $"{GetType()} does not support {Type.ToString()}!")
+    };
 
     /// <summary>
     /// Gives the value if <see cref="Result{T, TError}" /> is <see cref="ResultType.Ok" />.
@@ -125,6 +192,25 @@ public readonly record struct Result<T, TError>(
         {
             ResultType.Ok => new(V1: Value!, Type: UnionType.T1),
             ResultType.Err => new(V2: func(Error!), Type: UnionType.T2),
+            _ => throw new ArgumentOutOfRangeException(nameof(Type), Type,
+                $"{GetType()} does not support {Type.ToString()}!")
+        };
+    
+    /// <summary>
+    /// Gives the value if <see cref="Result{T, TError}" /> is <see cref="ResultType.Ok" />.
+    /// <br/>
+    /// Returns the async function value if <see cref="Result{T, TError}" /> is <see cref="ResultType.Err" />.
+    /// <para><b>Note:</b> The caller is responsible for using <c>ConfigureAwait</c> if necessary.</para>
+    /// </summary>
+    /// <returns>A <see cref="Union{T,TOr}"/> with the value of <see cref="Result{T, TError}" /> or the async function value.</returns>
+    [Pure]
+    public async ValueTask<Union<T, TOr>> UnwrapOrAsync<TOr>(Func<TError, CancellationToken, ValueTask<TOr>> func,
+        CancellationToken ct = default)
+        where TOr : notnull =>
+        Type switch
+        {
+            ResultType.Ok => new(V1: Value!, Type: UnionType.T1),
+            ResultType.Err => new(V2: await func(Error!, ct), Type: UnionType.T2),
             _ => throw new ArgumentOutOfRangeException(nameof(Type), Type,
                 $"{GetType()} does not support {Type.ToString()}!")
         };

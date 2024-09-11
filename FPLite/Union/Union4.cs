@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Diagnostics.Contracts;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace FPLite.Union;
 
@@ -56,6 +58,24 @@ public readonly record struct Union<T1, T2, T3, T4>(
         };
 
     /// <summary>
+    /// Applies the appropriate function depending on the type of <see cref="Union{T1, T2, T3, T4}"/>.
+    /// <para><b>Note:</b> The caller is responsible for using <c>ConfigureAwait</c> if necessary.</para>
+    /// </summary>
+    [Pure]
+    public async ValueTask<TResult> MatchAsync<TResult>(Func<T1, CancellationToken, ValueTask<TResult>> t1Func,
+        Func<T2, CancellationToken, ValueTask<TResult>> t2Func, Func<T3, CancellationToken, ValueTask<TResult>> t3Func,
+        Func<T4, CancellationToken, ValueTask<TResult>> t4Func, CancellationToken ct = default) =>
+        Type switch
+        {
+            UnionType.T1 => await t1Func(V1!, ct),
+            UnionType.T2 => await t2Func(V2!, ct),
+            UnionType.T3 => await t3Func(V3!, ct),
+            UnionType.T4 => await t4Func(V4!, ct),
+            _ => throw new ArgumentOutOfRangeException(nameof(Type), Type,
+                $"{GetType()} does not support {Type.ToString()}!")
+        };
+
+    /// <summary>
     /// Applies the appropriate action depending on the type of <see cref="Union{T1, T2, T3, T4}"/>.
     /// </summary>
     public void Match(Action<T1> t1Act, Action<T2> t2Act, Action<T3> t3Act, Action<T4> t4Act)
@@ -73,6 +93,34 @@ public readonly record struct Union<T1, T2, T3, T4>(
                 break;
             case UnionType.T4:
                 t4Act(V4!);
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(Type), Type,
+                    $"{GetType()} does not support {Type.ToString()}!");
+        }
+    }
+    
+    /// <summary>
+    /// Applies the appropriate async action depending on the type of <see cref="Union{T1, T2, T3, T4}"/>.
+    /// <para><b>Note:</b> The caller is responsible for using <c>ConfigureAwait</c> if necessary.</para>
+    /// </summary>
+    public async ValueTask MatchAsync(Func<T1, CancellationToken, ValueTask> t1Act,
+        Func<T2, CancellationToken, ValueTask> t2Act, Func<T3, CancellationToken, ValueTask> t3Act,
+        Func<T4, CancellationToken, ValueTask> t4Act, CancellationToken ct = default)
+    {
+        switch (Type)
+        {
+            case UnionType.T1:
+                await t1Act(V1!, ct);
+                break;
+            case UnionType.T2:
+                await t2Act(V2!, ct);
+                break;
+            case UnionType.T3:
+                await t3Act(V3!, ct);
+                break;
+            case UnionType.T4:
+                await t4Act(V4!, ct);
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(Type), Type,

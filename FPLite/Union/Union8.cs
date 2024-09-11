@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Diagnostics.Contracts;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace FPLite.Union;
 
@@ -98,6 +100,29 @@ public readonly record struct Union<T1, T2, T3, T4, T5, T6, T7, T8>(
         _ => throw new ArgumentOutOfRangeException(nameof(Type), Type,
             $"{GetType()} does not support {Type.ToString()}!")
     };
+    
+    /// <summary>
+    /// Applies the appropriate function depending on the type of <see cref="Union{T1, T2, T3, T4, T5, T6, T7, T8}"/>.
+    /// <para><b>Note:</b> The caller is responsible for using <c>ConfigureAwait</c> if necessary.</para>
+    /// </summary>
+    [Pure]
+    public async ValueTask<TResult> MatchAsync<TResult>(Func<T1, CancellationToken, ValueTask<TResult>> t1Func,
+        Func<T2, CancellationToken, ValueTask<TResult>> t2Func, Func<T3, CancellationToken, ValueTask<TResult>> t3Func,
+        Func<T4, CancellationToken, ValueTask<TResult>> t4Func, Func<T5, CancellationToken, ValueTask<TResult>> t5Func,
+        Func<T6, CancellationToken, ValueTask<TResult>> t6Func, Func<T7, CancellationToken, ValueTask<TResult>> t7Func,
+        Func<T8, CancellationToken, ValueTask<TResult>> t8Func, CancellationToken ct = default) => Type switch
+    {
+        UnionType.T1 => await t1Func(V1!, ct),
+        UnionType.T2 => await t2Func(V2!, ct),
+        UnionType.T3 => await t3Func(V3!, ct),
+        UnionType.T4 => await t4Func(V4!, ct),
+        UnionType.T5 => await t5Func(V5!, ct),
+        UnionType.T6 => await t6Func(V6!, ct),
+        UnionType.T7 => await t7Func(V7!, ct),
+        UnionType.T8 => await t8Func(V8!, ct),
+        _ => throw new ArgumentOutOfRangeException(nameof(Type), Type,
+            $"{GetType()} does not support {Type.ToString()}!")
+    };
 
     /// <summary>
     /// Applies the appropriate action depending on the type of <see cref="Union{T1, T2, T3, T4, T5, T6, T7, T8}"/>.
@@ -130,6 +155,48 @@ public readonly record struct Union<T1, T2, T3, T4, T5, T6, T7, T8>(
                 break;
             case UnionType.T8:
                 t8Act(V8!);
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(Type), Type,
+                    $"{GetType()} does not support {Type.ToString()}!");
+        }
+    }
+    
+    /// <summary>
+    /// Applies the appropriate action depending on the type of <see cref="Union{T1, T2, T3, T4, T5, T6, T7, T8}"/>.
+    /// <para><b>Note:</b> The caller is responsible for using <c>ConfigureAwait</c> if necessary.</para>
+    /// </summary>
+    public async ValueTask MatchAsync(Func<T1, CancellationToken, ValueTask> t1Act, Func<T2, CancellationToken, ValueTask> t2Act,
+        Func<T3, CancellationToken, ValueTask> t3Act, Func<T4, CancellationToken, ValueTask> t4Act,
+        Func<T5, CancellationToken, ValueTask> t5Act, Func<T6, CancellationToken, ValueTask> t6Act,
+        Func<T7, CancellationToken, ValueTask> t7Act, Func<T8, CancellationToken, ValueTask> t8Act,
+        CancellationToken ct = default)
+    {
+        switch (Type)
+        {
+            case UnionType.T1:
+                await t1Act(V1!, ct);
+                break;
+            case UnionType.T2:
+                await t2Act(V2!, ct);
+                break;
+            case UnionType.T3:
+                await t3Act(V3!, ct);
+                break;
+            case UnionType.T4:
+                await t4Act(V4!, ct);
+                break;
+            case UnionType.T5:
+                await t5Act(V5!, ct);
+                break;
+            case UnionType.T6:
+                await t6Act(V6!, ct);
+                break;
+            case UnionType.T7:
+                await t7Act(V7!, ct);
+                break;
+            case UnionType.T8:
+                await t8Act(V8!, ct);
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(Type), Type,
