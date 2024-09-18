@@ -45,8 +45,8 @@ public static class EitherExtensions
     /// <br/>
     /// Returns with type <see cref="EitherType.Right"/> if another exception is thrown.
     /// </returns>
-    public static async ValueTask<Either<TException, Exception>> TryEitherAsync<TException>(
-        Func<CancellationToken, ValueTask> func, CancellationToken ct = default)
+    public static async Task<Either<TException, Exception>> TryEitherAsync<TException>(
+        Func<CancellationToken, Task> func, CancellationToken ct = default)
         where TException : Exception
     {
         try

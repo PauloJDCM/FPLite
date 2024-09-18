@@ -58,8 +58,8 @@ public readonly record struct Result<T, TError>(
     /// <para><b>Note:</b> The caller is responsible for using <c>ConfigureAwait</c> if necessary.</para>
     /// </summary>
     [Pure]
-    public async ValueTask<TResult> MatchAsync<TResult>(Func<T, CancellationToken, ValueTask<TResult>> okFunc,
-        Func<TError, CancellationToken, ValueTask<TResult>> errFunc, CancellationToken ct = default) => Type switch
+    public async Task<TResult> MatchAsync<TResult>(Func<T, CancellationToken, Task<TResult>> okFunc,
+        Func<TError, CancellationToken, Task<TResult>> errFunc, CancellationToken ct = default) => Type switch
     {
         ResultType.Ok => await okFunc(Value!, ct),
         ResultType.Err => await errFunc(Error!, ct),
@@ -90,8 +90,8 @@ public readonly record struct Result<T, TError>(
     /// Applies the appropriate async action depending on the type of <see cref="Result{T, TError}" />.
     /// <para><b>Note:</b> The caller is responsible for using <c>ConfigureAwait</c> if necessary.</para>
     /// </summary>
-    public async ValueTask MatchAsync(Func<T, CancellationToken, ValueTask> okAct,
-        Func<TError, CancellationToken, ValueTask> errAct,
+    public async Task MatchAsync(Func<T, CancellationToken, Task> okAct,
+        Func<TError, CancellationToken, Task> errAct,
         CancellationToken ct = default)
     {
         switch (Type)
@@ -123,8 +123,8 @@ public readonly record struct Result<T, TError>(
         };
 
     [Pure]
-    public async ValueTask<Result<TResult, TError>> BindAsync<TResult>(
-        Func<T, CancellationToken, ValueTask<TResult>> okFunc,
+    public async Task<Result<TResult, TError>> BindAsync<TResult>(
+        Func<T, CancellationToken, Task<TResult>> okFunc,
         CancellationToken ct = default)
         where TResult : notnull =>
         Type switch
@@ -170,7 +170,7 @@ public readonly record struct Result<T, TError>(
     /// <para><b>Note:</b> The caller is responsible for using <c>ConfigureAwait</c> if necessary.</para>
     /// </summary>
     [Pure]
-    public async ValueTask<T> UnwrapOrAsync(Func<TError, CancellationToken, ValueTask<T>> func,
+    public async Task<T> UnwrapOrAsync(Func<TError, CancellationToken, Task<T>> func,
         CancellationToken ct = default) => Type switch
     {
         ResultType.Ok => Value!,
@@ -204,7 +204,7 @@ public readonly record struct Result<T, TError>(
     /// </summary>
     /// <returns>A <see cref="Union{T,TOr}"/> with the value of <see cref="Result{T, TError}" /> or the async function value.</returns>
     [Pure]
-    public async ValueTask<Union<T, TOr>> UnwrapOrAsync<TOr>(Func<TError, CancellationToken, ValueTask<TOr>> func,
+    public async Task<Union<T, TOr>> UnwrapOrAsync<TOr>(Func<TError, CancellationToken, Task<TOr>> func,
         CancellationToken ct = default)
         where TOr : notnull =>
         Type switch

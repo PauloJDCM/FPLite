@@ -55,8 +55,8 @@ public readonly record struct Option<T>(T? Value = default, OptionType Type = Op
     /// <para><b>Note:</b> The caller is responsible for using <c>ConfigureAwait</c> if necessary.</para>
     /// </summary>
     [Pure]
-    public async ValueTask<TResult> MatchAsync<TResult>(Func<T, CancellationToken, ValueTask<TResult>> someFunc,
-        Func<CancellationToken, ValueTask<TResult>> noneFunc, CancellationToken ct = default) => Type switch
+    public async Task<TResult> MatchAsync<TResult>(Func<T, CancellationToken, Task<TResult>> someFunc,
+        Func<CancellationToken, Task<TResult>> noneFunc, CancellationToken ct = default) => Type switch
     {
         OptionType.Some => await someFunc(Value!, ct).ConfigureAwait(false),
         OptionType.None => await noneFunc(ct).ConfigureAwait(false),
@@ -87,8 +87,8 @@ public readonly record struct Option<T>(T? Value = default, OptionType Type = Op
     /// Applies the appropriate async action depending on the type of <see cref="Option{T}" />.
     /// <para><b>Note:</b> The caller is responsible for using <c>ConfigureAwait</c> if necessary.</para>
     /// </summary>
-    public ValueTask MatchAsync(Func<T, CancellationToken, ValueTask> someAct,
-        Func<CancellationToken, ValueTask> noneAct, CancellationToken ct = default)
+    public Task MatchAsync(Func<T, CancellationToken, Task> someAct,
+        Func<CancellationToken, Task> noneAct, CancellationToken ct = default)
     {
         switch (Type)
         {
@@ -121,7 +121,7 @@ public readonly record struct Option<T>(T? Value = default, OptionType Type = Op
     /// <para><b>Note:</b> The caller is responsible for using <c>ConfigureAwait</c> if necessary.</para>
     /// </summary>
     [Pure]
-    public async ValueTask<Option<TResult>> BindAsync<TResult>(Func<T, CancellationToken, ValueTask<TResult>> someFunc,
+    public async Task<Option<TResult>> BindAsync<TResult>(Func<T, CancellationToken, Task<TResult>> someFunc,
         CancellationToken ct = default)
         where TResult : notnull =>
         Type switch
@@ -167,10 +167,10 @@ public readonly record struct Option<T>(T? Value = default, OptionType Type = Op
     /// <para><b>Note:</b> The caller is responsible for using <c>ConfigureAwait</c> if necessary.</para>
     /// </summary>
     [Pure]
-    public ValueTask<T> UnwrapOrAsync(Func<CancellationToken, ValueTask<T>> func, CancellationToken ct = default) =>
+    public Task<T> UnwrapOrAsync(Func<CancellationToken, Task<T>> func, CancellationToken ct = default) =>
         Type switch
         {
-            OptionType.Some => new(Value!),
+            OptionType.Some => Task.FromResult(Value!),
             OptionType.None => func(ct),
             _ => throw new ArgumentOutOfRangeException(nameof(Type), Type,
                 $"{GetType()} does not support {Type.ToString()}!")
@@ -201,7 +201,7 @@ public readonly record struct Option<T>(T? Value = default, OptionType Type = Op
     /// </summary>
     /// <returns>A <see cref="Union{T,TOr}"/> with the value of <see cref="Option{T}" /> or the async function value.</returns>
     [Pure]
-    public async ValueTask<Union<T, TOr>> UnwrapOrAsync<TOr>(Func<CancellationToken, ValueTask<TOr>> func,
+    public async Task<Union<T, TOr>> UnwrapOrAsync<TOr>(Func<CancellationToken, Task<TOr>> func,
         CancellationToken ct = default)
         where TOr : notnull =>
         Type switch

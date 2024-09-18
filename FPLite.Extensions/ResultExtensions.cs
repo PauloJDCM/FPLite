@@ -57,8 +57,8 @@ public static class ResultExtensions
     /// Tries to execute an async function and returns a <see cref="Result{T, Exception}"/>.
     /// </summary>
     [Pure]
-    public static async ValueTask<Result<T, Exception>> TryResultAsyncValue<T>(
-        Func<CancellationToken, ValueTask<T>> func,
+    public static async Task<Result<T, Exception>> TryResultAsyncValue<T>(
+        Func<CancellationToken, Task<T>> func,
         CancellationToken cancellationToken = default)
         where T : notnull
     {
@@ -98,8 +98,8 @@ public static class ResultExtensions
     /// Tries to execute an async function and returns a <see cref="Result{T, Union{TException, Exception}}"/>.
     /// </summary>
     [Pure]
-    public static async ValueTask<Result<T, Union<TException, Exception>>> TryResultAsync<T, TException>(
-        Func<CancellationToken, ValueTask<T>> func,
+    public static async Task<Result<T, Union<TException, Exception>>> TryResultAsync<T, TException>(
+        Func<CancellationToken, Task<T>> func,
         CancellationToken cancellationToken = default)
         where T : notnull
         where TException : Exception

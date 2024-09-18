@@ -53,7 +53,7 @@ public static class OptionExtensions
     /// Tries to execute an async function and returns a <see cref="Option{T}"/> with the result.
     /// </summary>
     [Pure]
-    public static async ValueTask<Option<T>> TryOptionAsync<T>(Func<CancellationToken, ValueTask<T>> func,
+    public static async Task<Option<T>> TryOptionAsync<T>(Func<CancellationToken, Task<T>> func,
         CancellationToken ct = default) where T : notnull
     {
         try
@@ -86,7 +86,7 @@ public static class OptionExtensions
     /// Tries to execute an async action and returns a <see cref="Option{Exception}"/> with the result
     /// if an exception is thrown.
     /// </summary>
-    public static async ValueTask<Option<Exception>> TryOptionAsync(Func<CancellationToken, ValueTask> action,
+    public static async Task<Option<Exception>> TryOptionAsync(Func<CancellationToken, Task> action,
         CancellationToken ct = default)
     {
         try

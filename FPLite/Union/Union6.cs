@@ -79,10 +79,10 @@ public readonly record struct Union<T1, T2, T3, T4, T5, T6>(
     /// <para><b>Note:</b> The caller is responsible for using <c>ConfigureAwait</c> if necessary.</para>
     /// </summary>
     [Pure]
-    public async ValueTask<TResult> MatchAsync<TResult>(Func<T1, CancellationToken, ValueTask<TResult>> t1Func,
-        Func<T2, CancellationToken, ValueTask<TResult>> t2Func, Func<T3, CancellationToken, ValueTask<TResult>> t3Func,
-        Func<T4, CancellationToken, ValueTask<TResult>> t4Func, Func<T5, CancellationToken, ValueTask<TResult>> t5Func,
-        Func<T6, CancellationToken, ValueTask<TResult>> t6Func, CancellationToken ct = default) => Type switch
+    public async Task<TResult> MatchAsync<TResult>(Func<T1, CancellationToken, Task<TResult>> t1Func,
+        Func<T2, CancellationToken, Task<TResult>> t2Func, Func<T3, CancellationToken, Task<TResult>> t3Func,
+        Func<T4, CancellationToken, Task<TResult>> t4Func, Func<T5, CancellationToken, Task<TResult>> t5Func,
+        Func<T6, CancellationToken, Task<TResult>> t6Func, CancellationToken ct = default) => Type switch
     {
         UnionType.T1 => await t1Func(V1!, ct),
         UnionType.T2 => await t2Func(V2!, ct),
@@ -130,10 +130,10 @@ public readonly record struct Union<T1, T2, T3, T4, T5, T6>(
     /// Applies the appropriate async action depending on the type of <see cref="Union{T1, T2, T3, T4, T5, T6}"/>.
     /// <para><b>Note:</b> The caller is responsible for using <c>ConfigureAwait</c> if necessary.</para>
     /// </summary>
-    public async ValueTask MatchAsync(Func<T1, CancellationToken, ValueTask> t1Act,
-        Func<T2, CancellationToken, ValueTask> t2Act, Func<T3, CancellationToken, ValueTask> t3Act,
-        Func<T4, CancellationToken, ValueTask> t4Act, Func<T5, CancellationToken, ValueTask> t5Act,
-        Func<T6, CancellationToken, ValueTask> t6Act, CancellationToken ct = default)
+    public async Task MatchAsync(Func<T1, CancellationToken, Task> t1Act,
+        Func<T2, CancellationToken, Task> t2Act, Func<T3, CancellationToken, Task> t3Act,
+        Func<T4, CancellationToken, Task> t4Act, Func<T5, CancellationToken, Task> t5Act,
+        Func<T6, CancellationToken, Task> t6Act, CancellationToken ct = default)
     {
         switch (Type)
         {

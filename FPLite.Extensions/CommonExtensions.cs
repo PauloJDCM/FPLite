@@ -25,8 +25,8 @@ public static class CommonExtensions
     /// Pipes the input value into the specified async function, returning the result.
     /// </summary>
     [Pure]
-    public static async ValueTask<TResult> PipeAsyncValue<T, TResult>(this T input,
-        Func<T, CancellationToken, ValueTask<TResult>> func, CancellationToken ct = default) =>
+    public static async Task<TResult> PipeAsyncValue<T, TResult>(this T input,
+        Func<T, CancellationToken, Task<TResult>> func, CancellationToken ct = default) =>
         await func(input, ct);
 
     /// <summary>
@@ -43,7 +43,7 @@ public static class CommonExtensions
     /// <summary>
     /// Pipes the input value into the specified async action.
     /// </summary>
-    public static async ValueTask PipeAsyncValue<T>(this T input, Func<T, CancellationToken, ValueTask> action,
+    public static async Task PipeAsyncValue<T>(this T input, Func<T, CancellationToken, Task> action,
         CancellationToken ct = default) =>
         await action(input, ct);
 
@@ -70,5 +70,5 @@ public static class CommonExtensions
     /// <summary>
     /// Returns an empty async action.
     /// </summary>
-    public static ValueTask IgnoreAsyncValue(this ValueTask _) => ValueTask.CompletedTask;
+    public static Task IgnoreAsyncValue(this Task _) => Task.CompletedTask;
 }

@@ -52,8 +52,8 @@ public readonly record struct Union<T1, T2, T3>(
     /// <para><b>Note:</b> The caller is responsible for using <c>ConfigureAwait</c> if necessary.</para>
     /// </summary>
     [Pure]
-    public async ValueTask<TResult> MatchAsync<TResult>(Func<T1, CancellationToken, ValueTask<TResult>> t1Func,
-        Func<T2, CancellationToken, ValueTask<TResult>> t2Func, Func<T3, CancellationToken, ValueTask<TResult>> t3Func,
+    public async Task<TResult> MatchAsync<TResult>(Func<T1, CancellationToken, Task<TResult>> t1Func,
+        Func<T2, CancellationToken, Task<TResult>> t2Func, Func<T3, CancellationToken, Task<TResult>> t3Func,
         CancellationToken ct = default) => Type switch
     {
         UnionType.T1 => await t1Func(V1!, ct),
@@ -89,8 +89,8 @@ public readonly record struct Union<T1, T2, T3>(
     /// Applies the appropriate async action depending on the type of <see cref="Union{T1, T2, T3}"/>.
     /// <para><b>Note:</b> The caller is responsible for using <c>ConfigureAwait</c> if necessary.</para>
     /// </summary>
-    public async ValueTask MatchAsync(Func<T1, CancellationToken, ValueTask> t1Act,
-        Func<T2, CancellationToken, ValueTask> t2Act, Func<T3, CancellationToken, ValueTask> t3Act,
+    public async Task MatchAsync(Func<T1, CancellationToken, Task> t1Act,
+        Func<T2, CancellationToken, Task> t2Act, Func<T3, CancellationToken, Task> t3Act,
         CancellationToken ct = default)
     {
         switch (Type)

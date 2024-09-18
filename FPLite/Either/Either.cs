@@ -66,11 +66,11 @@ public readonly record struct Either<TLeft, TRight>(
     /// <para><b>Note:</b> The caller is responsible for using <c>ConfigureAwait</c> if necessary.</para>
     /// </summary>
     [Pure]
-    public async ValueTask<TResult> MatchAsync<TResult>(
-        Func<TLeft, CancellationToken, ValueTask<TResult>> leftFunc,
-        Func<TRight, CancellationToken, ValueTask<TResult>> rightFunc,
-        Func<CancellationToken, ValueTask<TResult>> neitherFunc,
-        Func<TLeft, TRight, CancellationToken, ValueTask<TResult>> bothFunc,
+    public async Task<TResult> MatchAsync<TResult>(
+        Func<TLeft, CancellationToken, Task<TResult>> leftFunc,
+        Func<TRight, CancellationToken, Task<TResult>> rightFunc,
+        Func<CancellationToken, Task<TResult>> neitherFunc,
+        Func<TLeft, TRight, CancellationToken, Task<TResult>> bothFunc,
         CancellationToken ct = default)
         where TResult : notnull => Type switch
     {
@@ -112,9 +112,9 @@ public readonly record struct Either<TLeft, TRight>(
     /// Applies the appropriate async action depending on the type of <see cref="Either{TLeft, TRight}" />.
     /// <para><b>Note:</b> The caller is responsible for using <c>ConfigureAwait</c> if necessary.</para>
     /// </summary>
-    public async ValueTask MatchAsync(Func<TLeft, CancellationToken, ValueTask> leftAct,
-        Func<TRight, CancellationToken, ValueTask> rightAct, Func<CancellationToken, ValueTask> neitherAct,
-        Func<TLeft, TRight, CancellationToken, ValueTask> bothAct, CancellationToken ct = default)
+    public async Task MatchAsync(Func<TLeft, CancellationToken, Task> leftAct,
+        Func<TRight, CancellationToken, Task> rightAct, Func<CancellationToken, Task> neitherAct,
+        Func<TLeft, TRight, CancellationToken, Task> bothAct, CancellationToken ct = default)
     {
         switch (Type)
         {
