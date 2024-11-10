@@ -1,141 +1,94 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
+using System.Diagnostics.Contracts;
+using System.Threading;
+using System.Threading.Tasks;
 
-#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+namespace FPLite.Union;
 
-namespace FPLite.Union
+public readonly record struct Union<T1, T2>(
+    T1? V1 = default,
+    T2? V2 = default,
+    UnionType Type = UnionType.NotSet)
+    where T1 : notnull where T2 : notnull
 {
     /// <summary>
-    /// Represents a discriminated union with two possible cases.
+    /// Creates a <see cref="Union{T1, T2}"/> with the given value.
     /// </summary>
-    public class Union<T1, T2> : IEquatable<Union<T1, T2>>
+    [Pure]
+    public static Union<T1, T2> U1([DisallowNull] T1 value) =>
+        new(V1: value, Type: UnionType.T1);
+
+    /// <summary>
+    /// Creates a <see cref="Union{T1, T2}"/> with the given value.
+    /// </summary>
+    [Pure]
+    public static Union<T1, T2> U2([DisallowNull] T2 value) =>
+        new(V2: value, Type: UnionType.T2);
+
+    /// <summary>
+    /// Applies the appropriate function depending on the type of <see cref="Union{T1, T2}"/>.
+    /// </summary>
+    [Pure]
+    public TResult Match<TResult>(Func<T1, TResult> t1Func, Func<T2, TResult> t2Func) => Type switch
     {
-        public byte Type { get; }
+        UnionType.T1 => t1Func(V1!),
+        UnionType.T2 => t2Func(V2!),
+        _ => throw new ArgumentOutOfRangeException(nameof(Type), Type,
+            $"{GetType()} does not support {Type.ToString()}!")
+    };
 
-        private readonly T1 _t1;
-        private readonly T2 _t2;
+    /// <summary>
+    /// Applies the appropriate function depending on the type of <see cref="Union{T1, T2}"/>.
+    /// <para><b>Note:</b> The caller is responsible for using <c>ConfigureAwait</c> if necessary.</para>
+    /// </summary>
+    [Pure]
+    public async Task<TResult> MatchAsync<TResult>(Func<T1, CancellationToken, Task<TResult>> t1Func,
+        Func<T2, CancellationToken, Task<TResult>> t2Func, CancellationToken ct = default) => Type switch
+    {
+        UnionType.T1 => await t1Func(V1!, ct),
+        UnionType.T2 => await t2Func(V2!, ct),
+        _ => throw new ArgumentOutOfRangeException(nameof(Type), Type,
+            $"{GetType()} does not support {Type.ToString()}!")
+    };
 
-        protected Union()
+    /// <summary>
+    /// Applies the appropriate action depending on the type of <see cref="Union{T1, T2}"/>.
+    /// </summary>
+    public void Match(Action<T1> t1Act, Action<T2> t2Act)
+    {
+        switch (Type)
         {
+            case UnionType.T1:
+                t1Act(V1!);
+                break;
+            case UnionType.T2:
+                t2Act(V2!);
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(Type), Type,
+                    $"{GetType()} does not support {Type.ToString()}!");
         }
+    }
 
-        protected Union(T1 t1)
+    /// <summary>
+    /// Applies the appropriate async action depending on the type of <see cref="Union{T1, T2}"/>.
+    /// <para><b>Note:</b> The caller is responsible for using <c>ConfigureAwait</c> if necessary.</para>
+    /// </summary>
+    public async Task MatchAsync(Func<T1, CancellationToken, Task> t1Act,
+        Func<T2, CancellationToken, Task> t2Act, CancellationToken ct = default)
+    {
+        switch (Type)
         {
-            Type = 1;
-            _t1 = t1;
+            case UnionType.T1:
+                await t1Act(V1!, ct);
+                break;
+            case UnionType.T2:
+                await t2Act(V2!, ct);
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(Type), Type,
+                    $"{GetType()} does not support {Type.ToString()}!");
         }
-
-        protected Union(T2 t2)
-        {
-            Type = 2;
-            _t2 = t2;
-        }
-
-        /// <summary>
-        /// Represents a Union of 2 types with no value. Used to indicate the absence of a value in Union types.
-        /// </summary>
-        public static Union<T1, T2> Nothing => new Union<T1, T2>();
-
-        /// <summary>
-        /// Creates a Union with a value of Type 1, or returns Nothing if the provided value is null.
-        /// </summary>
-        /// <param name="t1">The value of Type 1 to be included in the Union, or null.</param>
-        /// <returns>
-        /// A Union containing the provided value if it is not null, or Nothing if the value is null.
-        /// </returns>
-        public static Union<T1, T2> Type1(T1 t1) => t1 is null ? Nothing : new Union<T1, T2>(t1);
-
-        /// <summary>
-        /// Creates a Union with a value of Type 2, or returns Nothing if the provided value is null.
-        /// </summary>
-        /// <param name="t2">The value of Type 2 to be included in the Union, or null.</param>
-        /// <returns>
-        /// A Union containing the provided value if it is not null, or Nothing if the value is null.
-        /// </returns>
-        public static Union<T1, T2> Type2(T2 t2) => t2 is null ? Nothing : new Union<T1, T2>(t2);
-
-        /// <summary>
-        /// Matches the active case and invokes the appropriate action.
-        /// </summary>
-        public void Match(Action<T1> case1, Action<T2> case2, Action caseNothing)
-        {
-            switch (Type)
-            {
-                case 1:
-                    case1(_t1);
-                    break;
-                case 2:
-                    case2(_t2);
-                    break;
-                default:
-                    caseNothing();
-                    break;
-            }
-        }
-
-        /// <summary>
-        /// Matches the active case and invokes the appropriate delegate.
-        /// </summary>
-        /// <returns>The result of the invoked delegate.</returns>
-        public TResult Match<TResult>(Func<T1, TResult> case1, Func<T2, TResult> case2, Func<TResult> caseNothing) =>
-            Type switch
-            {
-                1 => case1(_t1),
-                2 => case2(_t2),
-                _ => caseNothing()
-            };
-
-        /// <summary>
-        /// Matches the active case and invokes the appropriate delegate.
-        /// </summary>
-        /// <returns>The result of the invoked delegate or Nothing.</returns>
-        public Union<TResult1, TResult2> Match<TResult1, TResult2>(Func<T1, TResult1> case1,
-            Func<T2, TResult2> case2) =>
-            Type switch
-            {
-                1 => Union<TResult1, TResult2>.Type1(case1(_t1)),
-                2 => Union<TResult1, TResult2>.Type2(case2(_t2)),
-                _ => Union<TResult1, TResult2>.Nothing
-            };
-
-        /// <summary>
-        /// Binds a function to T1 of the Union type.
-        /// </summary>
-        /// <typeparam name="T">The type of the result of the binding function.</typeparam>
-        /// <param name="func">The function to bind to the T1 value.</param>
-        public Union<T, T2> Bind1<T>(Func<T1, T> func) => Type switch
-        {
-            1 => Union<T, T2>.Type1(func(_t1)),
-            2 => Union<T, T2>.Type2(_t2),
-            _ => Union<T, T2>.Nothing
-        };
-
-        /// <summary>
-        /// Binds a function to T2 of the Union type.
-        /// </summary>
-        /// <typeparam name="T">The type of the result of the binding function.</typeparam>
-        /// <param name="func">The function to bind to the T2 value.</param>
-        public Union<T1, T> Bind2<T>(Func<T2, T> func) => Type switch
-        {
-            1 => Union<T1, T>.Type1(_t1),
-            2 => Union<T1, T>.Type2(func(_t2)),
-            _ => Union<T1, T>.Nothing
-        };
-        
-        public override string ToString() => (Type switch
-        {
-            1 => $"T1({_t1!.ToString()})",
-            2 => $"T2({_t2!.ToString()})",
-            _ => "Nothing"
-        })!;
-        
-        public override bool Equals(object? obj) => obj is Union<T1, T2> other && Equals(other);
-
-        public bool Equals(Union<T1, T2>? other) => GetHashCode() == other?.GetHashCode();
-
-        public override int GetHashCode() => HashCode.Combine(Type, _t1, _t2);
-
-        public static bool operator ==(Union<T1, T2> left, Union<T1, T2> right) => left.Equals(right);
-
-        public static bool operator !=(Union<T1, T2> left, Union<T1, T2> right) => !left.Equals(right);
     }
 }

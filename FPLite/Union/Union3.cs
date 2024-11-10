@@ -1,180 +1,112 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
+using System.Diagnostics.Contracts;
+using System.Threading;
+using System.Threading.Tasks;
 
-#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+namespace FPLite.Union;
 
-namespace FPLite.Union
+public readonly record struct Union<T1, T2, T3>(
+    T1? V1 = default,
+    T2? V2 = default,
+    T3? V3 = default,
+    UnionType Type = UnionType.NotSet)
+    where T1 : notnull
+    where T2 : notnull
+    where T3 : notnull
 {
     /// <summary>
-    /// Represents a discriminated union with two possible cases.
+    /// Creates a <see cref="Union{T1, T2, T3}"/> with the given value.
     /// </summary>
-    public class Union<T1, T2, T3> : IEquatable<Union<T1, T2, T3>>
+    [Pure]
+    public static Union<T1, T2, T3> U1([DisallowNull] T1 value) => new(V1: value, Type: UnionType.T1);
+
+    /// <summary>
+    /// Creates a <see cref="Union{T1, T2, T3}"/> with the given value.
+    /// </summary>
+    [Pure]
+    public static Union<T1, T2, T3> U2([DisallowNull] T2 value) => new(V2: value, Type: UnionType.T2);
+
+    /// <summary>
+    /// Creates a <see cref="Union{T1, T2, T3}"/> with the given value.
+    /// </summary>
+    [Pure]
+    public static Union<T1, T2, T3> U3([DisallowNull] T3 value) => new(V3: value, Type: UnionType.T3);
+
+    /// <summary>
+    /// Applies the appropriate function depending on the type of <see cref="Union{T1, T2, T3}"/>.
+    /// </summary>
+    [Pure]
+    public TResult Match<TResult>(Func<T1, TResult> t1Func, Func<T2, TResult> t2Func, Func<T3, TResult> t3Func) =>
+        Type switch
+        {
+            UnionType.T1 => t1Func(V1!),
+            UnionType.T2 => t2Func(V2!),
+            UnionType.T3 => t3Func(V3!),
+            _ => throw new ArgumentOutOfRangeException(nameof(Type), Type,
+                $"{GetType()} does not support {Type.ToString()}!")
+        };
+    
+    /// <summary>
+    /// Applies the appropriate function depending on the type of <see cref="Union{T1, T2, T3}"/>.
+    /// <para><b>Note:</b> The caller is responsible for using <c>ConfigureAwait</c> if necessary.</para>
+    /// </summary>
+    [Pure]
+    public async Task<TResult> MatchAsync<TResult>(Func<T1, CancellationToken, Task<TResult>> t1Func,
+        Func<T2, CancellationToken, Task<TResult>> t2Func, Func<T3, CancellationToken, Task<TResult>> t3Func,
+        CancellationToken ct = default) => Type switch
     {
-        public byte Type { get; }
-        
-        private readonly T1 _t1;
-        private readonly T2 _t2;
-        private readonly T3 _t3;
+        UnionType.T1 => await t1Func(V1!, ct),
+        UnionType.T2 => await t2Func(V2!, ct),
+        UnionType.T3 => await t3Func(V3!, ct),
+        _ => throw new ArgumentOutOfRangeException(nameof(Type), Type,
+            $"{GetType()} does not support {Type.ToString()}!")
+    };
 
-        protected Union()
+    /// <summary>
+    /// Applies the appropriate action depending on the type of <see cref="Union{T1, T2, T3}"/>.
+    /// </summary>
+    public void Match(Action<T1> t1Act, Action<T2> t2Act, Action<T3> t3Act)
+    {
+        switch (Type)
         {
+            case UnionType.T1:
+                t1Act(V1!);
+                break;
+            case UnionType.T2:
+                t2Act(V2!);
+                break;
+            case UnionType.T3:
+                t3Act(V3!);
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(Type), Type,
+                    $"{GetType()} does not support {Type.ToString()}!");
         }
-
-        protected Union(T1 t1)
+    }
+    
+    /// <summary>
+    /// Applies the appropriate async action depending on the type of <see cref="Union{T1, T2, T3}"/>.
+    /// <para><b>Note:</b> The caller is responsible for using <c>ConfigureAwait</c> if necessary.</para>
+    /// </summary>
+    public async Task MatchAsync(Func<T1, CancellationToken, Task> t1Act,
+        Func<T2, CancellationToken, Task> t2Act, Func<T3, CancellationToken, Task> t3Act,
+        CancellationToken ct = default)
+    {
+        switch (Type)
         {
-            Type = 1;
-            _t1 = t1;
+            case UnionType.T1:
+                await t1Act(V1!, ct);
+                break;
+            case UnionType.T2:
+                await t2Act(V2!, ct);
+                break;
+            case UnionType.T3:
+                await t3Act(V3!, ct);
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(Type), Type,
+                    $"{GetType()} does not support {Type.ToString()}!");
         }
-
-        protected Union(T2 t2)
-        {
-            Type = 2;
-            _t2 = t2;
-        }
-
-        protected Union(T3 t3)
-        {
-            Type = 3;
-            _t3 = t3;
-        }
-
-        /// <summary>
-        /// Represents a Union of 2 types with no value. Used to indicate the absence of a value in Union types.
-        /// </summary>
-        public static Union<T1, T2, T3> Nothing => new Union<T1, T2, T3>();
-
-        /// <summary>
-        /// Creates a Union with a value of Type 1, or returns Nothing if the provided value is null.
-        /// </summary>
-        /// <param name="t1">The value of Type 1 to be included in the Union, or null.</param>
-        /// <returns>
-        /// A Union containing the provided value if it is not null, or Nothing if the value is null.
-        /// </returns>
-        public static Union<T1, T2, T3> Type1(T1 t1) => t1 is null ? Nothing : new Union<T1, T2, T3>(t1);
-
-        /// <summary>
-        /// Creates a Union with a value of Type 2, or returns Nothing if the provided value is null.
-        /// </summary>
-        /// <param name="t2">The value of Type 2 to be included in the Union, or null.</param>
-        /// <returns>
-        /// A Union containing the provided value if it is not null, or Nothing if the value is null.
-        /// </returns>
-        public static Union<T1, T2, T3> Type2(T2 t2) => t2 is null ? Nothing : new Union<T1, T2, T3>(t2);
-
-        /// <summary>
-        /// Creates a Union with a value of Type 3, or returns Nothing if the provided value is null.
-        /// </summary>
-        /// <param name="t3">The value of Type 3 to be included in the Union, or null.</param>
-        /// <returns>
-        /// A Union containing the provided value if it is not null, or Nothing if the value is null.
-        /// </returns>
-        public static Union<T1, T2, T3> Type3(T3 t3) => t3 is null ? Nothing : new Union<T1, T2, T3>(t3);
-
-        /// <summary>
-        /// Matches the active case and invokes the appropriate action.
-        /// </summary>
-        public void Match(Action<T1> case1, Action<T2> case2, Action<T3> case3, Action caseNothing)
-        {
-            switch (Type)
-            {
-                case 1:
-                    case1(_t1);
-                    break;
-                case 2:
-                    case2(_t2);
-                    break;
-                case 3:
-                    case3(_t3);
-                    break;
-                default:
-                    caseNothing();
-                    break;
-            }
-        }
-
-        /// <summary>
-        /// Matches the active case and invokes the appropriate delegate.
-        /// </summary>
-        /// <returns>The result of the invoked delegate.</returns>
-        public TResult Match<TResult>(Func<T1, TResult> case1, Func<T2, TResult> case2, Func<T3, TResult> case3,
-            Func<TResult> caseNothing) =>
-            Type switch
-            {
-                1 => case1(_t1),
-                2 => case2(_t2),
-                3 => case3(_t3),
-                _ => caseNothing()
-            };
-
-        /// <summary>
-        /// Matches the active case and invokes the appropriate delegate.
-        /// </summary>
-        /// <returns>The result of the invoked delegate or Nothing.</returns>
-        public Union<TResult1, TResult2, TResult3> Match<TResult1, TResult2, TResult3>(Func<T1, TResult1> case1,
-            Func<T2, TResult2> case2, Func<T3, TResult3> case3) =>
-            Type switch
-            {
-                1 => Union<TResult1, TResult2, TResult3>.Type1(case1(_t1)),
-                2 => Union<TResult1, TResult2, TResult3>.Type2(case2(_t2)),
-                3 => Union<TResult1, TResult2, TResult3>.Type3(case3(_t3)),
-                _ => Union<TResult1, TResult2, TResult3>.Nothing
-            };
-
-        // Generate xml documentation
-        /// <summary>
-        /// Binds a function to T1 of the Union type.
-        /// </summary>
-        /// <typeparam name="T">The type of the result of the binding function.</typeparam>
-        /// <param name="func">The function to bind to the T1 value.</param>
-        public Union<T, T2, T3> Bind1<T>(Func<T1, T> func) => Type switch
-        {
-            1 => Union<T, T2, T3>.Type1(func(_t1)),
-            2 => Union<T, T2, T3>.Type2(_t2),
-            3 => Union<T, T2, T3>.Type3(_t3),
-            _ => Union<T, T2, T3>.Nothing
-        };
-
-        /// <summary>
-        /// Binds a function to T2 of the Union type.
-        /// </summary>
-        /// <typeparam name="T">The type of the result of the binding function.</typeparam>
-        /// <param name="func">The function to bind to the T2 value.</param>
-        public Union<T1, T, T3> Bind2<T>(Func<T2, T> func) => Type switch
-        {
-            1 => Union<T1, T, T3>.Type1(_t1),
-            2 => Union<T1, T, T3>.Type2(func(_t2)),
-            3 => Union<T1, T, T3>.Type3(_t3),
-            _ => Union<T1, T, T3>.Nothing
-        };
-
-        /// <summary>
-        /// Binds a function to T3 of the Union type.
-        /// </summary>
-        /// <typeparam name="T">The type of the result of the binding function.</typeparam>
-        /// <param name="func">The function to bind to the T3 value.</param>
-        public Union<T1, T2, T> Bind3<T>(Func<T3, T> func) => Type switch
-        {
-            1 => Union<T1, T2, T>.Type1(_t1),
-            2 => Union<T1, T2, T>.Type2(_t2),
-            3 => Union<T1, T2, T>.Type3(func(_t3)),
-            _ => Union<T1, T2, T>.Nothing
-        };
-
-        public override string ToString() => (Type switch
-        {
-            1 => $"T1({_t1!.ToString()})",
-            2 => $"T2({_t2!.ToString()})",
-            3 => $"T3({_t3!.ToString()})",
-            _ => "Nothing"
-        })!;
-        
-        public override bool Equals(object? obj) => obj is Union<T1, T2, T3> other && Equals(other);
-
-        public bool Equals(Union<T1, T2, T3>? other) => GetHashCode() == other?.GetHashCode();
-
-        public override int GetHashCode() => HashCode.Combine(Type, _t1, _t2, _t3);
-
-        public static bool operator ==(Union<T1, T2, T3> left, Union<T1, T2, T3> right) => left.Equals(right);
-
-        public static bool operator !=(Union<T1, T2, T3> left, Union<T1, T2, T3> right) => !left.Equals(right);
     }
 }

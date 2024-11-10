@@ -1,153 +1,171 @@
 ﻿using FluentAssertions;
+using FPLite.Result;
+using FPLite.Union;
 using Xunit;
 
-namespace FPLite.Tests.Core
+namespace FPLite.Tests.Core;
+
+public class ResultTests
 {
-    public class ResultTests
+    [Fact]
+    public void GivenInt_WhenValueIsErr_ShouldReturnError()
     {
-        [Fact]
-        public void GivenSomeValue_WhenCreatingOk_ShouldReturnOk()
-        {
-            var result = Result<string, TestError>.Ok("test");
-            result.Unwrap().Should().Be("test");
-            result.IsOk.Should().BeTrue();
-        }
+        var result = Result<int, TestError>.Err(new TestError());
 
-        [Fact]
-        public void GivenNoneValue_WhenCreatingOk_ShouldThrow()
-        {
-            Assert.Throws<ResultCreateException<string>>(() => Result<string, TestError>.Ok(null!));
-        }
+        result.Type.Should().Be(ResultType.Err);
+        result.Value.Should().Be(default);
+        result.Error.Should().Be(new TestError());
+    }
 
-        [Fact]
-        public void GivenSomeValue_WhenCreatingError_ShouldReturnError()
-        {
-            var result = Result<string, TestError>.Err(new TestError());
-            result.IsOk.Should().BeFalse();
-        }
+    [Theory]
+    [InlineData(1)]
+    [InlineData(0)]
+    [InlineData(-1)]
+    public void GivenInt_WhenValueIsOk_ShouldReturnValue(int originalValue)
+    {
+        var value = Result<int, TestError>.Ok(originalValue);
+        var result = value.Match(i => i, _ => originalValue - 1);
 
-        [Fact]
-        public void GivenNoneValue_WhenCreatingError_ShouldThrow()
-        {
-            Assert.Throws<ResultCreateException<TestError>>(() => Result<string, TestError>.Err(null!));
-        }
+        value.Type.Should().Be(ResultType.Ok);
+        result.Should().Be(originalValue);
+    }
 
-        [Fact]
-        public void GivenSomeValue_WhenMatching_ShouldDoSomeAction()
-        {
-            var obj = Result<string, TestError>.Ok("test");
-            var result = false;
-            obj.Match(_ => { result = true; }, _ => { });
-            
-            result.Should().BeTrue();
-        }
+    [Fact]
+    public void GivenErr_WhenMatching_ShouldDoErrorAction()
+    {
+        var value = Result<int, TestError>.Err(new TestError());
+        var result = false;
+        value.Match(_ => { }, _ => { result = true; });
+
+        result.Should().BeTrue();
+    }
+
+    [Fact]
+    public void GivenOk_WhenMatching_ShouldDoOkAction()
+    {
+        var value = Result<int, TestError>.Ok(1);
+        var result = false;
+        value.Match(_ => { result = true; }, _ => { });
+
+        result.Should().BeTrue();
+    }
+
+    [Fact]
+    public void GivenErr_WhenBinding_ShouldReturnError()
+    {
+        var value = Result<int, TestError>.Err(new TestError());
+        var bind = value.Bind(i => i + 1);
+        var result = bind.Match(i => i, _ => 0);
+
+        value.Type.Should().Be(ResultType.Err);
+        result.Should().Be(0);
+    }
+
+    [Fact]
+    public void GivenOk_WhenBinding_ShouldReturnOk()
+    {
+        var value = Result<int, TestError>.Ok(1);
+        var bind = value.Bind(i => i + 1);
+        var result = bind.Match(i => i, _ => 0);
+
+        value.Type.Should().Be(ResultType.Ok);
+        result.Should().Be(2);
+    }
+
+    [Fact]
+    public void GivenErr_WhenUnwrapping_ShouldThrow()
+    {
+        var value = Result<int, TestError>.Err(new TestError());
+        Assert.ThrowsAny<UnwrapException>(() => value.Unwrap());
+        Assert.Throws<ResultUnwrapException<int, TestError>>(() => value.Unwrap());
+    }
+
+    [Fact]
+    public void GivenOk_WhenUnwrappingOrWithSameType_ShouldReturnValue()
+    {
+        var value = Result<int, TestError>.Ok(1);
+        value.UnwrapOr(_ => 0).Should().Be(1);
+    }
+
+    [Fact]
+    public void GivenErr_WhenUnwrappingOrWithSameType_ShouldReturnOr()
+    {
+        var value = Result<int, TestError>.Err(new TestError());
+        value.UnwrapOr(_ => 0).Should().Be(0);
+    }
+
+    [Fact]
+    public void GivenOk_WhenUnwrappingOrWithDifferentType_ShouldReturnValue()
+    {
+        var value = Result<int, TestError>.Ok(1);
+        var unwrap = value.UnwrapOr(_ => "test");
+
+        unwrap.Type.Should().Be(UnionType.T1);
+        unwrap.Match(i => i.ToString(), _ => "test").Should().Be("1");
+    }
+
+    [Fact]
+    public void GivenErr_WhenUnwrappingOrWithDifferentType_ShouldReturnOr()
+    {
+        var value = Result<int, TestError>.Err(new TestError());
+        var unwrap = value.UnwrapOr(_ => "test");
+
+        unwrap.Type.Should().Be(UnionType.T2);
+        unwrap.Match(i => i.ToString(), _ => "test").Should().Be("test");
+    }
+    
+    [Fact]
+    public void Given2Ok_WhenEquatingWithSameValue_ShouldReturnTrue()
+    {
+        var value = Result<int, TestError>.Ok(1);
+        var other = Result<int, TestError>.Ok(1);
         
-        [Fact]
-        public void GivenNoneValue_WhenMatching_ShouldDoErrorAction()
-        {
-            var obj = Result<string, TestError>.Err(new TestError());
-            var result = false;
-            obj.Match(_ => { result = true; }, _ => { });
-            
-            result.Should().BeFalse();
-        }
-
-        [Fact]
-        public void GivenSomeValue_WhenUnwrapping_ShouldReturnValue()
-        {
-            var result = Result<string, TestError>.Ok("test");
-            result.Unwrap().Should().Be("test");
-        }
-
-        [Fact]
-        public void GivenNoneValue_WhenUnwrapping_ShouldThrow()
-        {
-            var result = Result<string, TestError>.Err(new TestError());
-            Assert.Throws<ResultUnwrapException<string, TestError>>(() => result.Unwrap());
-        }
+        value.Equals(other).Should().BeTrue();
+        (value == other).Should().BeTrue();
+        (value != other).Should().BeFalse();
+    }
+    
+    [Fact]
+    public void Given2Ok_WhenEquatingWithDifferentValue_ShouldReturnFalse()
+    {
+        var value = Result<int, TestError>.Ok(1);
+        var other = Result<int, TestError>.Ok(2);
         
-        [Fact]
-        public void GivenSomeValue_WhenUnwrappingWithCustomException_ShouldReturnOk()
-        {
-            var result = Result<string, TestError>.Ok("test");
-            result.Unwrap(() => new TestException()).Should().Be("test");
-        }
+        value.Equals(other).Should().BeFalse();
+        (value == other).Should().BeFalse();
+        (value != other).Should().BeTrue();
+    }
+    
+    [Fact]
+    public void Given2Err_WhenEquatingWithSameValue_ShouldReturnTrue()
+    {
+        var value = Result<int, TestError>.Err(new TestError());
+        var other = Result<int, TestError>.Err(new TestError());
         
-        [Fact]
-        public void GivenNoneValue_WhenUnwrappingWithCustomException_ShouldThrowCustomException()
-        {
-            var result = Result<string, TestError>.Err(new TestError());
-            Assert.Throws<TestException>(() => result.Unwrap(() => new TestException()));
-        }
+        value.Equals(other).Should().BeTrue();
+        (value == other).Should().BeTrue();
+        (value != other).Should().BeFalse();
+    }
+    
+    [Fact]
+    public void Given2Err_WhenEquatingWithDifferentValue_ShouldReturnFalse()
+    {
+        var value = Result<int, TestError>.Err(new TestError());
+        var other = Result<int, TestError>.Err(new TestError("test"));
         
-        [Fact]
-        public void GivenSomeValue_WhenUnwrappingOr_ShouldReturnValue()
-        {
-            var result = Result<string, TestError>.Ok("test");
-            result.UnwrapOr(() => "default").Should().Be("test");
-        }
+        value.Equals(other).Should().BeFalse();
+        (value == other).Should().BeFalse();
+        (value != other).Should().BeTrue();
+    }
+    
+    [Fact]
+    public void GivenOkAndErr_WhenEquating_ShouldReturnFalse()
+    {
+        var value = Result<int, TestError>.Ok(1);
+        var other = Result<int, TestError>.Err(new TestError());
         
-        [Fact]
-        public void GivenNoneValue_WhenUnwrappingOr_ShouldReturnOther()
-        {
-            var result = Result<string, TestError>.Err(new TestError());
-            result.UnwrapOr(() => "default").Should().Be("default");
-        }
-
-        [Fact]
-        public void GivenSomeValue_WhenUnwrappingOrWithOther_ShouldReturnUnionWithT1()
-        {
-            var result = Result<string, TestError>.Ok("test");
-            result.UnwrapOr(() => 1).ToString().Should().Be("T1(test)");
-        }
-        
-        [Fact]
-        public void GivenNoneValue_WhenUnwrappingOrWithOther_ShouldReturnUnionWithT2()
-        {
-            var result = Result<string, TestError>.Err(new TestError());
-            result.UnwrapOr(() => 1).ToString().Should().Be("T2(1)");
-        }
-
-        [Fact]
-        public void GivenValue_WhenMatching_ShouldMatchValue()
-        {
-            var result = Result<int, TestError>.Ok(1);
-
-            var testResult = false;
-            result.Match(i => testResult = true, _ => testResult = false);
-
-            testResult.Should().BeTrue();
-            result.ToString().Should().Be("Ok(1)");
-        }
-
-        [Fact]
-        public void GivenError_WhenMatching_ShouldMatchError()
-        {
-            var result = Result<int, TestError>.Err(new TestError());
-
-            var testResult = false;
-            result.Match(i => testResult = false, _ => testResult = true);
-
-            testResult.Should().BeTrue();
-            result.ToString().Should().Be("Err(Error: TEST_CODE - TEST_MESSAGE)");
-        }
-
-        [Fact]
-        public void GivenValue_WhenBinding_ShouldBindValue()
-        {
-            var result = Result<int, TestError>.Ok(1);
-            var result2 = result.Bind(i => i + 1);
-
-            result2.ToString().Should().Be("Ok(2)");
-        }
-
-        [Fact]
-        public void GivenError_WhenBinding_ShouldKeepError()
-        {
-            var result = Result<int, TestError>.Err(new TestError());
-            var result2 = result.Bind(i => Result<int, TestError>.Ok(i + 1));
-
-            result2.ToString().Should().Be("Err(Error: TEST_CODE - TEST_MESSAGE)");
-        }
+        value.Equals(other).Should().BeFalse();
+        (value == other).Should().BeFalse();
+        (value != other).Should().BeTrue();
     }
 }

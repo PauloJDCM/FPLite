@@ -2,194 +2,120 @@
 using FPLite.Union;
 using Xunit;
 
-namespace FPLite.Tests.Core
+namespace FPLite.Tests.Core;
+
+public class Union2Tests
 {
-    public class Union2Tests
+    [Fact]
+    public void GivenStringOrInt_WhenValueIsT1_ShouldReturnString()
     {
-        [Fact]
-        public void Given2Types_WhenValueIsNothing_ShouldBeNothing()
-        {
-            var union = Union<string, int>.Nothing;
-            var result = union.Match(s => s, i => i.ToString(), () => "Nothing");
-
-            var bResult = false;
-            union.Match(s => { }, i => { }, () => bResult = true);
-
-            bResult.Should().BeTrue();
-            result.Should().Be("Nothing");
-            union.Type.Should().Be(0);
-        }
-
-        [Fact]
-        public void GivenType1Value_WhenValueIsNotNull_ShouldBeType1()
-        {
-            var union = Union<string, int>.Type1("test");
-            var result = union.Match(s => s, i => i.ToString(), () => "Nothing");
-
-            var bResult = false;
-            union.Match(s => bResult = true, i => { }, () => { });
-
-            bResult.Should().BeTrue();
-            result.Should().Be("test");
-            union.Type.Should().Be(1);
-        }
-
-        [Fact]
-        public void GivenType2Value_WhenValueIsNotNull_ShouldBeType2()
-        {
-            var union = Union<string, int>.Type2(123);
-            var result = union.Match(s => s, i => i.ToString(), () => "Nothing");
-
-            var bResult = false;
-            union.Match(s => { }, i => bResult = true, () => { });
-
-            bResult.Should().BeTrue();
-            result.Should().Be("123");
-            union.Type.Should().Be(2);
-        }
-
-        [Fact]
-        public void GivenType1Value_WhenValueIsNull_ShouldBeNothing()
-        {
-            var union = Union<string?, int?>.Type1(null);
-            var result = union.Match(s => s!, i => i.ToString()!, () => "Nothing");
-
-            result.Should().Be("Nothing");
-            union.Type.Should().Be(0);
-        }
-
-        [Fact]
-        public void GivenType2Value_WhenValueIsNull_ShouldBeNothing()
-        {
-            var union = Union<string?, int?>.Type2(null);
-            var result = union.Match(s => s!, i => i.ToString()!, () => "Nothing");
-
-            result.Should().Be("Nothing");
-            union.Type.Should().Be(0);
-        }
+        var either = Union<string, int>.U1("test");
         
-        [Theory]
-        [InlineData(1, 2)]
-        [InlineData(4, 8)]
-        [InlineData(0, 0)]
-        public void GivenType1Value_WhenFuncDependsOnType_ShouldReturnType1(byte value, byte expected)
-        {
-            var union = Union<byte, int>.Type1(value);
-            var result = union.Match(b => b + b, i => i.ToString());
-            
-            result.ToString().Should().Be($"T1({expected})");
-            result.Type.Should().Be(1);
-        }
+        either.Type.Should().Be(UnionType.T1);
+        either.V1.Should().Be("test");
+        either.V2.Should().Be(default);
+    }
+    
+    [Fact]
+    public void GivenStringOrInt_WhenValueIsT2_ShouldReturnInt()
+    {
+        var either = Union<string, int>.U2(42);
         
-        [Theory]
-        [InlineData(1, "1")]
-        [InlineData(4, "4")]
-        [InlineData(0, "0")]
-        public void GivenType2Value_WhenFuncDependsOnType_ShouldReturnType2(byte value, string expected)
-        {
-            var union = Union<byte, int>.Type2(value);
-            var result = union.Match(b => b + b, i => i.ToString());
-            
-            result.ToString().Should().Be($"T2({expected})");
-            result.Type.Should().Be(2);
-        }
+        either.Type.Should().Be(UnionType.T2);
+        either.V1.Should().BeNull();
+        either.V2.Should().Be(42);
+    }
+    
+    [Fact]
+    public void GivenT1_WhenMatching_ShouldDoT1Action()
+    {
+        var either = Union<string, int>.U1("test");
+        var result = false;
+        either.Match(_ => { result = true; }, _ => { });
         
-        [Fact]
-        public void GivenNothing_WhenFuncDependsOnType_ShouldReturnNothing()
-        {
-            var union = Union<byte, int>.Nothing;
-            var result = union.Match(b => b + b, i => i.ToString());
-            
-            result.ToString().Should().Be("Nothing");
-        }
+        result.Should().BeTrue();
+    }
+    
+    [Fact]
+    public void GivenT2_WhenMatching_ShouldDoT2Action()
+    {
+        var either = Union<string, int>.U2(42);
+        var result = false;
+        either.Match(_ => { }, _ => { result = true; });
         
-        [Fact]
-        public void GivenType1Value_WhenBindingType1_ShouldReturnT1()
-        {
-            var union = Union<byte, int>.Type1(1);
-            var result = union.Bind1(b => b + b);
-            
-            result.ToString().Should().Be("T1(2)");
-            result.Type.Should().Be(1);
-        }
+        result.Should().BeTrue();
+    }
+    
+    [Fact]
+    public void GivenT1_WhenMatching_ShouldReturnT1()
+    {
+        var either = Union<string, int>.U1("test");
+        var result = either.Match(_ => true, _ => false);
         
-        [Fact]
-        public void GivenType1Value_WhenBindingType2_ShouldKeepType1AsType2()
-        {
-            var union = Union<byte, int>.Type1(1);
-            var result = union.Bind2(i => i * i);
-            
-            result.ToString().Should().Be("T1(1)");
-            result.Type.Should().Be(1);
-        }
+        result.Should().BeTrue();
+    }
+    
+    [Fact]
+    public void GivenT2_WhenMatching_ShouldReturnT2()
+    {
+        var either = Union<string, int>.U2(42);
+        var result = either.Match(_ => false, _ => true);
         
-        [Fact]
-        public void GivenType2Value_WhenBindingType1_ShouldKeepType2AsType2()
-        {
-            var union = Union<byte, int>.Type2(10);
-            var result = union.Bind1(b => b + b);
-            
-            result.ToString().Should().Be("T2(10)");
-            result.Type.Should().Be(2);
-        }
+        result.Should().BeTrue();
+    }
+    
+    [Fact]
+    public void Given2T1_WhenEquatingWithSameValue_ShouldReturnTrue()
+    {
+        var either = Union<string, int>.U1("test");
+        var other = Union<string, int>.U1("test");
         
-        [Fact]
-        public void GivenType2Value_WhenBindingType2_ShouldReturnT2()
-        {
-            var union = Union<byte, int>.Type2(10);
-            var result = union.Bind2(i => i * i);
-            
-            result.ToString().Should().Be("T2(100)");
-            result.Type.Should().Be(2);
-        }
+        either.Equals(other).Should().BeTrue();
+        (either == other).Should().BeTrue();
+        (either != other).Should().BeFalse();
+    }
+    
+    [Fact]
+    public void Given2T2_WhenEquatingWithSameValue_ShouldReturnTrue()
+    {
+        var either = Union<string, int>.U2(42);
+        var other = Union<string, int>.U2(42);
         
-        [Fact]
-        public void GivenNothing_WhenBindingType1_ShouldReturnNothing()
-        {
-            var union = Union<byte, int>.Nothing;
-            var result = union.Bind1(b => b + b);
-            
-            result.Type.Should().Be(0);
-        }
+        either.Equals(other).Should().BeTrue();
+        (either == other).Should().BeTrue();
+        (either != other).Should().BeFalse();
+    }
+    
+    [Fact]
+    public void Given2T1_WhenEquatingWithDifferentValue_ShouldReturnFalse()
+    {
+        var either = Union<string, int>.U1("test");
+        var other = Union<string, int>.U1("other");
         
-        [Fact]
-        public void GivenNothing_WhenBindingType2_ShouldReturnNothing()
-        {
-            var union = Union<byte, int>.Nothing;
-            var result = union.Bind2(i => i * i);
-            
-            result.Type.Should().Be(0);
-        }
-
-        [Fact]
-        public void Given2Unions_WhenTypesAndValuesAreEqual_ShouldBeEqual()
-        {
-            var union1 = Union<int, string>.Type1(1);
-            var union2 = Union<int, string>.Type1(1);
-            
-            union1.Should().Be(union2);
-            (union1 == union2).Should().BeTrue();
-            (union1 != union2).Should().BeFalse();
-        }
+        either.Equals(other).Should().BeFalse();
+        (either == other).Should().BeFalse();
+        (either != other).Should().BeTrue();
+    }
+    
+    [Fact]
+    public void Given2T2_WhenEquatingWithDifferentValue_ShouldReturnFalse()
+    {
+        var either = Union<string, int>.U2(42);
+        var other = Union<string, int>.U2(43);
         
-        [Fact]
-        public void Given2Unions_WhenTypesAreNotEqual_ShouldNotBeEqual()
-        {
-            var union1 = Union<int, string>.Type1(1);
-            var union2 = Union<byte, string>.Type2("1");
-            
-            union1.Should().NotBe(union2);
-        }
+        either.Equals(other).Should().BeFalse();
+        (either == other).Should().BeFalse();
+        (either != other).Should().BeTrue();
+    }
+    
+    [Fact]
+    public void GivenT1AndT2_WhenEquating_ShouldReturnFalse()
+    {
+        var either = Union<string, int>.U1("test");
+        var other = Union<string, int>.U2(42);
         
-        [Fact]
-        public void Given2Unions_WhenValuesAreNotEqual_ShouldNotBeEqual()
-        {
-            var union1 = Union<int, string>.Type1(1);
-            var union2 = Union<int, string>.Type1(2);
-            
-            union1.Should().NotBe(union2);
-            (union1 == union2).Should().BeFalse();
-            (union1 != union2).Should().BeTrue();
-        }
+        either.Equals(other).Should().BeFalse();
+        (either == other).Should().BeFalse();
+        (either != other).Should().BeTrue();
     }
 }

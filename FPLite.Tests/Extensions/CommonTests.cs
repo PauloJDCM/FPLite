@@ -2,34 +2,34 @@
 using FPLite.Extensions;
 using Xunit;
 
-namespace FPLite.Tests.Extensions
+namespace FPLite.Tests.Extensions;
+
+public class CommonTests
 {
-    public class CommonTests
+    [Fact]
+    public void GivenFunction_WhenPiping_ShouldReturnFunctionResult()
     {
-        [Fact]
-        public void GivenFunction_WhenPiping_ShouldReturnFunctionResult()
-        {
-            var result = 5.Pipe(x => x + 1);
+        var result = 5.Pipe(x => x + 1);
 
-            result.Should().Be(6);
-        }
+        result.Should().Be(6);
+    }
 
-        [Fact]
-        public void GivenAction_WhenPiping_ShouldPerformAction()
-        {
-            var result = false;
-            5.Pipe(x => { result = true; });
+    [Fact]
+    public void GivenAction_WhenPiping_ShouldPerformAction()
+    {
+        var result = false;
+        5.Pipe(_ => { result = true; });
 
-            result.Should().Be(true);
-        }
+        result.Should().Be(true);
+    }
 
-        [Fact]
-        public void GivenValue_WhenIgnoring_ShouldDoNothing()
-        {
-            var result = 5;
-            result.Pipe(x => CommonExtensions.Ignore());
+    [Fact]
+    public void GivenValue_WhenIgnoring_ShouldDoNothing()
+    {
+        var result = 5;
+        result.Pipe(CommonExtensions.Ignore);
+        result.Pipe(_ => CommonExtensions.Ignore());
 
-            result.Should().Be(5);
-        }
+        result.Should().Be(5);
     }
 }

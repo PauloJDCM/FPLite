@@ -8,6 +8,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FPLite.Extensions", "FPLite
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FPLite.Tests", "FPLite.Tests\FPLite.Tests.csproj", "{398415D1-77E6-4DDF-84AB-94088D48840D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FPLite.Benchmarks", "FPLite.Benchmarks\FPLite.Benchmarks.csproj", "{445D6DA8-01C4-4E9C-81EB-65A6334692B2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,5 +32,9 @@ Global
 		{398415D1-77E6-4DDF-84AB-94088D48840D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{398415D1-77E6-4DDF-84AB-94088D48840D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{398415D1-77E6-4DDF-84AB-94088D48840D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{445D6DA8-01C4-4E9C-81EB-65A6334692B2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{445D6DA8-01C4-4E9C-81EB-65A6334692B2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{445D6DA8-01C4-4E9C-81EB-65A6334692B2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{445D6DA8-01C4-4E9C-81EB-65A6334692B2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
