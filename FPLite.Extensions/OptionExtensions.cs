@@ -2,9 +2,7 @@ using System;
 using System.Diagnostics.Contracts;
 using System.Threading;
 using System.Threading.Tasks;
-using FPLite.Either;
 using FPLite.Option;
-using FPLite.Union;
 
 namespace FPLite.Extensions;
 
