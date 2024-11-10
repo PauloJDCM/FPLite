@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Diagnostics.Contracts;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace FPLite.Extensions;
 
@@ -7,20 +10,42 @@ public static class CommonExtensions
     /// <summary>
     /// Pipes the input value into the specified function, returning the result.
     /// </summary>
-    /// <typeparam name="T">The type of the input value.</typeparam>
-    /// <typeparam name="TResult">The type of the result.</typeparam>
-    /// <param name="input">The input value to be processed.</param>
-    /// <param name="func">The function to apply to the input value.</param>
-    /// <returns>The result of applying the function to the input value.</returns>
+    [Pure]
     public static TResult Pipe<T, TResult>(this T input, Func<T, TResult> func) => func(input);
-    
+
+    /// <summary>
+    /// Pipes the input value into the specified async function, returning the result.
+    /// </summary>
+    [Pure]
+    public static async Task<TResult> PipeAsyncTask<T, TResult>(this T input,
+        Func<T, CancellationToken, Task<TResult>> func, CancellationToken ct = default) =>
+        await func(input, ct);
+
+    /// <summary>
+    /// Pipes the input value into the specified async function, returning the result.
+    /// </summary>
+    [Pure]
+    public static async Task<TResult> PipeAsyncValue<T, TResult>(this T input,
+        Func<T, CancellationToken, Task<TResult>> func, CancellationToken ct = default) =>
+        await func(input, ct);
+
     /// <summary>
     /// Pipes the input value into the specified action.
     /// </summary>
-    /// <typeparam name="T">The type of the input value.</typeparam>
-    /// <param name="input">The input value to be used.</param>
-    /// <param name="action">The action to run with the input value.</param>
     public static void Pipe<T>(this T input, Action<T> action) => action(input);
+
+    /// <summary>
+    /// Pipes the input value into the specified async action.
+    /// </summary>
+    public static async Task PipeAsyncTask<T>(this T input, Func<T, CancellationToken, Task> action,
+        CancellationToken ct = default) => await action(input, ct);
+
+    /// <summary>
+    /// Pipes the input value into the specified async action.
+    /// </summary>
+    public static async Task PipeAsyncValue<T>(this T input, Func<T, CancellationToken, Task> action,
+        CancellationToken ct = default) =>
+        await action(input, ct);
 
     /// <summary>
     /// Returns an empty action.
@@ -29,9 +54,21 @@ public static class CommonExtensions
     {
         /* Empty action, does nothing */
     };
-    
+
     /// <summary>
     /// Returns an empty function.
     /// </summary>
-    public static void Ignore<T>(this T _) { }
+    public static void Ignore<T>(this T _)
+    {
+    }
+
+    /// <summary>
+    /// Returns an empty async action.
+    /// </summary>
+    public static Task IgnoreAsyncTask(this Task _) => Task.CompletedTask;
+
+    /// <summary>
+    /// Returns an empty async action.
+    /// </summary>
+    public static Task IgnoreAsyncValue(this Task _) => Task.CompletedTask;
 }

@@ -12,7 +12,7 @@
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <RepositoryUrl>https://github.com/PauloJDCM/FPLite</RepositoryUrl>
         <PackageIcon>FPLite_Extensions.png</PackageIcon>
-        <PackageReleaseNotes>Updated to use remodeled types. Removed functionality that didn't really add much. Dropped support for .Net Standard.</PackageReleaseNotes>
+        <PackageReleaseNotes>Updated to use remodeled types. Added async support. Dropped support for .Net Standard.</PackageReleaseNotes>
     </PropertyGroup>
 
     <ItemGroup>

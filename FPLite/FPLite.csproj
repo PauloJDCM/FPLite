@@ -12,7 +12,7 @@
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <RepositoryUrl>https://github.com/PauloJDCM/FPLite</RepositoryUrl>
         <PackageIcon>FPLite.png</PackageIcon>
-        <PackageReleaseNotes>Remodeled types for fewer allocations by infering state from type. Removed type functionality that could lead to code smells. Dropped support for .Net Standard.</PackageReleaseNotes>
+        <PackageReleaseNotes>Remodeled types for fewer allocations by using record structs. Removed type functionality that could lead to code smells. Added async support. Dropped support for .Net Standard.</PackageReleaseNotes>
     </PropertyGroup>
 
     <ItemGroup>

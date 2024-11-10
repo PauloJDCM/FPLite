@@ -14,9 +14,6 @@ Enumerable extension methods for the FPLite Option type.
 ## [Either Extensions](EitherExtensions.cs)
 Generic extension methods for the FPLite Either type.
 
-## [Union Extensions](UnionExtensions.cs)
-Generic extension methods for the FPLite Union type.
-
 ## [Result Extensions](ResultExtensions.cs)
 Generic extension methods for the FPLite Result type.
 

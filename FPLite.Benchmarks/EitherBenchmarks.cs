@@ -20,18 +20,18 @@ public class EitherBenchmarks
     public string[] BaselineString() => Array.Select(i => (i + i).ToString()).ToArray();
 
     [Benchmark]
-    public IEither<int, string>[] EitherInt() => Array.Select(i => FPLite.Left<int, string>(i + i)).ToArray();
+    public Either<int, string>[] EitherInt() => Array.Select(i => Either<int, string>.Left(i + i)).ToArray();
 
     [Benchmark]
-    public IEither<int, string>[] EitherString() =>
-        Array.Select(i => FPLite.Right<int, string>((i + i).ToString())).ToArray();
+    public Either<int, string>[] EitherString() =>
+        Array.Select(i => Either<int, string>.Right((i + i).ToString())).ToArray();
 
     [Benchmark]
     public int[] MatchInt() =>
-        Array.Select(i => FPLite.Left<int, string>(i + i).Match(i1 => i1, _ => 0, () => 0, (_, _) => 0)).ToArray();
+        Array.Select(i => Either<int, string>.Left(i + i).Match(i1 => i1, _ => 0, () => 0, (_, _) => 0)).ToArray();
 
     [Benchmark]
     public string[] MatchString() =>
-        Array.Select(i => FPLite.Right<int, string>((i + i).ToString()).Match(_ => "", s => s, () => "", (_, _) => ""))
+        Array.Select(i => Either<int, string>.Right((i + i).ToString()).Match(_ => "", s => s, () => "", (_, _) => ""))
             .ToArray();
 }

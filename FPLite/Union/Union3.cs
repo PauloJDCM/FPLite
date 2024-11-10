@@ -1,33 +1,112 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
+using System.Diagnostics.Contracts;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace FPLite.Union;
 
-internal record UnionT1<T1, T2, T3>(T1 Value) : IUnion<T1, T2, T3>
+public readonly record struct Union<T1, T2, T3>(
+    T1? V1 = default,
+    T2? V2 = default,
+    T3? V3 = default,
+    UnionType Type = UnionType.NotSet)
+    where T1 : notnull
+    where T2 : notnull
+    where T3 : notnull
 {
-    public UnionType Type => UnionType.T1;
+    /// <summary>
+    /// Creates a <see cref="Union{T1, T2, T3}"/> with the given value.
+    /// </summary>
+    [Pure]
+    public static Union<T1, T2, T3> U1([DisallowNull] T1 value) => new(V1: value, Type: UnionType.T1);
 
+    /// <summary>
+    /// Creates a <see cref="Union{T1, T2, T3}"/> with the given value.
+    /// </summary>
+    [Pure]
+    public static Union<T1, T2, T3> U2([DisallowNull] T2 value) => new(V2: value, Type: UnionType.T2);
+
+    /// <summary>
+    /// Creates a <see cref="Union{T1, T2, T3}"/> with the given value.
+    /// </summary>
+    [Pure]
+    public static Union<T1, T2, T3> U3([DisallowNull] T3 value) => new(V3: value, Type: UnionType.T3);
+
+    /// <summary>
+    /// Applies the appropriate function depending on the type of <see cref="Union{T1, T2, T3}"/>.
+    /// </summary>
+    [Pure]
     public TResult Match<TResult>(Func<T1, TResult> t1Func, Func<T2, TResult> t2Func, Func<T3, TResult> t3Func) =>
-        t1Func(Value);
+        Type switch
+        {
+            UnionType.T1 => t1Func(V1!),
+            UnionType.T2 => t2Func(V2!),
+            UnionType.T3 => t3Func(V3!),
+            _ => throw new ArgumentOutOfRangeException(nameof(Type), Type,
+                $"{GetType()} does not support {Type.ToString()}!")
+        };
+    
+    /// <summary>
+    /// Applies the appropriate function depending on the type of <see cref="Union{T1, T2, T3}"/>.
+    /// <para><b>Note:</b> The caller is responsible for using <c>ConfigureAwait</c> if necessary.</para>
+    /// </summary>
+    [Pure]
+    public async Task<TResult> MatchAsync<TResult>(Func<T1, CancellationToken, Task<TResult>> t1Func,
+        Func<T2, CancellationToken, Task<TResult>> t2Func, Func<T3, CancellationToken, Task<TResult>> t3Func,
+        CancellationToken ct = default) => Type switch
+    {
+        UnionType.T1 => await t1Func(V1!, ct),
+        UnionType.T2 => await t2Func(V2!, ct),
+        UnionType.T3 => await t3Func(V3!, ct),
+        _ => throw new ArgumentOutOfRangeException(nameof(Type), Type,
+            $"{GetType()} does not support {Type.ToString()}!")
+    };
 
-    public void Match(Action<T1> t1Act, Action<T2> t2Act, Action<T3> t3Act) => t1Act(Value);
-}
-
-internal record UnionT2<T1, T2, T3>(T2 Value) : IUnion<T1, T2, T3>
-{
-    public UnionType Type => UnionType.T2;
-
-    public TResult Match<TResult>(Func<T1, TResult> t1Func, Func<T2, TResult> t2Func, Func<T3, TResult> t3Func) =>
-        t2Func(Value);
-
-    public void Match(Action<T1> t1Act, Action<T2> t2Act, Action<T3> t3Act) => t2Act(Value);
-}
-
-internal record UnionT3<T1, T2, T3>(T3 Value) : IUnion<T1, T2, T3>
-{
-    public UnionType Type => UnionType.T3;
-
-    public TResult Match<TResult>(Func<T1, TResult> t1Func, Func<T2, TResult> t2Func, Func<T3, TResult> t3Func) =>
-        t3Func(Value);
-
-    public void Match(Action<T1> t1Act, Action<T2> t2Act, Action<T3> t3Act) => t3Act(Value);
+    /// <summary>
+    /// Applies the appropriate action depending on the type of <see cref="Union{T1, T2, T3}"/>.
+    /// </summary>
+    public void Match(Action<T1> t1Act, Action<T2> t2Act, Action<T3> t3Act)
+    {
+        switch (Type)
+        {
+            case UnionType.T1:
+                t1Act(V1!);
+                break;
+            case UnionType.T2:
+                t2Act(V2!);
+                break;
+            case UnionType.T3:
+                t3Act(V3!);
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(Type), Type,
+                    $"{GetType()} does not support {Type.ToString()}!");
+        }
+    }
+    
+    /// <summary>
+    /// Applies the appropriate async action depending on the type of <see cref="Union{T1, T2, T3}"/>.
+    /// <para><b>Note:</b> The caller is responsible for using <c>ConfigureAwait</c> if necessary.</para>
+    /// </summary>
+    public async Task MatchAsync(Func<T1, CancellationToken, Task> t1Act,
+        Func<T2, CancellationToken, Task> t2Act, Func<T3, CancellationToken, Task> t3Act,
+        CancellationToken ct = default)
+    {
+        switch (Type)
+        {
+            case UnionType.T1:
+                await t1Act(V1!, ct);
+                break;
+            case UnionType.T2:
+                await t2Act(V2!, ct);
+                break;
+            case UnionType.T3:
+                await t3Act(V3!, ct);
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(Type), Type,
+                    $"{GetType()} does not support {Type.ToString()}!");
+        }
+    }
 }

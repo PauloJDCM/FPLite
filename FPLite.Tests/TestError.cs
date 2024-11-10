@@ -1,6 +1,3 @@
 ﻿namespace FPLite.Tests;
 
-public readonly struct TestError
-{
-    public static string Message => "TEST_MESSAGE";
-}
+public readonly record struct TestError(string Message = "Test error");

@@ -1,5 +1,6 @@
 ﻿using FluentAssertions;
 using FPLite.Extensions;
+using FPLite.Option;
 using Xunit;
 
 namespace FPLite.Tests.Extensions;
@@ -25,7 +26,7 @@ public class OptionTests
     public void GivenValue_WhenConvertingToOption_ShouldReturnSome()
     {
         var result = 1.ToOption();
-        result.IsSome.Should().BeTrue();
+        result.Type.Should().Be(OptionType.Some);
     }
 
     [Fact]
@@ -34,23 +35,23 @@ public class OptionTests
         int? value = null;
         var result = value.ToOption();
 
-        result.IsSome.Should().BeFalse();
+        result.Type.Should().Be(OptionType.None);
     }
-    
+
     [Fact]
     public void GivenRefNull_WhenConvertingToOption_ShouldReturnNone()
     {
         string? value = null;
         var result = value.ToOption();
 
-        result.IsSome.Should().BeFalse();
+        result.Type.Should().Be(OptionType.None);
     }
 
     [Fact]
     public void GivenValue_WhenCasting_ShouldReturnSome()
     {
         var result = new A().AsOptionOf<A, IA>();
-        result.IsSome.Should().BeTrue();
+        result.Type.Should().Be(OptionType.Some);
         result.Unwrap().Value.Should().Be(1);
     }
 
@@ -58,6 +59,6 @@ public class OptionTests
     public void GivenOtherTypeValue_WhenCasting_ShouldReturnNone()
     {
         var result = new B().AsOptionOf<B, A>();
-        result.IsSome.Should().BeFalse();
+        result.Type.Should().Be(OptionType.None);
     }
 }

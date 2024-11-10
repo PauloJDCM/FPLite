@@ -1,77 +1,100 @@
 using System;
+using System.Diagnostics.Contracts;
+using System.Threading;
+using System.Threading.Tasks;
+using FPLite.Option;
 
 namespace FPLite.Extensions;
 
 public static class OptionExtensions
 {
     /// <summary>
-    /// Converts a nullable value (reference type) of type <typeparamref name="T"/> to an <see cref="IOption{T}"/>.
+    /// Converts a nullable value (reference type) of type <typeparamref name="T"/> to an <see cref="Option{T}"/>.
     /// </summary>
-    public static IOption<T> ToOption<T>(this T? value) where T : notnull =>
-        value is null ? FPLite.None<T>() : FPLite.Some(value);
-    
-    /// <summary>
-    /// Converts a nullable value (value type) of type <typeparamref name="T"/> to an <see cref="IOption{T}"/>.
-    /// </summary>
-    public static IOption<T> ToOption<T>(this T? value) where T : unmanaged =>
-        value is null ? FPLite.None<T>() : FPLite.Some((T)value);
+    [Pure]
+    public static Option<T> ToOption<T>(this T? value) where T : notnull =>
+        value is null ? Option<T>.None() : Option<T>.Some(value);
 
     /// <summary>
-    /// Converts a value of type <typeparamref name="TIn"/> to an <see cref="IOption{TOut}"/>.
+    /// Converts a nullable value (value type) of type <typeparamref name="T"/> to an <see cref="Option{T}"/>.
     /// </summary>
-    public static IOption<TOut> AsOptionOf<TIn, TOut>(this TIn value)
+    [Pure]
+    public static Option<T> ToOption<T>(this T? value) where T : unmanaged =>
+        value is null ? Option<T>.None() : Option<T>.Some((T)value);
+
+    /// <summary>
+    /// Converts a value of type <typeparamref name="TIn"/> to an <see cref="Option{TOut}"/>.
+    /// </summary>
+    [Pure]
+    public static Option<TOut> AsOptionOf<TIn, TOut>(this TIn value)
         where TIn : notnull
         where TOut : notnull =>
-        value is TOut cast ? FPLite.Some(cast) : FPLite.None<TOut>();
+        value is TOut cast ? Option<TOut>.Some(cast) : Option<TOut>.None();
 
     /// <summary>
-    /// Tries to execute a function and returns a <see cref="IOption{T}"/> with the result.
+    /// Tries to execute a function and returns a <see cref="Option{T}"/> with the result.
     /// </summary>
-    public static IOption<T> TryOption<T>(Func<T> func) where T : notnull
+    [Pure]
+    public static Option<T> TryOption<T>(Func<T> func) where T : notnull
     {
         try
         {
-            return FPLite.Some(func());
+            return Option<T>.Some(func());
         }
         catch
         {
-            return FPLite.None<T>();
+            return Option<T>.None();
         }
     }
 
     /// <summary>
-    /// Tries to execute an action and returns a <see cref="IOption{TError}"/> with the result if an exception is thrown.
+    /// Tries to execute an async function and returns a <see cref="Option{T}"/> with the result.
     /// </summary>
-    public static IOption<TError> TryOption<TError>(Action action, Func<Exception, TError> failFunc)
-        where TError : notnull
+    [Pure]
+    public static async Task<Option<T>> TryOptionAsync<T>(Func<CancellationToken, Task<T>> func,
+        CancellationToken ct = default) where T : notnull
+    {
+        try
+        {
+            return Option<T>.Some(await func(ct));
+        }
+        catch
+        {
+            return Option<T>.None();
+        }
+    }
+
+    /// <summary>
+    /// Tries to execute an action and returns a <see cref="Option{Exception}"/> with the result if an exception is thrown.
+    /// </summary>
+    public static Option<Exception> TryOption(Action action)
     {
         try
         {
             action();
-            return FPLite.None<TError>();
+            return Option<Exception>.None();
         }
         catch (Exception e)
         {
-            return FPLite.Some(failFunc(e));
+            return Option<Exception>.Some(e);
         }
     }
 
     /// <summary>
-    /// Tries to execute an action and returns a <see cref="IOption{TError}"/> with the result
-    /// if an exception of type <typeparamref name="TException"/> is thrown.
+    /// Tries to execute an async action and returns a <see cref="Option{Exception}"/> with the result
+    /// if an exception is thrown.
     /// </summary>
-    public static IOption<TError> TryOption<TException, TError>(Action action, Func<TException, TError> failFunc)
-        where TError : notnull
-        where TException : Exception
+    public static async Task<Option<Exception>> TryOptionAsync(Func<CancellationToken, Task> action,
+        CancellationToken ct = default)
     {
         try
         {
-            action();
-            return FPLite.None<TError>();
+            await action(ct);
+            return Option<Exception>.None();
         }
-        catch (TException e)
+        catch (Exception e)
         {
-            return FPLite.Some(failFunc(e));
+            return Option<Exception>.Some(e);
         }
     }
 }
